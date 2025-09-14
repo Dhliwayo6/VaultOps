@@ -34,22 +34,22 @@ public class AssetController {
         return createAssetService.execute(asset);
     }
 
-    @GetMapping("task{id}")
+    @GetMapping("asset/{id}")
     public ResponseEntity<AssetDTO> getAssetById(@PathVariable Long id) {
         return getAssetService.execute(id);
     }
 
-    @GetMapping("/tasks")
+    @GetMapping("/assets")
     public ResponseEntity<List<AssetDTO>> getAssets() {
         return getAssetsService.execute(null);
     }
 
-    @GetMapping("/task/search")
+    @GetMapping("/asset/search")
     public ResponseEntity<List<AssetDTO>> searchAssetByName(@RequestParam String name) {
         return searchAssetService.execute(name);
     }
 
-    @PutMapping("/asset{id}")
+    @PutMapping("/asset/{id}")
     public ResponseEntity<AssetDTO> updateAsset(@PathVariable Long id, @RequestBody Asset asset) {
         return updateAssetService.execute(new UpdateAssetCommand(id, asset));
     }
