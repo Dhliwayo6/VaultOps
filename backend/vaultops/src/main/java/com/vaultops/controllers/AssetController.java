@@ -16,17 +16,20 @@ public class AssetController {
     private final GetAssetsService getAssetsService;
     private final UpdateAssetService updateAssetService;
     private final SearchAssetService searchAssetService;
+    private final DeleteAssetService deleteAssetService;
 
     public AssetController(CreateAssetService createAssetService,
                            GetAssetService getAssetService,
                            GetAssetsService getAssetsService,
                            UpdateAssetService updateAssetService,
-                           SearchAssetService searchAssetService) {
+                           SearchAssetService searchAssetService,
+                           DeleteAssetService deleteAssetService) {
         this.createAssetService = createAssetService;
         this.getAssetService = getAssetService;
         this.getAssetsService = getAssetsService;
         this.updateAssetService = updateAssetService;
         this.searchAssetService = searchAssetService;
+        this.deleteAssetService = deleteAssetService;
     }
 
     @PostMapping("/asset")
@@ -52,5 +55,10 @@ public class AssetController {
     @PutMapping("/asset/{id}")
     public ResponseEntity<AssetDTO> updateAsset(@PathVariable Long id, @RequestBody Asset asset) {
         return updateAssetService.execute(new UpdateAssetCommand(id, asset));
+    }
+
+    @DeleteMapping("/asset/{id}")
+    public ResponseEntity<Void> deleteAsset(@PathVariable Long id) {
+        return deleteAssetService.execute(id);
     }
 }
