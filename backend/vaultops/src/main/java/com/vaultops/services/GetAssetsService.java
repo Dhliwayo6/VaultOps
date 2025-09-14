@@ -6,9 +6,11 @@ import com.vaultops.model.Asset;
 import com.vaultops.repository.AssetRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class GetAssetsService implements Query<Void, List<AssetDTO>> {
 
     private AssetRepository assetRepository;
