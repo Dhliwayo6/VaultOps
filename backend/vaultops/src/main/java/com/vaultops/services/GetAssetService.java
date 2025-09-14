@@ -5,9 +5,11 @@ import com.vaultops.dtos.AssetDTO;
 import com.vaultops.model.Asset;
 import com.vaultops.repository.AssetRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class GetAssetService implements Query<Long, AssetDTO> {
 
     private AssetRepository assetRepository;
@@ -24,6 +26,6 @@ public class GetAssetService implements Query<Long, AssetDTO> {
             return ResponseEntity.ok(new AssetDTO(assetOptional.get()));
         }
 
-        throw new IllegalArgumentException("Task not found");
+        throw new IllegalArgumentException("Asset not found");
     }
 }

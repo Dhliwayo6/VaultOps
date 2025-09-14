@@ -12,7 +12,8 @@ public class AssetController {
     private final CreateAssetService createAssetService;
     private final GetAssetService getAssetService;
 
-    public AssetController(CreateAssetService createAssetService, GetAssetService getAssetService) {
+    public AssetController(CreateAssetService createAssetService,
+                           GetAssetService getAssetService) {
         this.createAssetService = createAssetService;
         this.getAssetService = getAssetService;
     }
