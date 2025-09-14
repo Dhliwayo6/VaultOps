@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "assets")
-public class Assets {
+public class Asset {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,12 +42,12 @@ public class Assets {
     @Column(name = "created_at")
     private LocalDate createdAt;
 
-    public Assets(Long id, String name,
-                  String type, String location,
-                  String serialNumber,
-                  BigDecimal purchasePrice,
-                  Condition condition,
-                  Usage usage, LocalDate createdAt) {
+    public Asset(Long id, String name,
+                 String type, String location,
+                 String serialNumber,
+                 BigDecimal purchasePrice,
+                 Condition condition,
+                 Usage usage, LocalDate createdAt) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -59,7 +59,7 @@ public class Assets {
         this.createdAt = createdAt;
     }
 
-    public Assets() {
+    public Asset() {
     }
 
     public Long getId() {

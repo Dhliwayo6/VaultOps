@@ -1,6 +1,6 @@
 package com.vaultops.dtos;
 
-import com.vaultops.model.Assets;
+import com.vaultops.model.Asset;
 import com.vaultops.model.Condition;
 import com.vaultops.model.Usage;
 
@@ -19,7 +19,7 @@ public class AssetDTO {
     private Usage usage;
     private LocalDate createdAt;
 
-    public AssetDTO(Assets assets) {
+    public AssetDTO(Asset assets) {
         this.id = assets.getId();
         this.name = assets.getName();
         this.type = assets.getType();
