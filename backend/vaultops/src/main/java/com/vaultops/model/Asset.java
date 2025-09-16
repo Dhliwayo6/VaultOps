@@ -25,7 +25,7 @@ public class Asset {
     @Column(name = "location")
     private String location;
 
-    @Column(name = "serial_number")
+    @Column(name = "serial_number", unique = true)
     private String serialNumber;
 
     @Column(name = "purchasePrice")
