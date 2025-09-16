@@ -2,6 +2,7 @@ package com.vaultops.services;
 
 import com.vaultops.Query;
 import com.vaultops.dtos.AssetDTO;
+import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.model.Asset;
 import com.vaultops.repository.AssetRepository;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,6 @@ public class GetAssetService implements Query<Long, AssetDTO> {
             return ResponseEntity.ok(new AssetDTO(assetOptional.get()));
         }
 
-        throw new IllegalArgumentException("Asset not found");
+        throw new AssetNotFoundException();
     }
 }
