@@ -1,6 +1,7 @@
 package com.vaultops.services;
 
 import com.vaultops.Command;
+import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.model.Asset;
 import com.vaultops.repository.AssetRepository;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,6 @@ public class DeleteAssetService implements Command<Long, Void> {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        throw new IllegalArgumentException("Asset not found!");
+        throw new AssetNotFoundException();
     }
 }
