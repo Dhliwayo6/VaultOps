@@ -32,8 +32,8 @@ public class Asset {
     private BigDecimal purchasePrice;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "condtion")
-    private Condition condition;
+    @Column(name = "condtion_status")
+    private Condition conditionStatus;
 
     @Enumerated(EnumType.STRING)
     private Usage usage;
@@ -54,7 +54,7 @@ public class Asset {
         this.location = location;
         this.serialNumber = serialNumber;
         this.purchasePrice = purchasePrice;
-        this.condition = condition;
+        this.conditionStatus = condition;
         this.usage = usage;
         this.createdAt = createdAt;
     }
@@ -111,11 +111,11 @@ public class Asset {
     }
 
     public Condition getCondition() {
-        return condition;
+        return conditionStatus;
     }
 
     public void setCondition(Condition condition) {
-        this.condition = condition;
+        this.conditionStatus = condition;
     }
 
     public Usage getUsage() {
