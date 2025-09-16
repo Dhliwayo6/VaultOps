@@ -2,6 +2,8 @@ package com.vaultops.services;
 
 import com.vaultops.Command;
 import com.vaultops.dtos.AssetDTO;
+import com.vaultops.exceptions.NoResultsException;
+import com.vaultops.model.Asset;
 import com.vaultops.repository.AssetRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,12 @@ public class SearchAssetService implements Command<String, List<AssetDTO>> {
 
     @Override
     public ResponseEntity<List<AssetDTO>> execute(String name) {
-        return ResponseEntity.ok(assetRepository.findByNameOrTypeContaining(name).stream().map(AssetDTO::new).toList());
+        List<AssetDTO> assets = assetRepository.findByNameOrTypeContaining(name).stream().map(AssetDTO::new).toList();
+
+        if (assets.isEmpty()) {
+            throw new NoResultsException();
+        }
+
+        return ResponseEntity.ok(assets);
     }
 }

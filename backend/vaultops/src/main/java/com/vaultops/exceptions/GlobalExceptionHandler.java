@@ -15,4 +15,11 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleAssetNotFoundException(AssetNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler(NoResultsException.class)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ErrorResponse handleNoResultsException(NoResultsException e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }

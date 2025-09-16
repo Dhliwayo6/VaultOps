@@ -1,7 +1,8 @@
 package com.vaultops.enums;
 
 public enum ErrorMessages {
-        ASSET_NOT_FOUND("Asset not found!");
+        ASSET_NOT_FOUND("Asset not found!"),
+        NO_RESULTS("No results!");
 
         private String message;
 
