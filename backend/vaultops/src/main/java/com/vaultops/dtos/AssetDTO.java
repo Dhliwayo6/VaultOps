@@ -1,8 +1,8 @@
 package com.vaultops.dtos;
 
 import com.vaultops.model.Asset;
-import com.vaultops.model.Condition;
-import com.vaultops.model.Usage;
+import com.vaultops.enums.Condition;
+import com.vaultops.enums.Usage;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

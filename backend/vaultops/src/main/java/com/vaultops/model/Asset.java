@@ -1,5 +1,7 @@
 package com.vaultops.model;
 
+import com.vaultops.enums.Condition;
+import com.vaultops.enums.Usage;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.annotations.CreationTimestamp;
@@ -28,15 +30,15 @@ public class Asset {
     @Column(name = "serial_number", unique = true)
     private String serialNumber;
 
-    @Column(name = "purchasePrice")
+    @Column(name = "purchase_price")
     private BigDecimal purchasePrice;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "condtion_status")
+    @Column(name = "condition_status", nullable = false)
     private Condition conditionStatus;
 
     @Enumerated(EnumType.STRING)
-    private Usage usage;
+    private Usage usageStatus;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -55,7 +57,7 @@ public class Asset {
         this.serialNumber = serialNumber;
         this.purchasePrice = purchasePrice;
         this.conditionStatus = condition;
-        this.usage = usage;
+        this.usageStatus = usage;
         this.createdAt = createdAt;
     }
 
@@ -119,11 +121,11 @@ public class Asset {
     }
 
     public Usage getUsage() {
-        return usage;
+        return usageStatus;
     }
 
     public void setUsage(Usage usage) {
-        this.usage = usage;
+        this.usageStatus = usage;
     }
 
     public LocalDate getCreatedAt() {
