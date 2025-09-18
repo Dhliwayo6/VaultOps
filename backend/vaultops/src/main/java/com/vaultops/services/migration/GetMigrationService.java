@@ -17,7 +17,7 @@ public class GetMigrationService implements Query<Long, MigrationDTO> {
     public GetMigrationService(MigrationRepository migrationRepository) {
         this.migrationRepository = migrationRepository;
     }
-    
+
     @Override
     public ResponseEntity<MigrationDTO> execute(Long id) {
         Optional<Migration> migrationOptional = migrationRepository.findById(id);
