@@ -15,6 +15,7 @@ public class AssetDTO {
     private String location;
     private String serialNumber;
     private BigDecimal purchasePrice;
+    private LocalDate purchaseDate;
     private Condition condition;
     private Usage usage;
     private LocalDate createdAt;
@@ -26,6 +27,7 @@ public class AssetDTO {
         this.location = assets.getLocation();
         this.serialNumber = assets.getSerialNumber();
         this.purchasePrice = assets.getPurchasePrice();
+        this.purchaseDate = assets.getPurchaseDate();
         this.condition = assets.getCondition();
         this.usage = assets.getUsage();
         this.createdAt = assets.getCreatedAt();
@@ -77,6 +79,14 @@ public class AssetDTO {
 
     public void setPurchasePrice(BigDecimal purchasePrice) {
         this.purchasePrice = purchasePrice;
+    }
+
+    public LocalDate getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public void setPurchaseDate(LocalDate purchaseDate) {
+        this.purchaseDate = purchaseDate;
     }
 
     public Condition getCondition() {

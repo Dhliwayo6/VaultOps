@@ -33,6 +33,9 @@ public class Asset {
     @Column(name = "purchase_price")
     private BigDecimal purchasePrice;
 
+    @Column(name = "purchase_date")
+    private LocalDate purchaseDate;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "condition_status", nullable = false)
     private Condition conditionStatus;
@@ -48,6 +51,7 @@ public class Asset {
                  String type, String location,
                  String serialNumber,
                  BigDecimal purchasePrice,
+                 LocalDate purchaseDate,
                  Condition condition,
                  Usage usage, LocalDate createdAt) {
         this.id = id;
@@ -56,6 +60,7 @@ public class Asset {
         this.location = location;
         this.serialNumber = serialNumber;
         this.purchasePrice = purchasePrice;
+        this.purchaseDate = purchaseDate;
         this.conditionStatus = condition;
         this.usageStatus = usage;
         this.createdAt = createdAt;
@@ -110,6 +115,14 @@ public class Asset {
 
     public void setPurchasePrice(BigDecimal purchasePrice) {
         this.purchasePrice = purchasePrice;
+    }
+
+    public LocalDate getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public void setPurchaseDate(LocalDate purchaseDate) {
+        this.purchaseDate = purchaseDate;
     }
 
     public Condition getCondition() {
