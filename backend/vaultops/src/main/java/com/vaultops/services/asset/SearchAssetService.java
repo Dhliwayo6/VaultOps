@@ -1,9 +1,8 @@
-package com.vaultops.services;
+package com.vaultops.services.asset;
 
 import com.vaultops.Command;
 import com.vaultops.dtos.AssetDTO;
 import com.vaultops.exceptions.NoResultsException;
-import com.vaultops.model.Asset;
 import com.vaultops.repository.AssetRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

@@ -3,7 +3,7 @@ package com.vaultops.controllers;
 import com.vaultops.dtos.AssetDTO;
 import com.vaultops.model.Asset;
 import com.vaultops.model.UpdateAssetCommand;
-import com.vaultops.services.*;
+import com.vaultops.services.asset.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

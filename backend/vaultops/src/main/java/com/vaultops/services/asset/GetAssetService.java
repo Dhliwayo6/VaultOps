@@ -1,4 +1,4 @@
-package com.vaultops.services;
+package com.vaultops.services.asset;
 
 import com.vaultops.Query;
 import com.vaultops.dtos.AssetDTO;
