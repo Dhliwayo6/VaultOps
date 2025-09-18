@@ -5,9 +5,11 @@ import com.vaultops.model.Migration;
 import com.vaultops.repository.MigrationRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class DeleteMigrationService implements Command<Long, Void> {
 
     private MigrationRepository migrationRepository;
