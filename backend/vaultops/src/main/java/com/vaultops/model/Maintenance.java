@@ -1,6 +1,7 @@
 package com.vaultops.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,12 +15,13 @@ public class Maintenance {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "asset_id")
+    @JoinColumn(name = "asset_id", nullable = false)
     private Asset asset;
 
     @Column(name = "date")
     private LocalDate date;
 
+    @NotBlank(message = "Service provider cannot be blank!")
     @Column(name = "performed_by")
     private String performedBy;
 
