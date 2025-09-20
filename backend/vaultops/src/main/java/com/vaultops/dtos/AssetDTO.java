@@ -16,8 +16,8 @@ public class AssetDTO {
     private String serialNumber;
     private BigDecimal purchasePrice;
     private LocalDate purchaseDate;
-    private Condition condition;
-    private Usage usage;
+    private Condition conditionStatus;
+    private Usage usageStatus;
     private LocalDate createdAt;
 
     public AssetDTO(Asset assets) {
@@ -28,8 +28,8 @@ public class AssetDTO {
         this.serialNumber = assets.getSerialNumber();
         this.purchasePrice = assets.getPurchasePrice();
         this.purchaseDate = assets.getPurchaseDate();
-        this.condition = assets.getCondition();
-        this.usage = assets.getUsage();
+        this.conditionStatus = assets.getCondition();
+        this.usageStatus = assets.getUsage();
         this.createdAt = assets.getCreatedAt();
     }
 
@@ -89,20 +89,20 @@ public class AssetDTO {
         this.purchaseDate = purchaseDate;
     }
 
-    public Condition getCondition() {
-        return condition;
+    public Condition getConditionStatus() {
+        return conditionStatus;
     }
 
-    public void setCondition(Condition condition) {
-        this.condition = condition;
+    public void setConditionStatus(Condition conditionStatus) {
+        this.conditionStatus = conditionStatus;
     }
 
-    public Usage getUsage() {
-        return usage;
+    public Usage getUsageStatus() {
+        return usageStatus;
     }
 
-    public void setUsage(Usage usage) {
-        this.usage = usage;
+    public void setUsageStatus(Usage usageStatus) {
+        this.usageStatus = usageStatus;
     }
 
     public LocalDate getCreatedAt() {

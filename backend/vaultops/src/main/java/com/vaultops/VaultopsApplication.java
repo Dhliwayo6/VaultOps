@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class VaultopsApplication {
 
 	public static void main(String[] args) {
+        System.out.println("Welcome to VaultOps!");
 		SpringApplication.run(VaultopsApplication.class, args);
 	}
 
