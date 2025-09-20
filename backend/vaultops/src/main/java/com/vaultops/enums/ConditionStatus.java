@@ -1,5 +1,5 @@
 package com.vaultops.enums;
 
-public enum Condition {
+public enum ConditionStatus {
     EXCELLENT, GOOD, FAIR, BAD, DAMAGED
 }

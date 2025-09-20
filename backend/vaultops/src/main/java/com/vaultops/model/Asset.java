@@ -1,6 +1,6 @@
 package com.vaultops.model;
 
-import com.vaultops.enums.Condition;
+import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -38,7 +38,7 @@ public class Asset {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "condition_status", nullable = false)
-    private Condition conditionStatus;
+    private ConditionStatus conditionStatus;
 
     @Enumerated(EnumType.STRING)
     private Usage usageStatus;
@@ -52,7 +52,7 @@ public class Asset {
                  String serialNumber,
                  BigDecimal purchasePrice,
                  LocalDate purchaseDate,
-                 Condition condition,
+                 ConditionStatus conditionStatus,
                  Usage usage, LocalDate createdAt) {
         this.id = id;
         this.name = name;
@@ -61,7 +61,7 @@ public class Asset {
         this.serialNumber = serialNumber;
         this.purchasePrice = purchasePrice;
         this.purchaseDate = purchaseDate;
-        this.conditionStatus = condition;
+        this.conditionStatus = conditionStatus;
         this.usageStatus = usage;
         this.createdAt = createdAt;
     }
@@ -125,19 +125,19 @@ public class Asset {
         this.purchaseDate = purchaseDate;
     }
 
-    public Condition getCondition() {
+    public ConditionStatus getConditionStatus() {
         return conditionStatus;
     }
 
-    public void setCondition(Condition condition) {
-        this.conditionStatus = condition;
+    public void setConditionStatus(ConditionStatus conditionStatus) {
+        this.conditionStatus = conditionStatus;
     }
 
-    public Usage getUsage() {
+    public Usage getUsageStatus() {
         return usageStatus;
     }
 
-    public void setUsage(Usage usage) {
+    public void setUsageStatus(Usage usage) {
         this.usageStatus = usage;
     }
 

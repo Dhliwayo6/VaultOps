@@ -1,7 +1,7 @@
 package com.vaultops.dtos;
 
 import com.vaultops.model.Asset;
-import com.vaultops.enums.Condition;
+import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
 
 import java.math.BigDecimal;
@@ -16,7 +16,7 @@ public class AssetDTO {
     private String serialNumber;
     private BigDecimal purchasePrice;
     private LocalDate purchaseDate;
-    private Condition conditionStatus;
+    private ConditionStatus conditionStatus;
     private Usage usageStatus;
     private LocalDate createdAt;
 
@@ -28,8 +28,8 @@ public class AssetDTO {
         this.serialNumber = assets.getSerialNumber();
         this.purchasePrice = assets.getPurchasePrice();
         this.purchaseDate = assets.getPurchaseDate();
-        this.conditionStatus = assets.getCondition();
-        this.usageStatus = assets.getUsage();
+        this.conditionStatus = assets.getConditionStatus();
+        this.usageStatus = assets.getUsageStatus();
         this.createdAt = assets.getCreatedAt();
     }
 
@@ -89,11 +89,11 @@ public class AssetDTO {
         this.purchaseDate = purchaseDate;
     }
 
-    public Condition getConditionStatus() {
+    public ConditionStatus getConditionStatus() {
         return conditionStatus;
     }
 
-    public void setConditionStatus(Condition conditionStatus) {
+    public void setConditionStatus(ConditionStatus conditionStatus) {
         this.conditionStatus = conditionStatus;
     }
 
