@@ -37,7 +37,7 @@ public class AssetController {
         return createAssetService.execute(asset);
     }
 
-    @GetMapping("asset/{id}")
+    @GetMapping("/asset/{id}")
     public ResponseEntity<AssetDTO> getAssetById(@PathVariable Long id) {
         return getAssetService.execute(id);
     }
