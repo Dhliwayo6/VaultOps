@@ -117,11 +117,11 @@ public class AssetDTO {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         AssetDTO assetDTO = (AssetDTO) o;
-        return Objects.equals(id, assetDTO.id) && Objects.equals(name, assetDTO.name) && Objects.equals(type, assetDTO.type) && Objects.equals(location, assetDTO.location) && Objects.equals(serialNumber, assetDTO.serialNumber) && Objects.equals(purchasePrice, assetDTO.purchasePrice) && condition == assetDTO.condition && usage == assetDTO.usage && Objects.equals(createdAt, assetDTO.createdAt);
+        return Objects.equals(id, assetDTO.id) && Objects.equals(name, assetDTO.name) && Objects.equals(type, assetDTO.type) && Objects.equals(location, assetDTO.location) && Objects.equals(serialNumber, assetDTO.serialNumber) && Objects.equals(purchasePrice, assetDTO.purchasePrice) && Objects.equals(purchaseDate, assetDTO.purchaseDate) && conditionStatus == assetDTO.conditionStatus && usageStatus == assetDTO.usageStatus && Objects.equals(createdAt, assetDTO.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, type, location, serialNumber, purchasePrice, condition, usage, createdAt);
+        return Objects.hash(id, name, type, location, serialNumber, purchasePrice, purchaseDate, conditionStatus, usageStatus, createdAt);
     }
 }
