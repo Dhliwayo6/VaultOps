@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 public class MaintenanceDTO {
     private Long id;
-    private Asset asset;
+    private AssetDTO2 asset;
     private LocalDate date;
     private String performedBy;
     private String description;
@@ -16,7 +16,7 @@ public class MaintenanceDTO {
 
     public MaintenanceDTO(Maintenance maintenance) {
         this.id = maintenance.getId();
-        this.asset = maintenance.getAsset();
+        this.asset = new AssetDTO2(maintenance.getAsset());
         this.date = maintenance.getDate();
         this.performedBy = maintenance.getPerformedBy();
         this.description = maintenance.getDescription();
@@ -31,11 +31,11 @@ public class MaintenanceDTO {
         this.id = id;
     }
 
-    public Asset getAsset() {
+    public AssetDTO2 getAsset() {
         return asset;
     }
 
-    public void setAsset(Asset asset) {
+    public void setAsset(AssetDTO2 asset) {
         this.asset = asset;
     }
 

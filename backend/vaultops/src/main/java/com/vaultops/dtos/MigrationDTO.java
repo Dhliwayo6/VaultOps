@@ -1,12 +1,13 @@
 package com.vaultops.dtos;
 
-import com.vaultops.model.Asset;
 import com.vaultops.model.Migration;
+
+import java.util.Objects;
 
 
 public class MigrationDTO {
     private Long id;
-    private Asset asset;
+    private AssetDTO2 asset;
     private String fromLocation;
     private String toLocation;
     private String movedBy;
@@ -14,7 +15,7 @@ public class MigrationDTO {
 
     public MigrationDTO(Migration migration) {
         this.id = migration.getId();
-        this.asset = migration.getAsset();
+        this.asset = new AssetDTO2(migration.getAsset());
         this.fromLocation = migration.getFromLocation();
         this.toLocation = migration.getToLocation();
         this.movedBy = migration.getMovedBy();
@@ -29,11 +30,11 @@ public class MigrationDTO {
         this.id = id;
     }
 
-    public Asset getAsset() {
+    public AssetDTO2 getAsset() {
         return asset;
     }
 
-    public void setAsset(Asset asset) {
+    public void setAsset(AssetDTO2 asset) {
         this.asset = asset;
     }
 
@@ -67,5 +68,17 @@ public class MigrationDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        MigrationDTO that = (MigrationDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(asset, that.asset) && Objects.equals(fromLocation, that.fromLocation) && Objects.equals(toLocation, that.toLocation) && Objects.equals(movedBy, that.movedBy) && Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, asset, fromLocation, toLocation, movedBy, description);
     }
 }

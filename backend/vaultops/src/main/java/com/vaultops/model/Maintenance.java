@@ -31,7 +31,12 @@ public class Maintenance {
     @Column(name = "cost")
     private BigDecimal cost;
 
-    public Maintenance(Long id, Asset asset, LocalDate date, String performedBy, String description, BigDecimal cost) {
+    public Maintenance(Long id,
+                       Asset asset,
+                       LocalDate date,
+                       String performedBy,
+                       String description,
+                       BigDecimal cost) {
         this.id = id;
         this.asset = asset;
         this.date = date;
