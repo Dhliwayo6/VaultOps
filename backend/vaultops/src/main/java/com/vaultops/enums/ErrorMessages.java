@@ -2,7 +2,9 @@ package com.vaultops.enums;
 
 public enum ErrorMessages {
         ASSET_NOT_FOUND("Asset not found!"),
-        NO_RESULTS("No results!");
+        MIGRATION_NOT_FOUND("Migration history not found!"),
+        MAINTENANCE_NOT_FOUND("Maintenance not found!"),
+        NO_RESULTS("No results found");
 
         private String message;
 

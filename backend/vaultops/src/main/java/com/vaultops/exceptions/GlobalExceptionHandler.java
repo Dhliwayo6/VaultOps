@@ -22,4 +22,18 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleNoResultsException(NoResultsException e) {
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler(MigrationNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse handleMigrationNotFoundException(MigrationNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(MaintenanceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse handleMaintenanceNotFoundException(MaintenanceNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }
