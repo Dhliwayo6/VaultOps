@@ -1,0 +1,11 @@
+
+
+.dasboard-card{
+    width: 100%;
+    height: 100px;
+    padding: 6px;
+
+    color: white;
+    
+    border-radius: 6px;
+}
