@@ -1,0 +1,50 @@
+
+
+.dashboard-nav{
+    background-color: var(--bg-color);
+}
+
+
+/* Don't show link text at width less than 675px */
+@media screen and (min-width: 300px) {
+    .dashboard-nav{
+        height: 65px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        left: 0;
+    }
+
+    .dashboard-nav p{
+        display: none;
+    }
+
+    .dashboard-nav a{
+        color: white;
+        text-decoration: none;
+    }
+    
+    .dashboard-nav div a{
+        font-size: 1.5rem;
+    }
+
+    .dash-links {
+        height: 100%;
+        list-style: none;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+
+    .dash-links a{
+        font-size: 2rem;
+    }
+}
