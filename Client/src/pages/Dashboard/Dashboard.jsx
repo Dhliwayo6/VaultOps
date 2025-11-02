@@ -1,7 +1,7 @@
-import DashboardCard from "../../components/DashboardCard/DashboardCard";
 import "./dashboard.css";
 import { IoSearch } from "react-icons/io5";
 import { conditions } from "./dashboardTools";
+import ConditionCard from "../../components/conditionCard/ConditionCard";
 
 export default function Dashboard() {
   return (
@@ -20,15 +20,9 @@ export default function Dashboard() {
             <div className="dash-summary-list">
                 {
                     conditions().map((x, index) => {
-                        const { title, items, color } = x;
-                        return <DashboardCard
-                            key={index} 
-                            title={title}
-                            items={items}
-                            color={color}
-                        />
+                        return <ConditionCard item={x} key={index} />
                     })
-                }  
+                }
             </div>
             
         </div>
