@@ -44,8 +44,8 @@
 }
 
 
-/* Dasboard summary */
-.dash-summary{
+/* Dasboard condition summary */
+.dash-condition-summary{
     width: 100%;
 
     display: flex;
@@ -53,13 +53,12 @@
     gap: 1rem;
 }
 
-.dash-summary-intro{
+.dash-condition-summary-intro{
     color: var(--blue-primary);
 }
 
-.dash-summary-list{
+.dash-condition-summary-list{
     width: 100%;
-    margin-bottom: 60px;
 
     display: flex;
     flex-wrap: wrap;
@@ -67,3 +66,78 @@
     justify-content: center;
     gap: 1rem;
 }
+
+
+/* Dashboard card container */
+.dashboard-card-container{
+    width: 100%;
+    margin-bottom: 60px;
+    min-height: 500px;
+    padding: 0.4rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+.dashboard-items-in-use{
+    width: 100%;
+    min-height: 100%;
+}
+
+/* Dashboard card container color theme */
+/* Items in use */
+.dash-card-blue-bg{
+    background-color: #3B82F6;
+}
+
+.dash-card-items-in-use-icon{
+    background-color: #DBEAFE;
+    color: #1E40AF;
+}
+
+.dash-card-blue-titles{
+    color: #02246d;
+}
+
+.dash-card-item-blue{
+    border: 1px solid #1e40af8f;
+    transition: 300ms;
+}
+.dash-card-item-blue:hover p{
+    color: #1e40afc7;
+    transition: 300ms;
+}
+.dash-card-item-blue:hover{
+    border: 1px solid #1E40AF;
+    background-color: #bfdbfe8f;
+    transition: 300ms;
+}
+
+/* Items in repair */
+.items-repair-bg {
+    background-color: #fa6b1eb0;
+}
+
+.item-repair-title{
+    color: #EB4D4D;
+}
+
+.items-repair-badge {
+    background-color: #FEE2E2;
+    color: #B91C1C;
+    border: 1px solid #FECACA;
+}
+
+.items-repair-hover{
+    border: 1px solid #f871717a;
+}
+.items-repair-hover:hover p{
+    color: #f87171a1;
+}
+.items-repair-hover:hover {
+    background-color: #FEE2E2;
+    border-color:1px solid #F87171;
+}
+
