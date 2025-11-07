@@ -4,47 +4,83 @@
     background-color: var(--bg-color);
 }
 
+.dashboard-nav {
+    height: 65px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.dashboard-nav p {
+    display: none;
+}
+
+.dashboard-nav a {
+    color: white;
+    text-decoration: none;
+}
+
+.dashboard-nav div a {
+    font-size: 1.5rem;
+}
+
+.dash-links {
+    height: 100%;
+    list-style: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.dash-links a {
+    font-size: 2rem;
+}
+
 
 /* Don't show link text at width less than 675px */
-@media screen and (min-width: 300px) {
+@media screen and (min-width: 1400px) {
     .dashboard-nav{
-        height: 65px;
+        height: 100dvh;
+        width: 15%;
+        padding: 2rem;
 
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1.5rem;
-
-        position: fixed;
-        bottom: 0;
-        right: 0;
         left: 0;
+        top: 0;
+        border: 0;
+
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+        /* gap: 0rem; */
     }
 
-    .dashboard-nav p{
-        display: none;
+    .dash-links{
+        height: initial;
+
+        flex-direction: column;
     }
 
-    .dashboard-nav a{
-        color: white;
-        text-decoration: none;
-    }
-    
-    .dashboard-nav div a{
-        font-size: 1.5rem;
-    }
-
-    .dash-links {
-        height: 100%;
-        list-style: none;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1.5rem;
+    .dash-links p{
+        display: block;
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.658);
     }
 
     .dash-links a{
-        font-size: 2rem;
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        gap: 1rem;
     }
 }
