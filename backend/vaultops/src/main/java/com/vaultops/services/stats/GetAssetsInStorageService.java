@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GetAssetsInUseService implements Query<Void, Integer> {
+public class GetAssetsInStorageService implements Query<Void, Integer> {
 
     @Override
     public ResponseEntity<Integer> execute(Void input) {

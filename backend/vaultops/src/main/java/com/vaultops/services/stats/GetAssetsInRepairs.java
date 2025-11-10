@@ -2,9 +2,10 @@ package com.vaultops.services.stats;
 
 import com.vaultops.Query;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
-public class GetAssetsInStorage implements Query<Void, Integer> {
-
+@Service
+public class GetAssetsInRepairs implements Query<Void, Integer> {
     @Override
     public ResponseEntity<Integer> execute(Void input) {
         return null;
