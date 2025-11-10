@@ -1,14 +1,23 @@
 package com.vaultops.services.stats;
 
 import com.vaultops.Query;
+import com.vaultops.enums.Usage;
+import com.vaultops.repository.AssetRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GetAssetsInUseService implements Query<Void, Integer> {
 
+    private final AssetRepository assetRepository;
+
+    public GetAssetsInUseService(AssetRepository assetRepository) {
+        this.assetRepository = assetRepository;
+    }
+
     @Override
     public ResponseEntity<Integer> execute(Void input) {
-        return null;
+        Integer count = assetRepository.countAssetsByUsageStatus(Usage.IN_USE);
+        return ResponseEntity.ok(count);
     }
 }
