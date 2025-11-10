@@ -3,7 +3,7 @@ package com.vaultops.services.stats;
 import com.vaultops.Query;
 import org.springframework.http.ResponseEntity;
 
-public class GetAssetsInUseService implements Query<Void, Integer> {
+public class GetAssetsInStorage implements Query<Void, Integer> {
 
     @Override
     public ResponseEntity<Integer> execute(Void input) {
