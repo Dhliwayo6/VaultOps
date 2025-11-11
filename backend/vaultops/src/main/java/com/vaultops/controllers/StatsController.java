@@ -69,5 +69,9 @@ public class StatsController {
         return getBadConditionAssetsService.execute(null);
     }
 
-
+    @GetMapping("/stats/assets/damaged")
+    public ResponseEntity<Integer> getAssetsInDamagedCondition() {
+        return getDamagedConditionAssetsService.execute(null);
+    }
+    
 }
