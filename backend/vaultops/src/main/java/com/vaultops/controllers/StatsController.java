@@ -64,5 +64,10 @@ public class StatsController {
         return getFairConditionAssetsService.execute(null);
     }
 
+    @GetMapping("/stats/assets/bad")
+    public ResponseEntity<Integer> getAssetsInBadCondition() {
+        return getBadConditionAssetsService.execute(null);
+    }
+
 
 }
