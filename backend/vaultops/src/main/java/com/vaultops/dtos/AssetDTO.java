@@ -3,11 +3,13 @@ package com.vaultops.dtos;
 import com.vaultops.model.Asset;
 import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Data
 public class AssetDTO {
     private Long id;
     private String name;
@@ -31,97 +33,5 @@ public class AssetDTO {
         this.conditionStatus = assets.getConditionStatus();
         this.usageStatus = assets.getUsageStatus();
         this.createdAt = assets.getCreatedAt();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
-    public BigDecimal getPurchasePrice() {
-        return purchasePrice;
-    }
-
-    public void setPurchasePrice(BigDecimal purchasePrice) {
-        this.purchasePrice = purchasePrice;
-    }
-
-    public LocalDate getPurchaseDate() {
-        return purchaseDate;
-    }
-
-    public void setPurchaseDate(LocalDate purchaseDate) {
-        this.purchaseDate = purchaseDate;
-    }
-
-    public ConditionStatus getConditionStatus() {
-        return conditionStatus;
-    }
-
-    public void setConditionStatus(ConditionStatus conditionStatus) {
-        this.conditionStatus = conditionStatus;
-    }
-
-    public Usage getUsageStatus() {
-        return usageStatus;
-    }
-
-    public void setUsageStatus(Usage usageStatus) {
-        this.usageStatus = usageStatus;
-    }
-
-    public LocalDate getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        AssetDTO assetDTO = (AssetDTO) o;
-        return Objects.equals(id, assetDTO.id) && Objects.equals(name, assetDTO.name) && Objects.equals(type, assetDTO.type) && Objects.equals(location, assetDTO.location) && Objects.equals(serialNumber, assetDTO.serialNumber) && Objects.equals(purchasePrice, assetDTO.purchasePrice) && Objects.equals(purchaseDate, assetDTO.purchaseDate) && conditionStatus == assetDTO.conditionStatus && usageStatus == assetDTO.usageStatus && Objects.equals(createdAt, assetDTO.createdAt);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, type, location, serialNumber, purchasePrice, purchaseDate, conditionStatus, usageStatus, createdAt);
     }
 }

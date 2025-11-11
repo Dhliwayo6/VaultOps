@@ -4,11 +4,17 @@ import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 @Entity
 @Table(name = "assets")
 public class Asset {
@@ -46,106 +52,4 @@ public class Asset {
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDate createdAt;
-
-    public Asset(Long id, String name,
-                 String type, String location,
-                 String serialNumber,
-                 BigDecimal purchasePrice,
-                 LocalDate purchaseDate,
-                 ConditionStatus conditionStatus,
-                 Usage usage, LocalDate createdAt) {
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.location = location;
-        this.serialNumber = serialNumber;
-        this.purchasePrice = purchasePrice;
-        this.purchaseDate = purchaseDate;
-        this.conditionStatus = conditionStatus;
-        this.usageStatus = usage;
-        this.createdAt = createdAt;
-    }
-
-    public Asset() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
-    }
-
-    public BigDecimal getPurchasePrice() {
-        return purchasePrice;
-    }
-
-    public void setPurchasePrice(BigDecimal purchasePrice) {
-        this.purchasePrice = purchasePrice;
-    }
-
-    public LocalDate getPurchaseDate() {
-        return purchaseDate;
-    }
-
-    public void setPurchaseDate(LocalDate purchaseDate) {
-        this.purchaseDate = purchaseDate;
-    }
-
-    public ConditionStatus getConditionStatus() {
-        return conditionStatus;
-    }
-
-    public void setConditionStatus(ConditionStatus conditionStatus) {
-        this.conditionStatus = conditionStatus;
-    }
-
-    public Usage getUsageStatus() {
-        return usageStatus;
-    }
-
-    public void setUsageStatus(Usage usage) {
-        this.usageStatus = usage;
-    }
-
-    public LocalDate getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
 }
