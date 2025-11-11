@@ -54,4 +54,11 @@ public class StatsController {
     public ResponseEntity<Integer> getAssetsInExcellentCondition() {
         return getExcellentConditionAssetsService.execute(null);
     }
+
+    @GetMapping("/stats/assets/good")
+    public ResponseEntity<Integer> getAssetsInGoodCondition() {
+        return getGoodConditionAssetsService.execute(null);
+    }
+
+
 }
