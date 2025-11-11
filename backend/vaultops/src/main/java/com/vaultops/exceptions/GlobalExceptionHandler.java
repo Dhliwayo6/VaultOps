@@ -23,6 +23,13 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(e.getMessage());
     }
 
+    @ExceptionHandler(NoAssetsMessageException.class)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ErrorResponse handleNoAssetsException(NoAssetsMessageException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ExceptionHandler(MigrationNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
