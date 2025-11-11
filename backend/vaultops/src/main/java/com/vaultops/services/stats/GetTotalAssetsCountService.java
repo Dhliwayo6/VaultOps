@@ -17,6 +17,6 @@ public class GetTotalAssetsCountService implements Query<Void, Long> {
     @Override
     public ResponseEntity<Long> execute(Void input) {
        Long count = assetRepository.count();
-        return ResponseEntity.ok(count);
+       return ResponseEntity.ok(count);
     }
 }
