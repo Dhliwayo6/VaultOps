@@ -16,6 +16,7 @@ public class StatsController {
     private final GetFairConditionAssetsService getFairConditionAssetsService;
     private final GetBadConditionAssetsService getBadConditionAssetsService;
     private final GetDamagedConditionAssetsService getDamagedConditionAssetsService;
+    private final GetTotalAssetsCountService getTotalAssetsCountService;
 
     public StatsController(GetAssetsInUseService getAssetsInUseService,
                            GetAssetsInStorageService getAssetsInStorageService,
@@ -24,7 +25,8 @@ public class StatsController {
                            GetGoodConditionAssetsService getGoodConditionAssetsService,
                            GetFairConditionAssetsService getFairConditionAssetsService,
                            GetBadConditionAssetsService getBadConditionAssetsService,
-                           GetDamagedConditionAssetsService getDamagedConditionAssetsService) {
+                           GetDamagedConditionAssetsService getDamagedConditionAssetsService,
+                           GetTotalAssetsCountService getTotalAssetsCountService) {
         this.getAssetsInUseService = getAssetsInUseService;
         this.getAssetsInStorageService = getAssetsInStorageService;
         this.getAssetsInRepairsService = getAssetsInRepairsService;
@@ -33,6 +35,7 @@ public class StatsController {
         this.getFairConditionAssetsService = getFairConditionAssetsService;
         this.getBadConditionAssetsService = getBadConditionAssetsService;
         this.getDamagedConditionAssetsService = getDamagedConditionAssetsService;
+        this.getTotalAssetsCountService = getTotalAssetsCountService;
     }
 
     @GetMapping("/stats/assets/in-use")
@@ -73,5 +76,10 @@ public class StatsController {
     public ResponseEntity<Integer> getAssetsInDamagedCondition() {
         return getDamagedConditionAssetsService.execute(null);
     }
-    
+
+    @GetMapping("/stats/assets/excellent")
+    public ResponseEntity<Long> getAssetsTotalCount() {
+        return getTotalAssetsCountService.execute(null);
+    }
+
 }
