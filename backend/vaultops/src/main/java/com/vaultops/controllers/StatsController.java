@@ -77,7 +77,7 @@ public class StatsController {
         return getDamagedConditionAssetsService.execute(null);
     }
 
-    @GetMapping("/stats/assets/excellent")
+    @GetMapping("/stats/assets/total")
     public ResponseEntity<Long> getAssetsTotalCount() {
         return getTotalAssetsCountService.execute(null);
     }
