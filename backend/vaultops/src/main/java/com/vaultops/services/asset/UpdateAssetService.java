@@ -2,6 +2,7 @@ package com.vaultops.services.asset;
 
 import com.vaultops.Command;
 import com.vaultops.dtos.AssetDTO;
+import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.model.Asset;
 import com.vaultops.model.UpdateAssetCommand;
 import com.vaultops.repository.AssetRepository;
@@ -31,6 +32,6 @@ public class UpdateAssetService implements Command<UpdateAssetCommand, AssetDTO>
             return ResponseEntity.ok(new AssetDTO(asset));
         }
 
-        throw new IllegalArgumentException("Asset not found!");
+        throw new AssetNotFoundException();
     }
 }
