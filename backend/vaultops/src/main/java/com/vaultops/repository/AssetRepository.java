@@ -18,6 +18,6 @@ public interface AssetRepository extends JpaRepository<Asset, Long> {
 
     List<Asset> findAssetsByUsageStatus(Usage usageStatus);
     List<Asset> findAssetsByConditionStatus(ConditionStatus condition);
-    Integer countAssetsByUsageStatus(Usage usage);
-    Integer countAssetsByConditionStatus(ConditionStatus condition);
+    Long countAssetsByUsageStatus(Usage usage);
+    Long countAssetsByConditionStatus(ConditionStatus condition);
 }
