@@ -18,9 +18,6 @@ public class GetDamagedConditionAssetsService implements Query<Void, Integer>{
     @Override
     public ResponseEntity<Integer> execute(Void input) {
         Integer count = assetRepository.countAssetsByConditionStatus(ConditionStatus.DAMAGED);
-        if (count.equals(0)) {
-            throw new NoAssetsMessageException();
-        }
         return ResponseEntity.ok(count);
     }
 }

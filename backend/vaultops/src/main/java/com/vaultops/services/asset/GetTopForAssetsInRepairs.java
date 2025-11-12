@@ -1,17 +1,18 @@
 package com.vaultops.services.asset;
 
 import com.vaultops.Query;
-import com.vaultops.dtos.AssetDTO;
 import com.vaultops.dtos.AssetDTO2;
 import com.vaultops.enums.Usage;
 import com.vaultops.model.Asset;
 import com.vaultops.repository.AssetRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 
+@Service
 public class GetTopForAssetsInRepairs implements Query<Void, List<AssetDTO2>> {
     private AssetRepository assetRepository;
 
