@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GetAssetsInUseService implements Query<Void, Integer> {
+public class GetAssetsInUseService implements Query<Void, Long> {
 
     private final AssetRepository assetRepository;
 
@@ -16,8 +16,8 @@ public class GetAssetsInUseService implements Query<Void, Integer> {
     }
 
     @Override
-    public ResponseEntity<Integer> execute(Void input) {
-        Integer count = assetRepository.countAssetsByUsageStatus(Usage.IN_USE);
+    public ResponseEntity<Long> execute(Void input) {
+        Long count = assetRepository.countAssetsByUsageStatus(Usage.IN_USE);
         return ResponseEntity.ok(count);
     }
 }
