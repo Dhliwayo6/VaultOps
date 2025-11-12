@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GetFairConditionAssetsService implements Query<Void, Integer> {
+public class GetFairConditionAssetsService implements Query<Void, Long> {
     private final AssetRepository assetRepository;
 
     public GetFairConditionAssetsService(AssetRepository assetRepository) {
@@ -15,8 +15,8 @@ public class GetFairConditionAssetsService implements Query<Void, Integer> {
     }
 
     @Override
-    public ResponseEntity<Integer> execute(Void input) {
-        Integer count = assetRepository.countAssetsByConditionStatus(ConditionStatus.FAIR);
+    public ResponseEntity<Long> execute(Void input) {
+        Long count = assetRepository.countAssetsByConditionStatus(ConditionStatus.FAIR);
         return ResponseEntity.ok(count);
     }
 }

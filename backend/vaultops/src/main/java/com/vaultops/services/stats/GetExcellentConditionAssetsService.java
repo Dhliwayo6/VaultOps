@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GetExcellentConditionAssetsService implements Query<Void, Integer> {
+public class GetExcellentConditionAssetsService implements Query<Void, Long> {
     private final AssetRepository assetRepository;
 
     public GetExcellentConditionAssetsService(AssetRepository assetRepository) {
@@ -15,8 +15,8 @@ public class GetExcellentConditionAssetsService implements Query<Void, Integer> 
     }
 
     @Override
-    public ResponseEntity<Integer> execute(Void input) {
-        Integer count = assetRepository.countAssetsByConditionStatus(ConditionStatus.EXCELLENT);
+    public ResponseEntity<Long> execute(Void input) {
+        Long count = assetRepository.countAssetsByConditionStatus(ConditionStatus.EXCELLENT);
         return ResponseEntity.ok(count);
     }
 }

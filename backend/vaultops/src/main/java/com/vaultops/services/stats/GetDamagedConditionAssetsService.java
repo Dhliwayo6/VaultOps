@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GetDamagedConditionAssetsService implements Query<Void, Integer>{
+public class GetDamagedConditionAssetsService implements Query<Void, Long>{
     private final AssetRepository assetRepository;
 
     public GetDamagedConditionAssetsService(AssetRepository assetRepository) {
@@ -16,8 +16,8 @@ public class GetDamagedConditionAssetsService implements Query<Void, Integer>{
     }
 
     @Override
-    public ResponseEntity<Integer> execute(Void input) {
-        Integer count = assetRepository.countAssetsByConditionStatus(ConditionStatus.DAMAGED);
+    public ResponseEntity<Long> execute(Void input) {
+        Long count = assetRepository.countAssetsByConditionStatus(ConditionStatus.DAMAGED);
         return ResponseEntity.ok(count);
     }
 }
