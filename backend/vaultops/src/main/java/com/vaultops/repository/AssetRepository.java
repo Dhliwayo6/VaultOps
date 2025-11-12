@@ -16,6 +16,8 @@ public interface AssetRepository extends JpaRepository<Asset, Long> {
     @Query("SELECT a FROM Asset a WHERE a.name LIKE %:keyword% OR a.type LIKE %:keyword%")
     List<Asset> findByNameOrTypeContaining(@Param("keyword") String name);
 
+    List<Asset> findAssetsByUsageStatus(Usage usageStatus);
+    List<Asset> findAssetsByConditionStatus(ConditionStatus condition);
     Integer countAssetsByUsageStatus(Usage usage);
     Integer countAssetsByConditionStatus(ConditionStatus condition);
 }
