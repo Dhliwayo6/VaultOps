@@ -1,6 +1,7 @@
 package com.vaultops.controllers;
 
 import com.vaultops.dtos.AssetDTO;
+import com.vaultops.dtos.AssetDTO2;
 import com.vaultops.model.Asset;
 import com.vaultops.model.UpdateAssetCommand;
 import com.vaultops.services.asset.*;
@@ -17,19 +18,35 @@ public class AssetController {
     private final UpdateAssetService updateAssetService;
     private final SearchAssetService searchAssetService;
     private final DeleteAssetService deleteAssetService;
+    private final GetTopFourAssetsInUseService getTopFourAssetsInUseService;
+    private final GetTopFourAssetsInRepairsService getTopFourAssetsInRepairsService;
 
     public AssetController(CreateAssetService createAssetService,
                            GetAssetService getAssetService,
                            GetAssetsService getAssetsService,
                            UpdateAssetService updateAssetService,
                            SearchAssetService searchAssetService,
-                           DeleteAssetService deleteAssetService) {
+                           DeleteAssetService deleteAssetService,
+                           GetTopFourAssetsInUseService getTopFourAssetsInUseService,
+                           GetTopFourAssetsInRepairsService getTopFourAssetsInRepairsService) {
         this.createAssetService = createAssetService;
         this.getAssetService = getAssetService;
         this.getAssetsService = getAssetsService;
         this.updateAssetService = updateAssetService;
         this.searchAssetService = searchAssetService;
         this.deleteAssetService = deleteAssetService;
+        this.getTopFourAssetsInUseService = getTopFourAssetsInUseService;
+        this.getTopFourAssetsInRepairsService = getTopFourAssetsInRepairsService;
+    }
+
+    @GetMapping("/assets/top-four/in-use")
+    public ResponseEntity<List<AssetDTO2>> getTopFourAssetsInUse() {
+        return getTopFourAssetsInUseService.execute(null);
+    }
+
+    @GetMapping("/assets/top-four/in-repairs")
+    public ResponseEntity<List<AssetDTO2>> getTopFourAssetsInRepairs() {
+        return getTopFourAssetsInRepairsService.execute(null);
     }
 
     @PostMapping("/asset")

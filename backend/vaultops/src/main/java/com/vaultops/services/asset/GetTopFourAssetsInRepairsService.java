@@ -13,10 +13,10 @@ import java.util.Comparator;
 import java.util.List;
 
 @Service
-public class GetTopForAssetsInRepairs implements Query<Void, List<AssetDTO2>> {
+public class GetTopFourAssetsInRepairsService implements Query<Void, List<AssetDTO2>> {
     private AssetRepository assetRepository;
 
-    public GetTopForAssetsInRepairs(AssetRepository assetRepository) {
+    public GetTopFourAssetsInRepairsService(AssetRepository assetRepository) {
         this.assetRepository = assetRepository;
     }
 
