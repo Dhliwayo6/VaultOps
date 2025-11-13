@@ -5,9 +5,18 @@
     height: 200px;
     padding: 1rem;
 
-    border: 1px solid grey;
+    box-shadow: 0px 0px 10px #D4DBE3;
+    transition: 300ms;
+
+    border: 1px solid #D4DBE3;
     border-left: 5px solid green;
     border-radius: 12px;
+}
+
+.condition-card:hover{
+    transform: translateY(-15px);
+    transition: 300ms;
+    box-shadow: 0px 0px 10px #355470;
 }
 
 .condition-card-head{

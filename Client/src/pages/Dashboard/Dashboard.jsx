@@ -31,7 +31,7 @@ export default function Dashboard() {
             <div className="dashboard-items-in-use">
                 <DashboardCard card={dashboardCardData[0]} items={itemsInUse} />
             </div>
-            <div className="dashboard-items-in-use">
+            <div className="dashboard-items-in-repair">
                 <DashboardCard card={dashboardCardData[1]} items={itemsInUse} />
             </div>
         </div>
