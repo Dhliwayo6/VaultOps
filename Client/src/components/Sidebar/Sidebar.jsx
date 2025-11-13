@@ -6,7 +6,7 @@ export default function Sidebar() {
   return (
     <nav className="dashboard-nav">
         <div>
-            <a href="#">WTC</a>
+            <a href="#">VoltOps</a>
         </div>
         
 
@@ -14,7 +14,7 @@ export default function Sidebar() {
             <li>
                 <a href="#">
                     <MdDashboard />
-                    <p>Dashboard</p>
+                    <p>Home</p>
                 </a>
             </li>
             <li>

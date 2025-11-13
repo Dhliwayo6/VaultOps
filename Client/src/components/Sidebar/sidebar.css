@@ -67,6 +67,7 @@
         height: initial;
 
         flex-direction: column;
+        align-items: start;
     }
 
     .dash-links p{
