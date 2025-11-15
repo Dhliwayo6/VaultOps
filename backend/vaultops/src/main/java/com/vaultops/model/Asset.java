@@ -1,5 +1,6 @@
 package com.vaultops.model;
 
+import com.vaultops.enums.Assignment;
 import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
 import jakarta.persistence.*;
@@ -30,8 +31,13 @@ public class Asset {
     @NotBlank(message = "Asset type is required")
     private String type;
 
-    @Column(name = "location")
+    @Column(name = "location", nullable = false)
     private String location;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "assignment", nullable = false)
+    @NotBlank(message = "Assignment cannot be blank")
+    private Assignment assignment;
 
     @Column(name = "serial_number", unique = true)
     private String serialNumber;
