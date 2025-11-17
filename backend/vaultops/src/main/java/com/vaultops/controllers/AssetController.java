@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class AssetController {
     private final CreateAssetService createAssetService;
     private final GetAssetService getAssetService;

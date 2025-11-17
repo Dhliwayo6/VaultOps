@@ -36,7 +36,6 @@ public class Asset {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "assignment", nullable = false)
-    @NotBlank(message = "Assignment cannot be blank")
     private Assignment assignment;
 
     @Column(name = "serial_number", unique = true)
