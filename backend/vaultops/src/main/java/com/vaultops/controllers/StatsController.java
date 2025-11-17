@@ -39,41 +39,41 @@ public class StatsController {
     }
 
     @GetMapping("/stats/assets/in-use")
-    public ResponseEntity<Integer> getAssetsInUse() {
+    public ResponseEntity<Long> getAssetsInUse() {
         return getAssetsInUseService.execute(null);
     }
 
     @GetMapping("/stats/assets/storage")
-    public ResponseEntity<Integer> getAssetsInStorage() {
+    public ResponseEntity<Long> getAssetsInStorage() {
         return getAssetsInStorageService.execute(null);
     }
 
     @GetMapping("/stats/assets/in-repairs")
-    public ResponseEntity<Integer> getAssetsInService() {
+    public ResponseEntity<Long> getAssetsInService() {
         return getAssetsInRepairsService.execute(null);
     }
 
     @GetMapping("/stats/assets/excellent")
-    public ResponseEntity<Integer> getAssetsInExcellentCondition() {
+    public ResponseEntity<Long> getAssetsInExcellentCondition() {
         return getExcellentConditionAssetsService.execute(null);
     }
 
     @GetMapping("/stats/assets/good")
-    public ResponseEntity<Integer> getAssetsInGoodCondition() {
+    public ResponseEntity<Long> getAssetsInGoodCondition() {
         return getGoodConditionAssetsService.execute(null);
     }
     @GetMapping("/stats/assets/fair")
-    public ResponseEntity<Integer> getAssetsInFairCondition() {
+    public ResponseEntity<Long> getAssetsInFairCondition() {
         return getFairConditionAssetsService.execute(null);
     }
 
     @GetMapping("/stats/assets/bad")
-    public ResponseEntity<Integer> getAssetsInBadCondition() {
+    public ResponseEntity<Long> getAssetsInBadCondition() {
         return getBadConditionAssetsService.execute(null);
     }
 
     @GetMapping("/stats/assets/damaged")
-    public ResponseEntity<Integer> getAssetsInDamagedCondition() {
+    public ResponseEntity<Long> getAssetsInDamagedCondition() {
         return getDamagedConditionAssetsService.execute(null);
     }
 
