@@ -39,4 +39,12 @@ public class TestData {
         return asset;
     }
 
+    public static Asset createAssetInStorage() {
+        Asset asset = createInitialAsset();
+        asset.setUsageStatus(Usage.STORAGE);
+        asset.setAssignment(Assignment.UNASSIGNED);
+        return asset;
+    }
+
+
 }
