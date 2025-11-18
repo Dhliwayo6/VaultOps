@@ -1,4 +1,4 @@
-package com.vaultops.assets;
+package com.vaultops.assets.controllers;
 
 import com.vaultops.dtos.AssetDTO;
 import com.vaultops.enums.Assignment;

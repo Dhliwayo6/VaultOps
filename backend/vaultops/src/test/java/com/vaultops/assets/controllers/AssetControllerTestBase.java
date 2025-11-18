@@ -1,4 +1,4 @@
-package com.vaultops.assets;
+package com.vaultops.assets.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaultops.controllers.AssetController;
