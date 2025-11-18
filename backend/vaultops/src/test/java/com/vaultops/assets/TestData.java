@@ -1,5 +1,6 @@
 package com.vaultops.assets;
 
+import com.vaultops.dtos.AssetDTO;
 import com.vaultops.enums.Assignment;
 import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
@@ -44,6 +45,10 @@ public class TestData {
         asset.setUsageStatus(Usage.STORAGE);
         asset.setAssignment(Assignment.UNASSIGNED);
         return asset;
+    }
+
+    public static AssetDTO createDefaultAssetDTO() {
+        return new AssetDTO(createInitialAsset());
     }
 
 
