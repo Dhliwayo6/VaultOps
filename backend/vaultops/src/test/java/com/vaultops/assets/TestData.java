@@ -25,4 +25,11 @@ public class TestData {
         asset.setId(id);
         return asset;
     }
+
+    public static Asset createAssetWithName(String name) {
+        Asset asset = createInitialAsset();
+        asset.setName(name);
+        return asset;
+    }
+
 }
