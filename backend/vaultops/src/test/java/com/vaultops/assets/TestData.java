@@ -32,4 +32,11 @@ public class TestData {
         return asset;
     }
 
+    public static Asset createAssetInService() {
+        Asset asset = createInitialAsset();
+        asset.setUsageStatus(Usage.SERVICE);
+        asset.setConditionStatus(ConditionStatus.DAMAGED);
+        return asset;
+    }
+
 }
