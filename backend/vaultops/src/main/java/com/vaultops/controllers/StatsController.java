@@ -1,10 +1,10 @@
 package com.vaultops.controllers;
 
+import com.vaultops.model.Asset;
+import com.vaultops.model.UpdateAssetCommand;
 import com.vaultops.services.stats.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -19,6 +19,7 @@ public class StatsController {
     private final GetBadConditionAssetsService getBadConditionAssetsService;
     private final GetDamagedConditionAssetsService getDamagedConditionAssetsService;
     private final GetTotalAssetsCountService getTotalAssetsCountService;
+    private final GetNumberOfDayInRepairsService getNumberOfDayInRepairsService;
 
     public StatsController(GetAssetsInUseService getAssetsInUseService,
                            GetAssetsInStorageService getAssetsInStorageService,
@@ -28,7 +29,8 @@ public class StatsController {
                            GetFairConditionAssetsService getFairConditionAssetsService,
                            GetBadConditionAssetsService getBadConditionAssetsService,
                            GetDamagedConditionAssetsService getDamagedConditionAssetsService,
-                           GetTotalAssetsCountService getTotalAssetsCountService) {
+                           GetTotalAssetsCountService getTotalAssetsCountService,
+                           GetNumberOfDayInRepairsService getNumberOfDayInRepairsService) {
         this.getAssetsInUseService = getAssetsInUseService;
         this.getAssetsInStorageService = getAssetsInStorageService;
         this.getAssetsInRepairsService = getAssetsInRepairsService;
@@ -38,6 +40,7 @@ public class StatsController {
         this.getBadConditionAssetsService = getBadConditionAssetsService;
         this.getDamagedConditionAssetsService = getDamagedConditionAssetsService;
         this.getTotalAssetsCountService = getTotalAssetsCountService;
+        this.getNumberOfDayInRepairsService = getNumberOfDayInRepairsService;
     }
 
     @GetMapping("/stats/assets/in-use")
@@ -82,6 +85,11 @@ public class StatsController {
     @GetMapping("/stats/assets/total")
     public ResponseEntity<Long> getAssetsTotalCount() {
         return getTotalAssetsCountService.execute(null);
+    }
+
+    @GetMapping("/stats/assets/day-in-service/{id}")
+    public ResponseEntity<Long> getNumberOfDaysInService(@PathVariable Long id) {
+        return getNumberOfDayInRepairsService.execute(new UpdateAssetCommand(id, null));
     }
 
 }
