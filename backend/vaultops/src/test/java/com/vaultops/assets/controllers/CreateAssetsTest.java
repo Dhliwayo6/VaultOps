@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.print.attribute.standard.Media;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -73,6 +75,36 @@ public class CreateAssetsTest {
 
         verify(createAssetService, times(1)).execute(any(Asset.class));
     }
+
+    @Test
+    @DisplayName("Should return Error code 400 BAD REQUEST when required fields are missing")
+    void createAsset_WithoutRequiredFields_ShouldReturnBadRequest() throws Exception {
+        Asset invalidAsset = new Asset();
+        invalidAsset.setName("Nokia 3310");
+        mockMvc.perform(post("/api/asset")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidAsset))).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should handle various asset types")
+    void createAsset_WithDifferentTypes_ShouldCreateSuccessfully() throws Exception {
+        asset.setType("Desktop");
+        AssetDTO desktopDTO = new AssetDTO(asset);
+
+        when(createAssetService.execute(any(Asset.class)))
+                .thenReturn(ResponseEntity.status(201).body(desktopDTO));
+
+        mockMvc.perform(post("/api/asset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(asset)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.type").value("Desktop"));
+    }
+
+
+
+
 
 
 }
