@@ -5,6 +5,7 @@ import com.vaultops.dtos.AssetDTO;
 import com.vaultops.enums.Assignment;
 import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
+import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.model.Asset;
 import com.vaultops.services.asset.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,6 +58,7 @@ public class GetAssetsByIdTests {
     }
 
     @Test
+    @DisplayName("Should return valid asset when found by ID")
     void getAssetById_WhenAssetsIsPresent_ReturnAsset() throws Exception{
         when(getAssetService.execute(1L)).thenReturn(ResponseEntity.ok(assetDTO));
 
@@ -70,5 +72,14 @@ public class GetAssetsByIdTests {
                 .andExpect(jsonPath("$.assignment").value("ASSIGNED"));
 
         verify(getAssetService, times(1)).execute(1L);
+    }
+
+    @Test
+    @DisplayName("Should 404 NOT FOUND error code when asset is not present")
+    void getAssetById_WhenAssetNotFound_ReturnNotFoundError() throws Exception {
+        when(getAssetService.execute(1000L)).thenThrow(new AssetNotFoundException());
+
+        mockMvc.perform(get("/api/asset/1000")).andExpect(status().isNotFound());
+        verify(getAssetService, times(1)).execute(1000L);
     }
 }
