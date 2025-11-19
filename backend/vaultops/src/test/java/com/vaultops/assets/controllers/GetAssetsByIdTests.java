@@ -23,8 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -89,6 +88,16 @@ public class GetAssetsByIdTests {
         mockMvc.perform(get("/api/asset/foo")).andExpect(status().isBadRequest());
 
         verify(getAssetService, never()).execute(any());
+
+    }
+
+    @Test
+    @DisplayName("Should return correct content-type")
+    void getAssetsById_ShouldReturnContentAsJson() throws Exception{
+        when(getAssetService.execute(1L)).thenReturn(ResponseEntity.ok(assetDTO));
+
+        mockMvc.perform(get("/api/asset/1")).andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"));
 
     }
 }
