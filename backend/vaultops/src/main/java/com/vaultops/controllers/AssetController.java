@@ -5,6 +5,7 @@ import com.vaultops.dtos.AssetDTO2;
 import com.vaultops.model.Asset;
 import com.vaultops.model.UpdateAssetCommand;
 import com.vaultops.services.asset.*;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +52,7 @@ public class AssetController {
     }
 
     @PostMapping("/asset")
-    public ResponseEntity<AssetDTO> createAsset(@RequestBody Asset asset) {
+    public ResponseEntity<AssetDTO> createAsset(@Valid @RequestBody Asset asset) {
         return createAssetService.execute(asset);
     }
 
