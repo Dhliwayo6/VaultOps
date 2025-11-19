@@ -5,6 +5,7 @@ import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,7 @@ public class Asset {
     @Column(name = "location", nullable = false)
     private String location;
 
+    @NotNull(message = "Assignment status is required")
     @Enumerated(EnumType.STRING)
     @Column(name = "assignment", nullable = false)
     private Assignment assignment;
@@ -47,10 +49,13 @@ public class Asset {
     @Column(name = "purchase_date")
     private LocalDate purchaseDate;
 
+    @NotNull(message = "Condition status is required")
     @Enumerated(EnumType.STRING)
     @Column(name = "condition_status", nullable = false)
     private ConditionStatus conditionStatus;
 
+    @NotNull(message = "Usage status is required")
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Usage usageStatus;
 
