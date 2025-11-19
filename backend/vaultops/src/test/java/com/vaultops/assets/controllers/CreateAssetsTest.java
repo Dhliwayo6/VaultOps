@@ -102,6 +102,38 @@ public class CreateAssetsTest {
                 .andExpect(jsonPath("$.type").value("Desktop"));
     }
 
+    @Test
+    @DisplayName("Should handle various usage statuses")
+    void createAsset_WithDifferentUsageStatus_ShouldCreate() throws Exception {
+        asset.setUsageStatus(Usage.STORAGE);
+        AssetDTO storageAssetDTO = new AssetDTO(asset);
+
+        when(createAssetService.execute(any(Asset.class)))
+                .thenReturn(ResponseEntity.status(201).body(storageAssetDTO));
+
+        mockMvc.perform(post("/api/asset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(asset)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.usageStatus").value("STORAGE"));
+    }
+
+    @Test
+    @DisplayName("Should handle various usage statuses")
+    void createAsset_WithDifferentConditionStatus_ShouldCreateOk() throws Exception {
+        asset.setConditionStatus(ConditionStatus.BAD);
+        AssetDTO badAssetDTO = new AssetDTO(asset);
+
+        when(createAssetService.execute(any(Asset.class)))
+                .thenReturn(ResponseEntity.status(201).body(badAssetDTO));
+
+        mockMvc.perform(post("/api/asset")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(asset)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.conditionStatus").value("BAD"));
+    }
+
 
 
 
