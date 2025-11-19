@@ -134,9 +134,32 @@ public class CreateAssetsTest {
                 .andExpect(jsonPath("$.conditionStatus").value("BAD"));
     }
 
+    @Test
+    @DisplayName("Should create asset without ID, database should generate ID")
+    void createAsset_WithoutId_ShouldCreateSuccessfully() throws Exception {
+        Asset assetWithoutId = new Asset();
+        assetWithoutId.setName("Lenovo ThinkPad");
+        assetWithoutId.setType("Laptop");
+        assetWithoutId.setLocation("First floor board room");
+        assetWithoutId.setAssignment(Assignment.UNASSIGNED);
+        assetWithoutId.setConditionStatus(ConditionStatus.GOOD);
+        assetWithoutId.setUsageStatus(Usage.STORAGE);
 
+        Asset saved =  new Asset();
+        saved.setId(1000L);
+        saved.setName(assetWithoutId.getName());
+        saved.setType(assetWithoutId.getType());
+        saved.setLocation(assetWithoutId.getLocation());
+        saved.setAssignment(assetWithoutId.getAssignment());
+        saved.setConditionStatus(assetWithoutId.getConditionStatus());
+        saved.setUsageStatus(assetWithoutId.getUsageStatus());
 
+        when(createAssetService.execute(any(Asset.class))).thenReturn(ResponseEntity.status(201).body(new AssetDTO(saved)));
 
-
+        mockMvc.perform(post("/api/asset").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(assetWithoutId)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1000));
+    }
 
 }
