@@ -82,4 +82,13 @@ public class GetAssetsByIdTests {
         mockMvc.perform(get("/api/asset/1000")).andExpect(status().isNotFound());
         verify(getAssetService, times(1)).execute(1000L);
     }
+
+    @Test
+    @DisplayName("Test should return 400 BAD REQUEST error code for invalid id")
+    void getAssetById_WhenInvalidIdFormat_ShouldReturnBadRequest() throws Exception {
+        mockMvc.perform(get("/api/asset/foo")).andExpect(status().isBadRequest());
+
+        verify(getAssetService, never()).execute(any());
+
+    }
 }
