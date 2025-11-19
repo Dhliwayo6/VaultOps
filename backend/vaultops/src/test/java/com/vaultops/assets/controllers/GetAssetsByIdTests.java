@@ -9,11 +9,21 @@ import com.vaultops.model.Asset;
 import com.vaultops.services.asset.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -44,5 +54,21 @@ public class GetAssetsByIdTests {
 
         assetDTO = new AssetDTO(asset);
 
+    }
+
+    @Test
+    void getAssetById_WhenAssetsIsPresent_ReturnAsset() throws Exception{
+        when(getAssetService.execute(1L)).thenReturn(ResponseEntity.ok(assetDTO));
+
+        mockMvc.perform(get("/api/asset/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Macbook Laptop"))
+                .andExpect(jsonPath("$.type").value("Laptop"))
+                .andExpect(jsonPath("$.usageStatus").value("IN_USE"))
+                .andExpect(jsonPath("$.conditionStatus").value("FAIR"))
+                .andExpect(jsonPath("$.assignment").value("ASSIGNED"));
+
+        verify(getAssetService, times(1)).execute(1L);
     }
 }
