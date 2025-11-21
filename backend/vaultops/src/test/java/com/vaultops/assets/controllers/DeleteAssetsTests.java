@@ -2,6 +2,7 @@ package com.vaultops.assets.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaultops.dtos.AssetDTO;
+import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.model.Asset;
 import com.vaultops.services.asset.*;
 import org.junit.jupiter.api.DisplayName;
@@ -41,5 +42,17 @@ public class DeleteAssetsTests {
         verify(deleteAssetService, times(1)).execute(1L);
 
     }
+
+    @Test
+    @DisplayName(("Should return 404 NOT FOUND status when asset does not exist"))
+    void deleteAssetById_WhenAssetIsNotPresent_ShouldReturnNotFound() throws Exception{
+        when(deleteAssetService.execute(1000L)).thenThrow(new AssetNotFoundException());
+
+        mockMvc.perform(delete("/api/asset/1000")).andExpect(status().isNotFound());
+        verify(deleteAssetService, times(1)).execute(1000L);
+
+    }
+
+
 
 }
