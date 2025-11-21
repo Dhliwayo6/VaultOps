@@ -24,8 +24,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -109,5 +108,15 @@ public class GetAllAssetsTests {
 
         verify(getAssetsService, times(1)).execute(null);
 
+    }
+
+    @Test
+    @DisplayName("Should return the correct content-type")
+    void getAllAssets_ShouldReturnJSONContentType() throws Exception{
+        when(getAssetsService.execute(null)).thenReturn(ResponseEntity.ok(assetDTOS));
+
+        mockMvc.perform(get("/api/assets"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"));
     }
 }
