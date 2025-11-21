@@ -87,6 +87,19 @@ public class GetAllAssetsTests {
     }
 
     @Test
+    @DisplayName("Should return list of all assets with different usage statuses")
+    void getAllAssets_ReturnListOfAssetsWithDifferentUsageStatuses() throws Exception{
+        when(getAssetsService.execute(null)).thenReturn(ResponseEntity.ok(assetDTOS));
+
+        mockMvc.perform(get("/api/assets"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].usageStatus").value("IN_USE"))
+                .andExpect(jsonPath("$[1].usageStatus").value("STORAGE"))
+                .andExpect(jsonPath("$[2].usageStatus").value("SERVICE"));
+    }
+
+    @Test
     @DisplayName("Should throw custom exception NoResultsException when list is empty")
     void getAllAssets_WhenListIsEmpty_ThrowCustomException() throws Exception{
         when(getAssetsService.execute(null)).thenThrow(new NoResultsException());
