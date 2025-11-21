@@ -62,8 +62,14 @@ public class DeleteAssetsTests {
 
     }
 
+    @Test
+    @DisplayName("Should handle the same multiple delete requests gracefully")
+    void deleteAssetById_WhenCalledMultipleTimes_ShouldHandleCorrectly() throws Exception{
+        when(deleteAssetService.execute(1L)).thenReturn(ResponseEntity.noContent().build());
+        mockMvc.perform(delete("/api/asset/1")).andExpect(status().isNoContent()).andExpect(content().string(""));
+        verify(deleteAssetService, times(1)).execute(1L);
 
-
-
-
+        when(deleteAssetService.execute(1000L)).thenThrow(new AssetNotFoundException());
+        mockMvc.perform(delete("/api/asset/1000")).andExpect(status().isNotFound());
+    }
 }
