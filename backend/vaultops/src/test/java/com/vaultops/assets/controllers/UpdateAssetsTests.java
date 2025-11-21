@@ -5,6 +5,7 @@ import com.vaultops.dtos.AssetDTO;
 import com.vaultops.enums.Assignment;
 import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
+import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.model.Asset;
 import com.vaultops.model.UpdateAssetCommand;
 import com.vaultops.services.asset.*;
@@ -20,7 +21,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,7 +43,7 @@ public class UpdateAssetsTests {
 
     @BeforeEach
     void setUp() {
-        Asset asset = new Asset();
+        asset = new Asset();
         asset.setId(1L);
         asset.setName("Macbook Laptop");
         asset.setType("Laptop");
@@ -76,5 +77,22 @@ public class UpdateAssetsTests {
                 .andExpect(jsonPath("$.usageStatus").value("STORAGE"))
                 .andExpect(jsonPath("$.conditionStatus").value("FAIR"))
                 .andExpect(jsonPath("$.assignment").value("UNASSIGNED"));
+
+        verify(updateAssetService, times(1)).execute(any(UpdateAssetCommand.class));
     }
+
+    @Test
+    @DisplayName("Should return 404 NOT FOUND status when asset does exist")
+    void updateAsset_WhenAssetDoesNotExist_ShouldReturnNotFound() throws Exception{
+        when(updateAssetService.execute(any(UpdateAssetCommand.class))).thenThrow(new AssetNotFoundException());
+
+        mockMvc.perform(put("/api/asset/1000")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(asset)))
+                .andExpect(status().isNotFound());
+
+        verify(updateAssetService, times(1)).execute(any(UpdateAssetCommand.class));
+    }
+
+
 }

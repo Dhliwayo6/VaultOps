@@ -52,7 +52,7 @@ public class DeleteAssetsTests {
     }
 
     @Test
-    @DisplayName(("Should return 40 BAD REQUEST status for invalid ID format"))
+    @DisplayName(("Should return 400 BAD REQUEST status for invalid ID format"))
     void deleteAssetById_WhenIDFormatIsInvalid_ShouldReturnBadRequest() throws Exception{
 
         mockMvc.perform(delete("/api/asset/bar")).andExpect(status().isBadRequest());
