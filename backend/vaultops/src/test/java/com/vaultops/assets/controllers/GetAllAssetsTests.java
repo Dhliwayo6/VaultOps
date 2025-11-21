@@ -5,6 +5,7 @@ import com.vaultops.dtos.AssetDTO;
 import com.vaultops.enums.Assignment;
 import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
+import com.vaultops.exceptions.NoResultsException;
 import com.vaultops.model.Asset;
 import com.vaultops.services.asset.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
@@ -84,5 +84,17 @@ public class GetAllAssetsTests {
                 .andExpect(jsonPath("$[2].name").value("ViewChoice Monitor"));
 
         verify(getAssetsService, times(1)).execute(null);
+    }
+
+    @Test
+    @DisplayName("Should throw custom exception NoResultsException when list is empty")
+    void getAllAssets_WhenListIsEmpty_ThrowCustomException() throws Exception{
+        when(getAssetsService.execute(null)).thenThrow(new NoResultsException());
+
+        mockMvc.perform(get("/api/assets"))
+                .andExpect(status().isOk());
+
+        verify(getAssetsService, times(1)).execute(null);
+
     }
 }

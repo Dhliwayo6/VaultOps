@@ -1,9 +1,7 @@
 package com.vaultops.assets.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vaultops.dtos.AssetDTO;
 import com.vaultops.exceptions.AssetNotFoundException;
-import com.vaultops.model.Asset;
 import com.vaultops.services.asset.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
