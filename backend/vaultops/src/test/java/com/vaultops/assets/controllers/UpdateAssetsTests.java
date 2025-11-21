@@ -104,4 +104,22 @@ public class UpdateAssetsTests {
         verify(updateAssetService, never()).execute(any(UpdateAssetCommand.class));
     }
 
+    @Test
+    @DisplayName("Should update only one field")
+    void updateAsset_ShouldUpdateOnlyOneField() throws Exception{
+        Asset updatedAsset = new Asset();
+        updatedAsset.setConditionStatus(ConditionStatus.DAMAGED);
+
+        AssetDTO updatedAssetDTO = new AssetDTO(updatedAsset);
+
+        when(updateAssetService.execute(any(UpdateAssetCommand.class))).thenReturn(ResponseEntity.ok(updatedAssetDTO));
+
+        mockMvc.perform(put("/api/asset/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatedAssetDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.conditionStatus").value("DAMAGED"));
+
+        verify(updateAssetService, times(1)).execute(any(UpdateAssetCommand.class));
+    }
 }
