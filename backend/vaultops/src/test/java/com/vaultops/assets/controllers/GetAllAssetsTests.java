@@ -119,4 +119,19 @@ public class GetAllAssetsTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"));
     }
+
+    @Test
+    @DisplayName("Test should return results with populated fields")
+    void getAssetsById_ShouldReturnFullFields() throws Exception {
+        when(getAssetsService.execute(null)).thenReturn(ResponseEntity.ok(assetDTOS));
+
+        mockMvc.perform(get("/api/assets"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").exists())
+                .andExpect(jsonPath("$[0].name").exists())
+                .andExpect(jsonPath("$[0].type").exists())
+                .andExpect(jsonPath("$[0].usageStatus").exists())
+                .andExpect(jsonPath("$[0].conditionStatus").exists())
+                .andExpect(jsonPath("$[0].assignment").exists());
+    }
 }
