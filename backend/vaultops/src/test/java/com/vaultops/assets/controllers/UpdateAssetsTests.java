@@ -51,6 +51,7 @@ public class UpdateAssetsTests {
         asset.setConditionStatus(ConditionStatus.FAIR);
         asset.setAssignment(Assignment.ASSIGNED);
 
+        assetDTO = new AssetDTO(asset);
     }
 
     @Test
@@ -94,5 +95,13 @@ public class UpdateAssetsTests {
         verify(updateAssetService, times(1)).execute(any(UpdateAssetCommand.class));
     }
 
+    @Test
+    @DisplayName("Should return 400 BAD REQUEST when ID format is invalid")
+    void updateAsset_WhenIDFormatIsInvalid_ShouldReturnBadRequest() throws Exception{
+        mockMvc.perform(put("/api/asset/foo"))
+                .andExpect(status().isBadRequest());
+
+        verify(updateAssetService, never()).execute(any(UpdateAssetCommand.class));
+    }
 
 }
