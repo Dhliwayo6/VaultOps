@@ -74,4 +74,17 @@ public class GetAssetsServiceTests {
 
         verify(assetRepository, times(1)).findAll();
     }
+
+    @Test
+    @DisplayName("Should convert all assets to DTOs")
+    void execute_ShouldConvertAllAssetsToDTO() {
+        List<Asset> assets = Arrays.asList(asset, asset, asset);
+        when(assetRepository.findAll()).thenReturn(assets);
+
+        ResponseEntity<List<AssetDTO>> response = getAssetsService.execute(null);
+
+        assertThat(response.getBody()).hasSize(3);
+        assertThat(response.getBody())
+                .allMatch(dto -> dto.getName().equals("Laptop"));
+    }
 }
