@@ -1,10 +1,13 @@
 package com.vaultops.assets.services;
 
 import com.vaultops.dtos.AssetDTO;
+import com.vaultops.enums.Assignment;
+import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
 import com.vaultops.model.Asset;
 import com.vaultops.repository.AssetRepository;
 import com.vaultops.services.asset.CreateAssetService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -53,5 +57,28 @@ public class CreateAssetServiceTests {
         verify(assetRepository, times(1)).save(asset);
     }
 
-    
+    @Test
+    @DisplayName("Should preserve asset properties during save")
+    void execute_ShouldPreserveAssetProperties() {
+        Asset assetWithAllFields = new Asset();
+        assetWithAllFields.setName("Server");
+        assetWithAllFields.setType("Hardware");
+        assetWithAllFields.setUsageStatus(Usage.STORAGE);
+        assetWithAllFields.setConditionStatus(ConditionStatus.FAIR);
+        assetWithAllFields.setAssignment(Assignment.UNASSIGNED);
+        assetWithAllFields.setCreatedAt(LocalDate.now());
+
+        when(assetRepository.save(any(Asset.class))).thenReturn(assetWithAllFields);
+
+        ResponseEntity<AssetDTO> response = createAssetService.execute(assetWithAllFields);
+
+        Assertions.assertNotNull(response.getBody());
+        assertThat(response.getBody().getName()).isEqualTo("Server");
+        assertThat(response.getBody().getType()).isEqualTo("Hardware");
+        assertThat(response.getBody().getUsageStatus()).isEqualTo(Usage.STORAGE);
+        assertThat(response.getBody().getConditionStatus()).isEqualTo(ConditionStatus.FAIR);
+        verify(assetRepository).save(assetWithAllFields);
+    }
+
+
 }
