@@ -2,6 +2,7 @@ package com.vaultops.assets.services;
 
 import com.vaultops.dtos.AssetDTO;
 import com.vaultops.enums.Usage;
+import com.vaultops.exceptions.NoResultsException;
 import com.vaultops.model.Asset;
 import com.vaultops.repository.AssetRepository;
 import com.vaultops.services.asset.GetAssetsService;
@@ -17,13 +18,15 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Create Asset Service tests")
+@DisplayName("Get Asset Service tests")
 public class GetAssetsServiceTests {
     @Mock private AssetRepository assetRepository;
     @InjectMocks GetAssetsService getAssetsService;
@@ -60,5 +63,15 @@ public class GetAssetsServiceTests {
 
         verify(assetRepository, times(1)).findAll();
     }
-    
+
+    @Test
+    @DisplayName("Should throw custom NoResultsException when no assets exist")
+    void execute_WhenNoAssets_ShouldThrowException() {
+        when(assetRepository.findAll()).thenReturn(Collections.emptyList());
+
+        assertThatThrownBy(() -> getAssetsService.execute(null))
+                .isInstanceOf(NoResultsException.class);
+
+        verify(assetRepository, times(1)).findAll();
+    }
 }
