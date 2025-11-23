@@ -2,6 +2,7 @@ package com.vaultops.assets.services;
 
 import com.vaultops.dtos.AssetDTO;
 import com.vaultops.enums.Usage;
+import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.model.Asset;
 import com.vaultops.repository.AssetRepository;
 import com.vaultops.services.asset.CreateAssetService;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,5 +56,16 @@ public class GetAssetServiceTests {
         assertThat(response.getBody().getName()).isEqualTo("Laptop");
 
         verify(assetRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    @DisplayName("Should throw AssetNotFoundException when asset not found")
+    void execute_WhenAssetNotFound_ShouldThrowException() {
+        when(assetRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> getAssetService.execute(999L))
+                .isInstanceOf(AssetNotFoundException.class);
+
+        verify(assetRepository, times(1)).findById(999L);
     }
 }

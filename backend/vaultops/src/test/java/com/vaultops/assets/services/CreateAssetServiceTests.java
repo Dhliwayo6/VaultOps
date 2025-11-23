@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -51,6 +50,7 @@ public class CreateAssetServiceTests {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
+        Assertions.assertNotNull(response.getBody());
         assertThat(response.getBody().getId()).isEqualTo(1L);
         assertThat(response.getBody().getName()).isEqualTo("Laptop");
 
