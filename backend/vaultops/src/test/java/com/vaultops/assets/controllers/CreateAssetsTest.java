@@ -18,8 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.print.attribute.standard.Media;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -32,8 +30,7 @@ public class CreateAssetsTest {
 
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper objectMapper;
-    @MockitoBean
-    private CreateAssetService createAssetService;
+    @MockitoBean private CreateAssetService createAssetService;
     @MockitoBean private GetAssetService getAssetService;
     @MockitoBean private GetAssetsService getAssetsService;
     @MockitoBean private DeleteAssetService deleteAssetService;
