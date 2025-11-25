@@ -90,5 +90,18 @@ public class UpdateAssetServiceTests {
         verify(assetRepository, never()).save(any());
     }
 
+    @Test
+    @DisplayName("Should check existence of asset before attempting update")
+    void execute_ShouldCheckExistenceFirst() {
+        UpdateAssetCommand command = new UpdateAssetCommand(1L, asset);
+        when(assetRepository.findById(1L)).thenReturn(Optional.of(asset));
+        when(assetRepository.save(any(Asset.class))).thenReturn(asset);
+        updateAssetService.execute(command);
+
+        var inOrder = inOrder(assetRepository);
+        inOrder.verify(assetRepository).findById(1L);
+        inOrder.verify(assetRepository).save(any(Asset.class));
+    }
+
 
 }
