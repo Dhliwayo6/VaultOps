@@ -9,6 +9,7 @@ import com.vaultops.model.Asset;
 import com.vaultops.model.UpdateAssetCommand;
 import com.vaultops.repository.AssetRepository;
 import com.vaultops.services.asset.UpdateAssetService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -101,6 +102,31 @@ public class UpdateAssetServiceTests {
         var inOrder = inOrder(assetRepository);
         inOrder.verify(assetRepository).findById(1L);
         inOrder.verify(assetRepository).save(any(Asset.class));
+    }
+
+    @Test
+    @DisplayName("Should update all fields, enums included")
+    void execute_ShouldUpdateAllFields() {
+        Asset newData = new Asset();
+        newData.setName("Completely Different");
+        newData.setType("New Type");
+        newData.setUsageStatus(Usage.STORAGE);
+        newData.setConditionStatus(ConditionStatus.EXCELLENT);
+        newData.setAssignment(Assignment.UNASSIGNED);
+
+        UpdateAssetCommand command = new UpdateAssetCommand(1L, newData);
+
+        when(assetRepository.findById(1L)).thenReturn(Optional.of(asset));
+        when(assetRepository.save(any(Asset.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        ResponseEntity<AssetDTO> response = updateAssetService.execute(command);
+
+        AssetDTO dto = response.getBody();
+        Assertions.assertNotNull(dto);
+        assertThat(dto.getName()).isEqualTo("Completely Different");
+        assertThat(dto.getUsageStatus()).isEqualTo(Usage.STORAGE);
+        assertThat(dto.getConditionStatus()).isEqualTo(ConditionStatus.EXCELLENT);
+        assertThat(dto.getAssignment()).isEqualTo(Assignment.UNASSIGNED);
     }
 
 
