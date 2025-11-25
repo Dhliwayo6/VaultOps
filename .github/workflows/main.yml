@@ -31,8 +31,8 @@ jobs:
             distribution: 'temurin'
             cache: 'maven'
 
-        - name: Build with Maven
-          run: mvn clean install
+        # - name: Build with Maven
+        #   run: mvn clean install
 
         # Run tests
         - name: Run tests
