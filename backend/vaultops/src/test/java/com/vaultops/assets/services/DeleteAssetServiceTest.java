@@ -1,6 +1,7 @@
 package com.vaultops.assets.services;
 
 import com.vaultops.enums.Usage;
+import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.model.Asset;
 import com.vaultops.repository.AssetRepository;
 import com.vaultops.services.asset.DeleteAssetService;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,6 +52,18 @@ public class DeleteAssetServiceTest {
 
         verify(assetRepository, times(1)).findById(1L);
         verify(assetRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    @DisplayName("Should throw custom exception when asset not found")
+    void execute_WhenAssetNotFound_ShouldThrowAssetNotException() {
+        when(assetRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> deleteAssetService.execute(999L))
+                .isInstanceOf(AssetNotFoundException.class);
+
+        verify(assetRepository, times(1)).findById(999L);
+        verify(assetRepository, never()).deleteById(any());
     }
 
 }
