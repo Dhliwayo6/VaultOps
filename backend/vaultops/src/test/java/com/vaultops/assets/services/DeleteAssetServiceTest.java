@@ -66,4 +66,15 @@ public class DeleteAssetServiceTest {
         verify(assetRepository, never()).deleteById(any());
     }
 
+    @Test
+    @DisplayName("Should only delete by ID and not save")
+    void execute_ShouldOnlyCallDelete_NotSave() {
+        when(assetRepository.findById(1L)).thenReturn(Optional.of(asset));
+        doNothing().when(assetRepository).deleteById(1L);
+
+        deleteAssetService.execute(1L);
+        verify(assetRepository, never()).save(any());
+        verify(assetRepository, times(1)).deleteById(1L);
+    }
+
 }
