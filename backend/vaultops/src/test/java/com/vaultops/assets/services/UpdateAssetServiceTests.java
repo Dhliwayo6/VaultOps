@@ -4,6 +4,7 @@ import com.vaultops.dtos.AssetDTO;
 import com.vaultops.enums.Assignment;
 import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
+import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.model.Asset;
 import com.vaultops.model.UpdateAssetCommand;
 import com.vaultops.repository.AssetRepository;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -73,6 +75,19 @@ public class UpdateAssetServiceTests {
         assertThat(savedAsset.getId()).isEqualTo(1L);
         assertThat(savedAsset.getName()).isEqualTo("Updated asset name");
         assertThat(savedAsset.getUsageStatus()).isEqualTo(Usage.SERVICE);
+    }
+
+    @Test
+    @DisplayName("Should throw custom exception when asset not found")
+    void execute_WhenAssetNotFound_ShouldThrowException() {
+        UpdateAssetCommand command = new UpdateAssetCommand(999L, asset);
+        when(assetRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> updateAssetService.execute(command))
+                .isInstanceOf(AssetNotFoundException.class);
+
+        verify(assetRepository, times(1)).findById(999L);
+        verify(assetRepository, never()).save(any());
     }
 
 
