@@ -82,10 +82,11 @@
 
 /* Dashboard card container */
 .dashboard-card-container{
-    width: 85%;
+    width: 100%;
     /* margin-bottom: 60px; */
     min-height: 500px;
     padding: 0.4rem;
+    margin-bottom: 5rem;
 
     display: flex;
     flex-direction: column;
