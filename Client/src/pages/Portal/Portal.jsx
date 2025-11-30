@@ -5,11 +5,9 @@ import Inventory from "../Inventory/Inventory"
 
 export default function Portal() {
   return (
-    <article className='portal'>
-        
-        <Sidebar />
-        <Inventory />
-        
+    <article className='portal'>  
+      <Sidebar />
+      <Inventory />  
     </article>
   )
 }

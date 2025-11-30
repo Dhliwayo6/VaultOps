@@ -24,38 +24,6 @@
 }
 
 
-/* DASHBOARD INTRO */
-.dash-intro{
-    width: 100%;
-    height: 60px;
-    padding: 4px;
-    background-color: aliceblue;
-
-    border-radius: 9px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.dash-intro p{
-    color: var(--blue-secondary);
-}
-
-.dash-intro span{
-    color: var(--blue-primary);
-    font-weight: bold;
-}
-
-.dash-intro button{
-    font-size: 1.5rem;
-    color: var(--blue-primary);
-    background-color: transparent;
-    border: none;
-    outline: none;
-}
-
-
 /* Dasboard condition summary */
 .dash-condition-summary{
     width: 100%;

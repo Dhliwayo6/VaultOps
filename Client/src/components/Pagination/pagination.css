@@ -1,0 +1,39 @@
+
+
+.pagination-nav{
+    width: 100%;
+}
+
+.pagination-nav ul{
+    width: 100%;
+    list-style: none;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.pagination-nav button{
+    width: 35px;
+    height: 35px;
+
+    border-radius: 5px;
+    border: 1px solid #E4E4E7;
+    outline: none;
+
+}
+
+.pagination-nav button:hover{
+    background-color: hsla(215, 20%, 45%, 0.123);
+}
+
+.active-page{
+    background-color: hsla(213, 95%, 84%, 0.226);
+}
+
+.page-item{
+    background-color: transparent;
+}

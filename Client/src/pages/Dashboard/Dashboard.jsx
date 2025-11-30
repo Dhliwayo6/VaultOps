@@ -1,19 +1,13 @@
 import "./dashboard.css";
-import { IoSearch } from "react-icons/io5";
 import { conditions, dashboardCardData, itemsInUse } from "./dashboardTools";
 import ConditionCard from "../../components/conditionCard/ConditionCard";
 import DashboardCard from "../../components/DashboardCard/DashboardCard";
+import Search from "../../components/Search/Search";
 
 export default function Dashboard() {
   return (
     <section className="dashboard">
-        <div className="dash-intro">
-            <p>Welcome to your <span>Dashboard</span></p>
-
-            <button className="open-search">
-                <IoSearch />
-            </button>
-        </div>
+        <Search pageName={"Dashboard"} />
 
         <div className="dash-condition-summary">
             <p className="dash-condition-summary-intro">Overall inventory condtition</p>

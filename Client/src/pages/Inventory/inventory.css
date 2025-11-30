@@ -8,9 +8,10 @@
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     align-items: start;
     gap: 2rem;
+    flex: 1;
 }
 
 .inventory-title{
@@ -75,4 +76,10 @@
     background: hsl(0, 0%, 100%);
     color: hsl(215, 68%, 20%);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+/* Responsive */
+@media screen and (min-width: 500px) {
+    .inventory-filter-container{
+        width: 27.5pc;
+    }
 }
