@@ -1,0 +1,41 @@
+.inventory-filter-container {
+    width: 100%;
+    padding: 1rem;
+
+    color: hsl(215, 20%, 45%);
+    background: hsl(215, 70%, 95%);
+
+    border-radius: 10px;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.inventory-filter-container button {
+    border: none;
+    outline: none;
+    padding: 0.6rem;
+
+    border-radius: 8px;
+    color: hsl(215, 68%, 20%);
+}
+
+.in-active-filter{
+    background: transparent;
+}
+
+.active-filter {
+    background: hsl(0, 0%, 100%);
+    color: hsl(215, 68%, 20%);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive */
+@media screen and (min-width: 500px) {
+    .inventory-filter-container {
+        width: 27.5pc;
+    }
+}
