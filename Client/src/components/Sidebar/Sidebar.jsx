@@ -1,29 +1,30 @@
 import "./sidebar.css";
 import { MdDashboard } from "react-icons/md";
 import { MdOutlineInventory2 } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 export default function Sidebar() {
   return (
     <nav className="dashboard-nav">
         <div>
-            <a href="#">VoltOps</a>
+            <Link to="/">VaultOps</Link>
         </div>
         
 
         <ul className="dash-links">
             <li>
-                <a href="#">
+                <Link to="/">
                     <MdDashboard />
                     <p>Home</p>
-                </a>
+                </Link>
             </li>
             <li>
-                <a href="#">
+                <Link to="/items">
                     <MdOutlineInventory2 />
                     <p>Inventory</p>
-                </a>
+                </Link>
             </li>
-            <li>
+            {/* <li>
                 <a href="#">
                     <MdDashboard />
                     <p>Dashboard</p>
@@ -34,7 +35,7 @@ export default function Sidebar() {
                     <MdDashboard />
                     <p>Dashboard</p>
                 </a>
-            </li>
+            </li> */}
         </ul>
     </nav>
   )

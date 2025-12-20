@@ -1,7 +1,8 @@
+import { Link, useNavigate } from "react-router-dom";
 import "./inventoryTable.css";
 
 export default function InventoryTable({items}) {
-
+  const navigate = useNavigate();
 
   return (
     <div className="table-wrapper">
@@ -21,15 +22,19 @@ export default function InventoryTable({items}) {
             const { itemId, itemName, location, dateAdded, status } = item;
 
             return (
-            <tr key={index}>
-              <td>{itemId}</td>
-              <td>{itemName}</td>
-              <td>{location}</td>
-              <td>{dateAdded}</td>
-              <td className={`status ${status.toLowerCase().replace(" ", "-")}`}>
-                {status}
-              </td>
-            </tr>
+          <tr
+            key={index}
+            onClick={() => navigate(`/${itemId}`)}
+            style={{ cursor: "pointer" }}
+          >
+            <td>{itemId}</td>
+            <td>{itemName}</td>
+            <td>{location}</td>
+            <td>{dateAdded}</td>
+            <td className={`status ${status.toLowerCase().replace(" ", "-")}`}>
+              {status}
+            </td>
+          </tr>
             );
           })}
         </tbody>

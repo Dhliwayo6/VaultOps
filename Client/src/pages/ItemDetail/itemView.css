@@ -1,0 +1,99 @@
+.item-detail-container {
+    min-width: 100%;
+    min-height: 100vh;
+    background: #f8f9fa;
+    padding: 30px;
+    max-width: 900px;
+    margin: auto;
+
+    display: flex;
+    align-items: start;
+    justify-content: center;
+}
+
+.item-detail-wrap{
+    width: 800px;
+}
+
+.btn {
+    background: white;
+    border: 1px solid #ccc;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.btn:hover {
+    background: #f0f0f0;
+}
+
+.back-btn {
+    margin-bottom: 20px;
+}
+
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.muted {
+    color: #666;
+}
+
+.text-lg {
+    font-size: 16px;
+}
+
+.badge {
+    padding: 8px 14px;
+    border: 1px solid;
+    border-radius: 16px;
+    font-size: 14px;
+}
+
+.section {
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.section-title {
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #777;
+    margin-bottom: 12px;
+}
+
+.grid {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.quantity {
+    font-size: 20px;
+    font-weight: bold;
+}
