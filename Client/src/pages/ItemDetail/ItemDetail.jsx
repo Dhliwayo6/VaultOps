@@ -1,10 +1,11 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./itemView.css";
 import { dummyItems } from "../Inventory/InventoryTools";
 
 const ItemDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const item = dummyItems.find((item) => item.itemId === "ITM-002");
 
@@ -20,7 +21,7 @@ const ItemDetail = () => {
         <div className="item-detail-wrap">
           <p className="muted">Item not found</p>
 
-          <button className="btn" onClick={() => {}}>
+          <button className="btn" onClick={() => navigate("/items")}>
             ← Back to Items
           </button>
         </div>
@@ -33,7 +34,7 @@ const ItemDetail = () => {
   return (
     <div className="item-detail-container">
       <div className="item-detail-wrap">
-             <button className="btn back-btn" onClick={() => {}}>
+             <button className="btn back-btn" onClick={() => navigate("/items")}>
         ← Back to Items
       </button>
 
