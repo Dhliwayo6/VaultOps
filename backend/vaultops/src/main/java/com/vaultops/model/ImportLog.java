@@ -29,6 +29,6 @@ public class ImportLog {
     private LocalDate startedAt;
     private LocalDate completedAt;
 
-    @OneToMany(mappedBy = "import_log", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "importLog", cascade = CascadeType.ALL)
     private List<ImportError> errors = new ArrayList<>();
 }
