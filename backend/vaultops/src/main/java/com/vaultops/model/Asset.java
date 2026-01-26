@@ -69,5 +69,5 @@ public class Asset {
 
     @UpdateTimestamp
     @Column(name = "latest_updated_date")
-    private LocalDateTime latestAtUpdatedDate;
+    private LocalDateTime latestUpdatedDate;
 }
