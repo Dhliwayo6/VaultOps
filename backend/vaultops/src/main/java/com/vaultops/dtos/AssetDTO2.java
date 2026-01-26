@@ -11,12 +11,14 @@ public class AssetDTO2 {
     private String serialNumber;
     private ConditionStatus conditionStatus;
     private Usage usageStatus;
+    private String assignedTo;
 
     public AssetDTO2(Asset assets) {
         this.name = assets.getName();
         this.serialNumber = assets.getSerialNumber();
         this.conditionStatus = assets.getConditionStatus();
         this.usageStatus = assets.getUsageStatus();
+        this.assignedTo = assets.getAssignedTo();
     }
 
 }

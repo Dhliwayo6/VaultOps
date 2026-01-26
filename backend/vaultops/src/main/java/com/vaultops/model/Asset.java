@@ -59,6 +59,8 @@ public class Asset {
     @Enumerated(EnumType.STRING)
     private Usage usageStatus;
 
+    private String AssignedTo;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDate createdAt;
