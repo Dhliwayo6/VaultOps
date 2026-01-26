@@ -10,9 +10,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -59,9 +61,13 @@ public class Asset {
     @Enumerated(EnumType.STRING)
     private Usage usageStatus;
 
-    private String AssignedTo;
+    private String assignedTo;
 
     @CreationTimestamp
     @Column(name = "created_at")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "latest_updated_date")
+    private LocalDateTime latestAtUpdatedDate;
 }
