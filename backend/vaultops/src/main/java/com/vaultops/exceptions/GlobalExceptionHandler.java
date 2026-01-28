@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleMaintenanceNotFoundException(MaintenanceNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
-    
+
     @ExceptionHandler(InvalidFileException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
@@ -71,6 +71,7 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(e.getMessage());
     }
 
+    // Spring built-in exception
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
     @ResponseBody
