@@ -3,15 +3,23 @@ package com.vaultops.exceptions;
 import com.vaultops.model.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(AssetNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
@@ -88,12 +96,4 @@ public class GlobalExceptionHandler {
         return new ErrorResponse("Invalid parameter: " + e.getMessage());
     }
 
-    //Catch-all for unexpected exceptions
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public ErrorResponse handleGenericException(Exception e) {
-        log.error("Unexpected error occurred", e);
-        return new ErrorResponse("An unexpected error occurred. Please try again later.");
-    }
 }
