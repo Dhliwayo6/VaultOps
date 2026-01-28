@@ -5,7 +5,6 @@ import com.vaultops.enums.Usage;
 import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.model.Asset;
 import com.vaultops.repository.AssetRepository;
-import com.vaultops.services.asset.CreateAssetService;
 import com.vaultops.services.asset.GetAssetService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -39,7 +38,7 @@ public class GetAssetServiceTests {
         asset.setName("Laptop");
         asset.setType("Electronics");
         asset.setUsageStatus(Usage.IN_USE);
-        asset.setCreatedAt(LocalDate.now());
+        asset.setCreatedAt(LocalDateTime.now());
     }
 
     @Test

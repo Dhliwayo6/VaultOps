@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,7 +39,7 @@ public class CreateAssetServiceTests {
         asset.setName("Laptop");
         asset.setType("Electronics");
         asset.setUsageStatus(Usage.IN_USE);
-        asset.setCreatedAt(LocalDate.now());
+        asset.setCreatedAt(LocalDateTime.now());
     }
 
     @Test
@@ -66,7 +67,7 @@ public class CreateAssetServiceTests {
         assetWithAllFields.setUsageStatus(Usage.STORAGE);
         assetWithAllFields.setConditionStatus(ConditionStatus.FAIR);
         assetWithAllFields.setAssignment(Assignment.UNASSIGNED);
-        assetWithAllFields.setCreatedAt(LocalDate.now());
+        assetWithAllFields.setCreatedAt(LocalDateTime.now());
 
         when(assetRepository.save(any(Asset.class))).thenReturn(assetWithAllFields);
 

@@ -6,7 +6,7 @@ import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
 import com.vaultops.model.Asset;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class TestData {
     public static Asset createInitialAsset() {
@@ -17,7 +17,7 @@ public class TestData {
         asset.setUsageStatus(Usage.IN_USE);
         asset.setConditionStatus(ConditionStatus.FAIR);
         asset.setAssignment(Assignment.ASSIGNED);
-        asset.setCreatedAt(LocalDate.now());
+        asset.setCreatedAt(LocalDateTime.now());
         return asset;
     }
 
