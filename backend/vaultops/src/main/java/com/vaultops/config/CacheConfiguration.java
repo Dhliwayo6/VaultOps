@@ -1,4 +1,4 @@
-package com.vaultops;
+package com.vaultops.config;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
