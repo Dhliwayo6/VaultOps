@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +26,9 @@ public class ImportLog {
     private Integer totalRecords;
     private Integer successCount;
     private Integer errorCount;
-    private String errorMessages;
-    private LocalDate startedAt;
-    private LocalDate completedAt;
+    private String errorMessage;
+    private LocalDateTime startedAt;
+    private LocalDateTime completedAt;
 
     @OneToMany(mappedBy = "importLog", cascade = CascadeType.ALL)
     private List<ImportError> errors = new ArrayList<>();

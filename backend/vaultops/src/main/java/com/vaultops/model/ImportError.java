@@ -15,7 +15,7 @@ public class ImportError {
     @JoinColumn(name = "import_log_id")
     private ImportLog importLog;
 
-    private Integer rowNumber;
+    private Integer rowNum;
     private String fieldName;
     private String errorMessage;
     private String invalidValue;
