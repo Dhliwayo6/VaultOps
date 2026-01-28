@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,7 +44,7 @@ public class UpdateAssetServiceTests {
         asset.setName("Laptop");
         asset.setType("Electronics");
         asset.setUsageStatus(Usage.IN_USE);
-        asset.setCreatedAt(LocalDate.now());
+        asset.setCreatedAt(LocalDateTime.now());
     }
 
     @Test

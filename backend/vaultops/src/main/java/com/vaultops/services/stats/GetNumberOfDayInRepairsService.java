@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class GetNumberOfDayInRepairsService implements Query<UpdateAssetCommand,
 
         if (optionalAsset.isPresent()) {
             Asset asset = optionalAsset.get();
-            LocalDate serviceDate = asset.getCreatedAt();
+            LocalDateTime serviceDate = asset.getCreatedAt();
             LocalDate currentDate = LocalDate.now();
             Long days = ChronoUnit.DAYS.between(serviceDate, currentDate);
             return ResponseEntity.ok(days);
