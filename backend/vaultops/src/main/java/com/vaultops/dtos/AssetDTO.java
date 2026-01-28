@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class AssetDTO {
@@ -21,7 +22,7 @@ public class AssetDTO {
     private LocalDate purchaseDate;
     private ConditionStatus conditionStatus;
     private Usage usageStatus;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     public AssetDTO(Asset assets) {
         this.id = assets.getId();
