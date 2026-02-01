@@ -37,8 +37,7 @@ public class AssetImportDTO {
     @NotBlank(message = "Usage status is required")
     private String usageStatus;
 
-    // Optional fields
     private String assignedTo;
     private LocalDate purchaseDate;
-    private String purchasePrice; // String for validation before converting to BigDecimal
+    private String purchasePrice;
 }
