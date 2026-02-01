@@ -22,7 +22,9 @@ public class AssetDTO {
     private LocalDate purchaseDate;
     private ConditionStatus conditionStatus;
     private Usage usageStatus;
+    private String assignedTo;
     private LocalDateTime createdAt;
+    private LocalDateTime latestUpdatedDate;
 
     public AssetDTO(Asset assets) {
         this.id = assets.getId();
@@ -33,8 +35,10 @@ public class AssetDTO {
         this.serialNumber = assets.getSerialNumber();
         this.purchasePrice = assets.getPurchasePrice();
         this.purchaseDate = assets.getPurchaseDate();
+        this.assignedTo = assets.getAssignedTo();
         this.conditionStatus = assets.getConditionStatus();
         this.usageStatus = assets.getUsageStatus();
         this.createdAt = assets.getCreatedAt();
+        this.latestUpdatedDate = assets.getLatestUpdatedDate();
     }
 }
