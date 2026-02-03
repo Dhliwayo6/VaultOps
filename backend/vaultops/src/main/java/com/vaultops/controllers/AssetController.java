@@ -6,6 +6,7 @@ import com.vaultops.model.Asset;
 import com.vaultops.model.UpdateAssetCommand;
 import com.vaultops.services.asset.*;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class AssetController {
     private final CreateAssetService createAssetService;
     private final GetAssetService getAssetService;
@@ -22,24 +24,6 @@ public class AssetController {
     private final DeleteAssetService deleteAssetService;
     private final GetTopFourAssetsInUseService getTopFourAssetsInUseService;
     private final GetTopFourAssetsInRepairsService getTopFourAssetsInRepairsService;
-
-    public AssetController(CreateAssetService createAssetService,
-                           GetAssetService getAssetService,
-                           GetAssetsService getAssetsService,
-                           UpdateAssetService updateAssetService,
-                           SearchAssetService searchAssetService,
-                           DeleteAssetService deleteAssetService,
-                           GetTopFourAssetsInUseService getTopFourAssetsInUseService,
-                           GetTopFourAssetsInRepairsService getTopFourAssetsInRepairsService) {
-        this.createAssetService = createAssetService;
-        this.getAssetService = getAssetService;
-        this.getAssetsService = getAssetsService;
-        this.updateAssetService = updateAssetService;
-        this.searchAssetService = searchAssetService;
-        this.deleteAssetService = deleteAssetService;
-        this.getTopFourAssetsInUseService = getTopFourAssetsInUseService;
-        this.getTopFourAssetsInRepairsService = getTopFourAssetsInRepairsService;
-    }
 
     @GetMapping("/assets/top-four/in-use")
     public ResponseEntity<List<AssetDTO2>> getTopFourAssetsInUse() {
