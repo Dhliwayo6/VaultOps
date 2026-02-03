@@ -4,6 +4,7 @@ import com.vaultops.dtos.MaintenanceDTO;
 import com.vaultops.model.Maintenance;
 import com.vaultops.model.UpdateMaintenance;
 import com.vaultops.services.maintenance.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,24 +12,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class MaintenanceController {
-    private CreateMaintenanceService createMaintenanceService;
-    private GetMaintenanceService getMaintenanceService;
-    private GetMaintenancesService getMaintenancesService;
-    private UpdateMaintenanceService updateMaintenanceService;
-    private DeleteMaintenanceService deleteMaintenanceService;
-
-    public MaintenanceController(CreateMaintenanceService createMaintenanceService,
-                                 GetMaintenanceService getMaintenanceService,
-                                 GetMaintenancesService getMaintenancesService,
-                                 UpdateMaintenanceService updateMaintenanceService,
-                                 DeleteMaintenanceService deleteMaintenanceService) {
-        this.createMaintenanceService = createMaintenanceService;
-        this.getMaintenanceService = getMaintenanceService;
-        this.getMaintenancesService = getMaintenancesService;
-        this.updateMaintenanceService = updateMaintenanceService;
-        this.deleteMaintenanceService = deleteMaintenanceService;
-    }
+    private final CreateMaintenanceService createMaintenanceService;
+    private final GetMaintenanceService getMaintenanceService;
+    private final GetMaintenancesService getMaintenancesService;
+    private final UpdateMaintenanceService updateMaintenanceService;
+    private final DeleteMaintenanceService deleteMaintenanceService;
 
     @PostMapping("/maintenance")
     public ResponseEntity<MaintenanceDTO> createMaintenance(@RequestBody Maintenance maintenance) {
