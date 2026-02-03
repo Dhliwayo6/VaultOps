@@ -3,11 +3,13 @@ package com.vaultops.controllers;
 import com.vaultops.model.Asset;
 import com.vaultops.model.UpdateAssetCommand;
 import com.vaultops.services.stats.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class StatsController {
 
     private final GetAssetsInUseService getAssetsInUseService;
@@ -20,28 +22,6 @@ public class StatsController {
     private final GetDamagedConditionAssetsService getDamagedConditionAssetsService;
     private final GetTotalAssetsCountService getTotalAssetsCountService;
     private final GetNumberOfDayInRepairsService getNumberOfDayInRepairsService;
-
-    public StatsController(GetAssetsInUseService getAssetsInUseService,
-                           GetAssetsInStorageService getAssetsInStorageService,
-                           GetAssetsInRepairsService getAssetsInRepairsService,
-                           GetExcellentConditionAssetsService getExcellentConditionAssetsService,
-                           GetGoodConditionAssetsService getGoodConditionAssetsService,
-                           GetFairConditionAssetsService getFairConditionAssetsService,
-                           GetBadConditionAssetsService getBadConditionAssetsService,
-                           GetDamagedConditionAssetsService getDamagedConditionAssetsService,
-                           GetTotalAssetsCountService getTotalAssetsCountService,
-                           GetNumberOfDayInRepairsService getNumberOfDayInRepairsService) {
-        this.getAssetsInUseService = getAssetsInUseService;
-        this.getAssetsInStorageService = getAssetsInStorageService;
-        this.getAssetsInRepairsService = getAssetsInRepairsService;
-        this.getExcellentConditionAssetsService = getExcellentConditionAssetsService;
-        this.getGoodConditionAssetsService = getGoodConditionAssetsService;
-        this.getFairConditionAssetsService = getFairConditionAssetsService;
-        this.getBadConditionAssetsService = getBadConditionAssetsService;
-        this.getDamagedConditionAssetsService = getDamagedConditionAssetsService;
-        this.getTotalAssetsCountService = getTotalAssetsCountService;
-        this.getNumberOfDayInRepairsService = getNumberOfDayInRepairsService;
-    }
 
     @GetMapping("/stats/assets/in-use")
     public ResponseEntity<Long> getAssetsInUse() {
