@@ -4,6 +4,7 @@ import com.vaultops.dtos.MigrationDTO;
 import com.vaultops.model.Migration;
 import com.vaultops.model.UpdateMigration;
 import com.vaultops.services.migration.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,25 +12,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class MigrationsController {
 
-    private CreateMigrationService createMigrationService;
-    private GetMigrationsService getMigrationsService;
-    private GetMigrationService getMigrationService;
-    private UpdateMigrationService updateMigrationService;
-    private DeleteMigrationService deleteMigrationService;
-
-    public MigrationsController(CreateMigrationService createMigrationService,
-                                GetMigrationsService getMigrationsService,
-                                GetMigrationService getMigrationService,
-                                UpdateMigrationService updateMigrationService,
-                                DeleteMigrationService deleteMigrationService) {
-        this.createMigrationService = createMigrationService;
-        this.getMigrationsService = getMigrationsService;
-        this.getMigrationService = getMigrationService;
-        this.updateMigrationService = updateMigrationService;
-        this.deleteMigrationService = deleteMigrationService;
-    }
+    private final CreateMigrationService createMigrationService;
+    private final GetMigrationsService getMigrationsService;
+    private final GetMigrationService getMigrationService;
+    private final UpdateMigrationService updateMigrationService;
+    private final DeleteMigrationService deleteMigrationService;
 
     @PostMapping("/migration")
     public ResponseEntity<MigrationDTO> createMigration(@RequestBody Migration migration) {
