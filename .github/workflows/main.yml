@@ -31,13 +31,8 @@ jobs:
             distribution: 'temurin'
             cache: 'maven'
 
-        - name: Create test properties
-          run: |
-            mkdir -p src/test/resources
-            cat > src/test/resources/application.properties << EOF
-            app.import.max-file-size=10485760
-            app.import.temp-directory=\${java.io.tmpdir}/vaultops-test
-            EOF
+        # - name: Build with Maven
+        #   run: mvn clean install
 
         - name: Run tests
           run: mvn clean test
