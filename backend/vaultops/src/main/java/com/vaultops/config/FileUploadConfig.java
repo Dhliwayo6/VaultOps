@@ -20,7 +20,6 @@ public class FileUploadConfig {
 
     @PostConstruct
     public void init() {
-        // Create temp directory if it doesn't exist
         Path tempPath = Paths.get(tempDirectory);
         try {
             Files.createDirectories(tempPath);
