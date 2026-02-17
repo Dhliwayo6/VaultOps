@@ -35,7 +35,7 @@ jobs:
         #   run: mvn clean install
 
         - name: Run tests
-          run: mvn clean test
+          run: mvn clean test -e
 
         - name: Build with Maven
           run: mvn clean package -DskipTests
