@@ -11,23 +11,23 @@ interface SidebarData {
 
 export const sidebarItems: SidebarData[] = [
   {
-    path: "dashboard",
+    path: "",
     title: "Home",
     icon: AiFillHome,
   },
   {
-    path: "personal-account",
-    title: "Personal Accounts",
+    path: "assets",
+    title: "Assets",
     icon: FaWallet,
   },
   {
     path: "#",
-    title: "Joint Accounts",
+    title: "Reports",
     icon: GiWallet,
   },
   {
     path: "#",
-    title: "Transectons",
+    title: "Settings",
     icon: FaBookOpen,
   },
 ];

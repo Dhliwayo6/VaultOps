@@ -1,6 +1,7 @@
 import Sidebar from '../components/Sidebar/Sidebar';
 import Dashboard from '../components/Dashboard/Dashboard';
 import Assets from '../components/Assets/Assets';
+import { Outlet } from 'react-router-dom';
 
 export default function Portal() {
   return (
@@ -19,7 +20,7 @@ export default function Portal() {
         transition-all duration-300
       ">
         <div className="max-w-[1600px] mx-auto p-4 md:p-8 lg:p-12">
-          <Assets />
+          <Outlet />
         </div>
       </main>
     </article>

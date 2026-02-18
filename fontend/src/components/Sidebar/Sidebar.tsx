@@ -1,9 +1,12 @@
+import { sidebarItems } from "./SidebarTools";
+import { Link } from "react-router-dom";
+
 interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
 }
 
-const menuItems = ['Dashboard', 'Assets', 'Reports', 'Settings'];
+
 
 export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   return (
@@ -17,16 +20,16 @@ export default function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
 
       {/* Nav */}
       <div className="flex md:flex-col w-full gap-2 px-2">
-        {menuItems.map((item) => (
-          <button 
-            key={item}
-            onClick={() => setActiveTab(item)}
+        {sidebarItems.map(items => {
+          const { path, title } = items
+          return <Link to={path}
+            key={title}
             className={`flex-1 md:flex-initial flex flex-col items-center py-4 md:py-3 rounded-2xl transition-all duration-200 lg:flex-row lg:justify-start lg:gap-4 lg:px-6
-              ${activeTab === item ? 'bg-white text-[#0EA5E9] font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
+              ${activeTab === title ? 'bg-white text-[#0EA5E9] font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
           >
-            <span className='text-[10px] lg:text-[0.95rem] tracking-wide'>{item}</span>
-          </button>
-        ))}
+            <span className='text-[10px] lg:text-[0.95rem] tracking-wide'>{title}</span>
+          </Link>
+        })}
       </div>
 
       {/* User */}

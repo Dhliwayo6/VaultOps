@@ -15,25 +15,25 @@ export default function Assets() {
         {/* Header */}
         <div className="w-full flex justify-between items-end">
             <div>
-              <h2 className="text-5xl font-black tracking-tighter text-slate-900">
-                  All Assets
-              </h2>
-              <p className="text-slate-500 font-medium mt-1">Manage and track your vault inventory</p>
+                <h2 className="text-5xl font-black tracking-tighter text-slate-900">
+                    All Assets
+                </h2>
+                <p className="text-slate-500 font-medium mt-1">Manage and track your vault inventory</p>
             </div>
             
             <div className="flex gap-2 bg-white border-2 border-slate-100 p-1 rounded-xl">
-              <button 
-                onClick={() => setSortBy('date')}
-                className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${sortBy === 'date' ? 'bg-[#0EA5E9] text-white' : 'text-slate-400 hover:text-slate-600'}`}
-              >
-                Date
-              </button>
-              <button 
-                onClick={() => setSortBy('name')}
-                className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${sortBy === 'name' ? 'bg-[#0EA5E9] text-white' : 'text-slate-400 hover:text-slate-600'}`}
-              >
-                Name
-              </button>
+                <button 
+                    onClick={() => setSortBy('date')}
+                    className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${sortBy === 'date' ? 'bg-[#0EA5E9] text-white' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                    Date
+                </button>
+                <button 
+                    onClick={() => setSortBy('name')}
+                    className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all ${sortBy === 'name' ? 'bg-[#0EA5E9] text-white' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                    Name
+                </button>
             </div>
         </div>
 
@@ -50,11 +50,6 @@ export default function Assets() {
                 <button className="pb-4 border-b-4 border-transparent text-slate-400 hover:text-slate-600 font-black text-sm uppercase tracking-widest transition-all">
                     Assignment    
                 </button>
-            </div>
-
-            {/* Sorters - add later*/}
-            <div>
-                {/* Reserved for future sorting dropdowns */}
             </div>
         </div>
 

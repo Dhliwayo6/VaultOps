@@ -7,6 +7,6 @@ import Portal from './pages/Portal.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Portal />
+    <App />
   </StrictMode>,
 )
