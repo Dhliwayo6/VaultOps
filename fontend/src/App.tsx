@@ -6,22 +6,25 @@ import { createBrowserRouter, Router, RouterProvider } from 'react-router-dom'
 import Portal from './pages/Portal'
 import Dashboard from './components/Dashboard/Dashboard'
 import Assets from './components/Assets/Assets'
+import SignIn from './pages/SignIn'
+import Home from './pages/Home'
+import SignUp from './pages/SignUp'
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "",
-      element: <Portal />,
-      children: [
-        {
-          index: true,
-          element: <Dashboard />
-        },
-        {
-          path: "assets",
-          element: <Assets />
-        }
-      ]
+      element: <Home />,
+    },
+
+    {
+      path: "sign-in",
+      element: <SignIn />
+    },
+
+    {
+      path: "sign-up",
+      element: <SignUp />
     }
   ]);
 
