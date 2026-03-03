@@ -7,7 +7,7 @@ export default function Hero() {
       <section className="pt-24 pb-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-5xl md:text-7xl font-black tracking-tight text-slate-900 mb-8">
-            Track Your <span className="text-[#0EA5E9]">Corporate Assets</span>.
+            Track Your Corporate Assets.
           </h1>
           <p className="text-xl text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto">
             Move beyond messy spreadsheets. Centralize your hardware tracking, 
