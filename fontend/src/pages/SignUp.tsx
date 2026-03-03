@@ -65,7 +65,7 @@ export default function SignUp() {
 
             <div className='w-full max-w-[500px] px-6 flex flex-col justify-center flex-1'>
                 {/* Header */}
-                <div className='mb-8 text-center md:text-left'>
+                <div className='mb-8 text-center'>
                     <h1 className="text-4xl font-black tracking-tight text-slate-900">Sign Up</h1>
                     <p className="text-slate-500 font-medium mt-1">Create your secure vault identity</p>
                 </div>
@@ -132,7 +132,7 @@ export default function SignUp() {
                                     Creating Account...
                                 </>
                             ) : (
-                                "Initialize Access"
+                                "Create Account"
                             )}
                         </button>
 
@@ -144,9 +144,9 @@ export default function SignUp() {
                     </form>
                 </div>
 
-                <p className="mt-8 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest opacity-60">
+                {/* <p className="mt-8 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest opacity-60">
                     Vault Registry Protocol v2.0.4
-                </p>
+                </p> */}
             </div>
             
             <style>{`

@@ -37,7 +37,7 @@ export default function SignIn() {
             </div>
 
             <div className='w-full max-w-[450px] px-6 flex flex-col justify-center flex-1'>
-                <div className='mb-10 text-center md:text-left'>
+                <div className='mb-10 text-center'>
                     <h1 className="text-4xl font-black tracking-tight text-slate-900">Sign In</h1>
                     <p className="text-slate-500 font-medium mt-1">Accessing your secure vault</p>
                 </div>
@@ -92,7 +92,7 @@ export default function SignIn() {
                                     Authenticating...
                                 </>
                             ) : (
-                                "Enter Vault"
+                                "Login"
                             )}
                         </button>
 
