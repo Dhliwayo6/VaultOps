@@ -1,27 +1,11 @@
 import React from 'react';
+import { recentAssets, stats } from './DashboardTools';
+import AddAssetButton from '../../UI/AddAssetButton';
 
-interface Asset {
-  id: string;
-  name: string;
-  user: string;
-  status: 'In Use' | 'In Storage' | 'In Service' | 'Damaged';
-  lastUpdated: string;
-}
+
 
 const Dashboard: React.FC = () => {
-  const stats = [
-    { label: "Total Assets", value: "1,284", color: "bg-white text-slate-800" },
-    { label: "In Use", value: "856", color: "bg-[#0EA5E9] text-white" }, // Primary accent
-    { label: "In Storage", value: "342", color: "bg-white text-slate-800" },
-    { label: "In Service", value: "76", color: "bg-white text-slate-800" },
-    { label: "Damaged", value: "10", color: "bg-red-50 text-red-600" },
-  ];
 
-  const recentAssets: Asset[] = [
-    { id: "SK-9920", name: "Dell Precision 5570", user: "Mandisi", status: "In Use", lastUpdated: "2 mins ago" },
-    { id: "SK-8812", name: "Sony A7 IV Camera", user: "Sarah Smith", status: "In Use", lastUpdated: "1 hour ago" },
-    { id: "SK-4421", name: "Logitech MX Master 3", user: "Alex Agu", status: "In Storage", lastUpdated: "Yesterday" },
-  ];
 
   return (
     <div className="space-y-10">
@@ -31,10 +15,7 @@ const Dashboard: React.FC = () => {
           <h1 className="text-4xl font-black tracking-tight text-slate-900">Dashboard</h1>
           <p className="text-slate-500 font-medium">Control your vault today</p>
         </div>
-        <div className="flex gap-2">
-          <button className="px-5 py-2.5 bg-white border-2 border-slate-200 rounded-xl font-bold text-sm hover:bg-slate-50 transition-all">Export Report</button>
-          <button className="px-5 py-2.5 bg-[#0EA5E9] text-white rounded-xl font-bold text-sm active:scale-95 transition-all">+ Add Asset</button>
-        </div>
+        <AddAssetButton />
       </header>
 
       {/* Bento Grid Stats */}

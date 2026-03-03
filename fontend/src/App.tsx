@@ -9,6 +9,8 @@ import Assets from './components/Assets/Assets'
 import SignIn from './pages/SignIn'
 import Home from './pages/Home'
 import SignUp from './pages/SignUp'
+import OtpActivation from './pages/OtpActivation'
+
 
 function App() {
   const router = createBrowserRouter([
@@ -25,6 +27,27 @@ function App() {
     {
       path: "sign-up",
       element: <SignUp />
+    },
+
+    {
+      path: "otp",
+      element: <OtpActivation />
+    },
+
+    {
+      path: "portal",
+      element: <Portal />,
+      children: [
+        {
+          index: true,
+          element: <Dashboard />
+        },
+
+        {
+          path: "assets",
+          element: <Assets />
+        }
+      ]
     }
   ]);
 

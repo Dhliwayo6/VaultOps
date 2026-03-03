@@ -22,7 +22,7 @@ export default function SignIn() {
             
 
             // if (success) navigate('/dashboard');
-            
+            navigate("/portal")
         } catch (error) {
             console.error("Failed to login", error);
         } finally {

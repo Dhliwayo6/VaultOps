@@ -15,7 +15,7 @@ export default function Assets() {
         {/* Header */}
         <div className="w-full flex justify-between items-end">
             <div>
-                <h2 className="text-5xl font-black tracking-tighter text-slate-900">
+                <h2 className="text-4xl font-black tracking-tight text-slate-900">
                     All Assets
                 </h2>
                 <p className="text-slate-500 font-medium mt-1">Manage and track your vault inventory</p>

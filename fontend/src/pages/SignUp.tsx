@@ -50,6 +50,7 @@ export default function SignUp() {
             // Simulate API Call
             await new Promise(resolve => setTimeout(resolve, 2000));
             // if (res) navigate(`/activate/${email}`)
+            navigate("/otp")
         } catch {
             console.log("Failed to create account");
         } finally {

@@ -37,7 +37,7 @@ export default function OtpActivation() {
         try {
             // Simulate verification
             await new Promise(resolve => setTimeout(resolve, 2000));
-            // navigate('/success');
+            navigate('/sign-in');
         } catch (err) {
             console.log("Failed to activate account", err);
         } finally {
