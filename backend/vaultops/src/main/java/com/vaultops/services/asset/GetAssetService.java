@@ -1,6 +1,6 @@
 package com.vaultops.services.asset;
 
-import com.vaultops.Query;
+import com.vaultops.common.Query;
 import com.vaultops.dtos.AssetDTO;
 import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.model.Asset;

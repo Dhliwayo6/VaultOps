@@ -1,0 +1,19 @@
+#version: '3.8'
+services:
+
+  app:
+    build: .
+    network_mode: "host"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/vaultops?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: mandisi3000
+      SPRING_DATASOURCE_PASSWORD: Gumbo3000!
+    restart: on-failure
+
+
+#volumes:
+#  mysql-data:
+
+#networks:
+#  vaultops-net:
+#    driver: bridge

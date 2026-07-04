@@ -1,6 +1,6 @@
 package com.vaultops.services.asset;
 
-import com.vaultops.Command;
+import com.vaultops.common.Command;
 import com.vaultops.dtos.AssetDTO;
 import com.vaultops.model.Asset;
 import com.vaultops.repository.AssetRepository;

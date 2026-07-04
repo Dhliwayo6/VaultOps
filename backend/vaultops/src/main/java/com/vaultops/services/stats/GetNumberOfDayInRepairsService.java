@@ -1,6 +1,6 @@
 package com.vaultops.services.stats;
 
-import com.vaultops.Query;
+import com.vaultops.common.Query;
 import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.model.Asset;
 import com.vaultops.model.UpdateAssetCommand;

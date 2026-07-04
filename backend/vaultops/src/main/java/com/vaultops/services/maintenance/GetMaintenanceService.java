@@ -1,6 +1,6 @@
 package com.vaultops.services.maintenance;
 
-import com.vaultops.Query;
+import com.vaultops.common.Query;
 import com.vaultops.dtos.MaintenanceDTO;
 import com.vaultops.model.Maintenance;
 import com.vaultops.repository.MaintenanceRepository;

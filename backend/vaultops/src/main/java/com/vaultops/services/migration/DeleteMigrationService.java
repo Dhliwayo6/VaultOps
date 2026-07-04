@@ -1,6 +1,6 @@
 package com.vaultops.services.migration;
 
-import com.vaultops.Command;
+import com.vaultops.common.Command;
 import com.vaultops.model.Migration;
 import com.vaultops.repository.MigrationRepository;
 import org.springframework.http.HttpStatus;

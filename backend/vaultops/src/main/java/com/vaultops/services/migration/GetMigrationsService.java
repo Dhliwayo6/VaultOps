@@ -1,6 +1,6 @@
 package com.vaultops.services.migration;
 
-import com.vaultops.Query;
+import com.vaultops.common.Query;
 import com.vaultops.dtos.MigrationDTO;
 import com.vaultops.exceptions.NoResultsException;
 import com.vaultops.model.Migration;

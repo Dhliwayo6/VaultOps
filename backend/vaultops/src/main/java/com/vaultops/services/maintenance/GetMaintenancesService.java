@@ -1,6 +1,6 @@
 package com.vaultops.services.maintenance;
 
-import com.vaultops.Query;
+import com.vaultops.common.Query;
 import com.vaultops.dtos.MaintenanceDTO;
 import com.vaultops.exceptions.NoResultsException;
 import com.vaultops.model.Maintenance;

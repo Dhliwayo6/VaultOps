@@ -1,6 +1,6 @@
 package com.vaultops.services.stats;
 
-import com.vaultops.Query;
+import com.vaultops.common.Query;
 import com.vaultops.enums.Usage;
 import com.vaultops.repository.AssetRepository;
 import org.springframework.http.ResponseEntity;

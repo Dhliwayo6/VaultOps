@@ -1,6 +1,6 @@
 package com.vaultops.services.maintenance;
 
-import com.vaultops.Command;
+import com.vaultops.common.Command;
 import com.vaultops.model.Maintenance;
 import com.vaultops.repository.MaintenanceRepository;
 import org.springframework.http.HttpStatus;

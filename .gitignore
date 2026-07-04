@@ -10,3 +10,14 @@
 Thumbs.db
 
 backend/vaultops/test-data
+
+# Build and dependency directories
+target/
+node_modules/
+dist/
+*.class
+jacoco.exec
+**/target/
+**/node_modules/
+**/dist/
+*.log
