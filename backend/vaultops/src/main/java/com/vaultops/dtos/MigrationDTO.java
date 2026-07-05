@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class MigrationDTO {
     private Long id;
-    private AssetDTO2 asset;
+    private AssetSummaryDTO asset;
     private String fromLocation;
     private String toLocation;
     private String movedBy;
@@ -14,7 +14,7 @@ public class MigrationDTO {
 
     public MigrationDTO(Migration migration) {
         this.id = migration.getId();
-        this.asset = new AssetDTO2(migration.getAsset());
+        this.asset = new AssetSummaryDTO(migration.getAsset());
         this.fromLocation = migration.getFromLocation();
         this.toLocation = migration.getToLocation();
         this.movedBy = migration.getMovedBy();
