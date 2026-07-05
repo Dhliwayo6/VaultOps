@@ -1,6 +1,8 @@
 package com.vaultops.services;
 
 import com.vaultops.dtos.AssetImportDTO;
+import com.vaultops.dtos.AssetDTO;
+import com.vaultops.dtos.AssetSummaryDTO;
 import com.vaultops.enums.Assignment;
 import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
@@ -52,5 +54,19 @@ public class AssetMapperService {
         return dtos.stream()
                 .map(this::mapToEntity)
                 .collect(Collectors.toList());
+    }
+
+    public AssetDTO mapToDTO(Asset asset) {
+        if (asset == null) {
+            return null;
+        }
+        return new AssetDTO(asset);
+    }
+
+    public AssetSummaryDTO mapToSummaryDTO(Asset asset) {
+        if (asset == null) {
+            return null;
+        }
+        return new AssetSummaryDTO(asset);
     }
 }

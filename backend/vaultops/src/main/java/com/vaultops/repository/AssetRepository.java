@@ -19,9 +19,13 @@ public interface AssetRepository extends JpaRepository<Asset, Long>, JpaSpecific
     List<Asset> findByNameOrTypeContaining(@Param("keyword") String name);
 
     List<Asset> findAssetsByUsageStatus(Usage usageStatus);
+    List<Asset> findTop4ByUsageStatusOrderByCreatedAtDesc(Usage usageStatus);
     List<Asset> findAssetsByConditionStatus(ConditionStatus condition);
     Long countAssetsByUsageStatus(Usage usage);
     Long countAssetsByConditionStatus(ConditionStatus condition);
+
+    @Query("SELECT COALESCE(AVG(timestampdiff(DAY, a.createdAt, CURRENT_DATE)), 0.0) FROM Asset a WHERE a.usageStatus = :status")
+    Double getAverageDaysInStatus(@Param("status") Usage status);
 
     Optional<Asset> findBySerialNumber(String serialNumber);
     List<Asset> findByType(String type);

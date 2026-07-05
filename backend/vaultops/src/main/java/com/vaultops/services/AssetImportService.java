@@ -38,14 +38,24 @@ public class AssetImportService {
     @Value("${app.import.batch-size}")
     private int batchSize;
 
+    @org.springframework.scheduling.annotation.Async("importExecutor")
+    @org.springframework.cache.annotation.CacheEvict(value = "assetStatsCache", allEntries = true)
     @Transactional
-    public ImportResponse processImport(MultipartFile file, boolean dryRun) {
-        LocalDateTime startTime = LocalDateTime.now();
-        ImportLog importLog = createImportLog(file);
+    public void processImportAsync(Long importLogId, byte[] fileBytes, String originalFilename, boolean dryRun) {
+        log.info("Starting async import processing for importLogId: {}", importLogId);
+
+        Optional<ImportLog> importLogOpt = importLogRepository.findById(importLogId);
+        if (importLogOpt.isEmpty()) {
+            log.error("Import log not found: {}", importLogId);
+            return;
+        }
+        ImportLog importLog = importLogOpt.get();
+        importLog.setStatus(ImportStatus.IN_PROGRESS);
+        importLogRepository.save(importLog);
 
         try {
-            log.info("Parsing file: {}", file.getOriginalFilename());
-            List<AssetImportDTO> dtos = parserService.parseFile(file);
+            log.info("Parsing file: {}", originalFilename);
+            List<AssetImportDTO> dtos = parserService.parseFile(fileBytes, originalFilename);
             importLog.setTotalRecords(dtos.size());
 
             if (dtos.isEmpty()) {
@@ -95,31 +105,18 @@ public class AssetImportService {
             }
 
             importLog.setStatus(
-                    errors.isEmpty() ? ImportStatus.SUCCESS : ImportStatus.PARTIAL_SUCCESS
+                    errors.isEmpty() ? ImportStatus.COMPLETED : ImportStatus.PARTIAL_SUCCESS
             );
             importLog.setCompletedAt(LocalDateTime.now());
             importLogRepository.save(importLog);
-
-            return buildResponse(
-                    true,
-                    dtos.size(),
-                    validRecords.size(),
-                    errors.size(),
-                    created,
-                    updated,
-                    errors,
-                    importLog.getId(),
-                    startTime
-            );
+            log.info("Async import completed successfully for log ID: {}", importLogId);
 
         } catch (Exception e) {
-            log.error("Import failed", e);
+            log.error("Async import failed for log ID: {}", importLogId, e);
             importLog.setStatus(ImportStatus.FAILED);
             importLog.setErrorMessage(e.getMessage());
             importLog.setCompletedAt(LocalDateTime.now());
             importLogRepository.save(importLog);
-
-            return buildErrorResponse(e.getMessage(), importLog.getId(), startTime);
         }
     }
 

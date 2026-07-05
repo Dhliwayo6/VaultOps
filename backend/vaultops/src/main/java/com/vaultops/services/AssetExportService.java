@@ -27,7 +27,7 @@ public class AssetExportService {
 
     private final AssetRepository assetRepository;
 
-    public ByteArrayResource exportToExcel(ExportFilter filter) {
+    public void exportToExcel(ExportFilter filter, java.io.OutputStream outputStream) {
         log.info("Starting Excel export with filter: {}", filter);
 
         List<Asset> assets = fetchAssets(filter);
@@ -36,10 +36,9 @@ public class AssetExportService {
             throw new NoDataException("No assets found matching the filter criteria");
         }
 
-        try (Workbook workbook = new XSSFWorkbook();
-             ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-
-            Sheet sheet = workbook.createSheet("Assets");
+        try (org.apache.poi.xssf.streaming.SXSSFWorkbook workbook = new org.apache.poi.xssf.streaming.SXSSFWorkbook(100)) {
+            org.apache.poi.xssf.streaming.SXSSFSheet sheet = workbook.createSheet("Assets");
+            sheet.trackAllColumnsForAutoSizing();
 
             CellStyle headerStyle = createHeaderStyle(workbook);
             CellStyle dateStyle = createDateStyle(workbook);
@@ -60,9 +59,9 @@ public class AssetExportService {
             sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 12));
             sheet.createFreezePane(0, 1);
 
-            workbook.write(out);
+            workbook.write(outputStream);
+            workbook.dispose();
             log.info("Excel export completed. {} assets exported", assets.size());
-            return new ByteArrayResource(out.toByteArray());
 
         } catch (IOException e) {
             throw new ExportException("Failed to export to Excel", e);
