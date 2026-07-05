@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { isValidPassword } from '@utils/user';
 import NavigateBackButton from '@components/NavigateBackButton';
 import { ROUTES } from '@constants/routes';
+import { register as apiRegister } from '@api/authApi';
 
 const passwordConstraints = [
     "At least 8 characters",
@@ -18,6 +19,7 @@ export default function SignUp() {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [failed, setFailed] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
 
     const navigate = useNavigate();
 
@@ -33,18 +35,20 @@ export default function SignUp() {
         
         if (!isValidPassword(password) || name === "" || email === "" || isLoading) {
             setFailed(true);
+            setErrorMsg("Please fill in all required fields and satisfy password requirements.");
             return;
         }
 
         setIsLoading(true);
         setFailed(false);
+        setErrorMsg("");
 
         try {
-            // Simulate API Call
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            navigate(ROUTES.OTP);
-        } catch (e2) {
-            console.log("Failed to create account");
+            await apiRegister({ name, email, phone, password });
+            navigate(`/otp/${encodeURIComponent(email)}`);
+        } catch (err) {
+            console.error("Failed to create account", err);
+            setErrorMsg(err.message || "An unexpected error occurred. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -75,6 +79,11 @@ export default function SignUp() {
                     )}
 
                     <form onSubmit={HandleRegisterUserAsync} className='flex flex-col gap-5'>
+                        {errorMsg && (
+                            <div className="p-4 bg-red-50 border border-red-100 rounded-2xl text-xs font-semibold text-red-600 text-center">
+                                {errorMsg}
+                            </div>
+                        )}
                         <div className={`space-y-4 transition-all duration-300 ${isLoading ? 'opacity-50 pointer-events-none grayscale' : 'opacity-100'}`}>
                             {inputs.map((data, index) => (
                                 <div key={index} className="space-y-1.5">

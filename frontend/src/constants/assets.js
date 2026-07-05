@@ -1,7 +1,6 @@
 export const Assignment = {
   ASSIGNED: "ASSIGNED",
-  UNASSIGNED: "UNASSIGNED",
-  PENDING: "PENDING"
+  UNASSIGNED: "UNASSIGNED"
 };
 
 export const ConditionStatus = {

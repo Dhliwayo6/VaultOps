@@ -4,9 +4,24 @@ import AddAssetButton from '@features/assets/components/AddAssetButton';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@constants/routes';
 
+import Loading from '@components/Loading';
+import ErrorState from '@components/ErrorState';
+
 const Dashboard = () => {
-  const { stats, recentAssets, vaultCapacity, serviceNotice } = useDashboardStats();
+  const { stats, recentAssets, vaultCapacity, serviceNotice, isLoading, error, refetch } = useDashboardStats();
   const navigate = useNavigate();
+
+  if (isLoading) {
+    return <Loading message="Fetching vault diagnostics..." />;
+  }
+
+  if (error) {
+    return (
+      <div className="py-12">
+        <ErrorState title="Dashboard Error" message={error} onRetry={refetch} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-10">

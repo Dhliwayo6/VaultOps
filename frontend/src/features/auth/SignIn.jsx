@@ -3,26 +3,36 @@ import { Link, useNavigate } from 'react-router-dom';
 import { isValidPassword } from '@utils/user';
 import NavigateBackButton from '@components/NavigateBackButton';
 import { ROUTES } from '@constants/routes';
+import { login as apiLogin } from '@api/authApi';
+import { useAuth } from '@context/AuthContext';
 
 export default function SignIn() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
 
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const HandleLoginAsync = async (e) => {
         e.preventDefault();
         
-        if (!isValidPassword(password) || isLoading) return;
+        if (!isValidPassword(password) || isLoading) {
+            setErrorMsg("Invalid email or password format.");
+            return;
+        }
 
         setIsLoading(true);
+        setErrorMsg("");
 
         try {
-            // Add Api call logic later
+            const data = await apiLogin({ email, password });
+            login(data.user, data.accessToken);
             navigate(ROUTES.PORTAL);
         } catch (error) {
             console.error("Failed to login", error);
+            setErrorMsg(error.message || "An unexpected error occurred. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -49,6 +59,11 @@ export default function SignIn() {
                     )}
 
                     <form onSubmit={HandleLoginAsync} className='flex flex-col gap-6'>
+                        {errorMsg && (
+                            <div className="p-4 bg-red-50 border border-red-100 rounded-2xl text-xs font-semibold text-red-600 text-center">
+                                {errorMsg}
+                            </div>
+                        )}
                         <div className={`space-y-4 transition-opacity duration-300 ${isLoading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
                             {/* Email Input */}
                             <div className="space-y-2">

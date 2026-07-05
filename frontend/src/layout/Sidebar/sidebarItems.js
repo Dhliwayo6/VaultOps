@@ -1,5 +1,5 @@
 import { AiFillHome } from "react-icons/ai";
-import { FaWallet, FaBookOpen } from "react-icons/fa";
+import { FaWallet, FaBookOpen, FaUsers, FaUpload } from "react-icons/fa";
 import { GiWallet } from "react-icons/gi";
 import { ROUTES } from '@constants/routes';
 
@@ -13,6 +13,18 @@ export const sidebarItems = [
     path: ROUTES.ASSETS,
     title: "Assets",
     icon: FaWallet,
+  },
+  {
+    path: ROUTES.USERS,
+    title: "Users",
+    icon: FaUsers,
+    adminOnly: true,
+  },
+  {
+    path: ROUTES.IMPORT,
+    title: "Import",
+    icon: FaUpload,
+    adminOnly: true,
   },
   {
     path: "#",

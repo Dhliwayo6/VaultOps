@@ -1,6 +1,7 @@
 function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }import React, { useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { ROUTES } from '@constants/routes';
+import { verifyOtp as apiVerifyOtp, resendOtp as apiResendOtp } from '@api/authApi';
 
 export default function OtpActivation() {
     const navigate = useNavigate();
@@ -8,6 +9,7 @@ export default function OtpActivation() {
 
     const [codeSent, setCodeSent] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
     
     const length = 6;
     const [otp, setOtp] = useState(Array(length).fill(""));
@@ -35,12 +37,13 @@ export default function OtpActivation() {
         if (code.length !== 6 || isLoading) return;
 
         setIsLoading(true);
+        setErrorMsg("");
         try {
-            // Simulate verification
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await apiVerifyOtp({ email, code });
             navigate(ROUTES.SIGN_IN);
         } catch (err) {
-            console.log("Failed to activate account", err);
+            console.error("Failed to activate account", err);
+            setErrorMsg(err.message || "An unexpected error occurred. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -48,11 +51,17 @@ export default function OtpActivation() {
     
     const HandleResendCodeAsync = async () => {
         if (isLoading) return;
+        setIsLoading(true);
+        setErrorMsg("");
         try {
+            await apiResendOtp(email);
             setCodeSent(true);
             setTimeout(() => setCodeSent(false), 4000); // Hide notice after 4s
         } catch (e2) {
-            setCodeSent(false);
+            console.error("Failed to resend OTP", e2);
+            setErrorMsg(e2.message || "An unexpected error occurred. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -83,6 +92,11 @@ export default function OtpActivation() {
                         )}
 
                         <form onSubmit={handleAccountActivationAsync} className='flex flex-col items-center gap-8'>
+                            {errorMsg && (
+                                <div className="w-full p-4 bg-red-50 border border-red-100 rounded-2xl text-xs font-semibold text-red-600 text-center">
+                                    {errorMsg}
+                                </div>
+                            )}
                             <div className={`flex gap-2 sm:gap-3 transition-opacity duration-300 ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}>
                                 {otp.map((digit, index) => (
                                     <input

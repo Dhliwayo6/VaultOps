@@ -9,6 +9,10 @@ import SignUp from '@features/auth/SignUp';
 import OtpActivation from '@features/auth/OtpActivation';
 import Dashboard from '@features/dashboard/Dashboard';
 import Assets from '@features/assets/Assets';
+import ProtectedRoute from '@components/ProtectedRoute';
+import AdminRoute from '@components/AdminRoute';
+import UserManagement from '@features/admin/UserManagement';
+import ImportAssets from '@features/admin/ImportAssets';
 import '@styles/App.css';
 
 function App() {
@@ -31,15 +35,34 @@ function App() {
     },
     {
       path: ROUTES.PORTAL,
-      element: <Portal />,
+      element: <ProtectedRoute />,
       children: [
         {
-          index: true,
-          element: <Dashboard />
-        },
-        {
-          path: "assets",
-          element: <Assets />
+          path: "",
+          element: <Portal />,
+          children: [
+            {
+              index: true,
+              element: <Dashboard />
+            },
+            {
+              path: "assets",
+              element: <Assets />
+            },
+            {
+              element: <AdminRoute />,
+              children: [
+                {
+                  path: "users",
+                  element: <UserManagement />
+                },
+                {
+                  path: "import",
+                  element: <ImportAssets />
+                }
+              ]
+            }
+          ]
         }
       ]
     }

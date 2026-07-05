@@ -1,20 +1,11 @@
 import React from 'react';
 import { sidebarItems } from "./sidebarItems";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "@context/AuthContext";
 import { ROUTES } from '@constants/routes';
 
 export default function Sidebar() {
-  const location = useLocation();
-  const currentPath = location.pathname;
   const { user } = useAuth();
-
-  const isActive = (itemPath) => {
-    if (itemPath === ROUTES.PORTAL) {
-      return currentPath === ROUTES.PORTAL;
-    }
-    return currentPath === itemPath && itemPath !== '#';
-  };
 
   return (
     <nav className='z-50 w-full fixed bottom-0 flex items-center justify-between p-2 bg-[#0EA5E9] rounded-t-[2.5rem] md:w-[100px] lg:w-[260px] md:top-0 md:left-0 md:flex-col md:rounded-none md:justify-start md:items-stretch'>
@@ -27,20 +18,24 @@ export default function Sidebar() {
 
       {/* Nav */}
       <div className="flex md:flex-col w-full gap-2 px-2">
-        {sidebarItems.map(item => {
-          const { path, title } = item;
-          const active = isActive(path);
-          return (
-            <Link 
-              to={path}
-              key={title}
-              className={`flex-1 md:flex-initial flex flex-col items-center py-4 md:py-3 rounded-2xl transition-all duration-200 lg:flex-row lg:justify-start lg:gap-4 lg:px-6
-                ${active ? 'bg-white text-[#0EA5E9] font-bold' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
-            >
-              <span className='text-[10px] lg:text-[0.95rem] tracking-wide'>{title}</span>
-            </Link>
-          );
-        })}
+        {sidebarItems
+          .filter(item => !item.adminOnly || user?.role === 'ADMIN')
+          .map(item => {
+            const { path, title, icon: Icon } = item;
+            return (
+              <NavLink 
+                to={path}
+                key={title}
+                className={({ isActive }) => 
+                  `flex-1 md:flex-initial flex flex-col items-center py-4 md:py-3 rounded-2xl transition-all duration-200 lg:flex-row lg:justify-start lg:gap-4 lg:px-6
+                   ${isActive && path !== '#' ? 'bg-white text-[#0EA5E9] font-bold shadow-sm' : 'text-white/80 hover:bg-white/10 hover:text-white'}`
+                }
+              >
+                {Icon && <Icon className="text-lg lg:text-xl" />}
+                <span className='text-[10px] lg:text-[0.95rem] tracking-wide'>{title}</span>
+              </NavLink>
+            );
+          })}
       </div>
 
       {/* User */}
