@@ -2,7 +2,7 @@ package com.vaultops.assets.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaultops.controllers.AssetController;
-import com.vaultops.services.asset.*;
+import com.vaultops.services.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -18,15 +18,5 @@ public abstract class AssetControllerTestBase {
     protected ObjectMapper objectMapper;
 
     @MockitoBean
-    protected CreateAssetService createAssetService;
-    @MockitoBean
-    protected GetAssetService getAssetService;
-    @MockitoBean
-    protected GetAssetsService getAssetsService;
-    @MockitoBean
-    protected UpdateAssetService updateAssetService;
-    @MockitoBean
-    protected SearchAssetService searchAssetService;
-    @MockitoBean
-    protected DeleteAssetService deleteAssetService;
+    protected AssetService assetService;
 }

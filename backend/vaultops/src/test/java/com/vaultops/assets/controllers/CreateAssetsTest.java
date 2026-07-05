@@ -6,7 +6,7 @@ import com.vaultops.enums.Assignment;
 import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
 import com.vaultops.model.Asset;
-import com.vaultops.services.asset.*;
+import com.vaultops.services.AssetService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,17 +24,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@org.springframework.security.test.context.support.WithMockUser
 @DisplayName("Tests for Create Asset Endpoint")
 public class CreateAssetsTest {
 
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper objectMapper;
-    @MockitoBean private CreateAssetService createAssetService;
-    @MockitoBean private GetAssetService getAssetService;
-    @MockitoBean private GetAssetsService getAssetsService;
-    @MockitoBean private DeleteAssetService deleteAssetService;
-    @MockitoBean private UpdateAssetService updateAssetService;
-    @MockitoBean private SearchAssetService searchAssetService;
+    @MockitoBean private AssetService assetService;
 
     private Asset asset;
     private AssetDTO assetDTO;
@@ -51,13 +46,12 @@ public class CreateAssetsTest {
         asset.setAssignment(Assignment.ASSIGNED);
 
         assetDTO = new AssetDTO(asset);
-
     }
 
     @Test
     @DisplayName("Create asset successfully and 201 status")
     void createAsset_ValidData_ShouldReturnCreatedStaus() throws Exception {
-        when(createAssetService.execute(any(Asset.class))).thenReturn(ResponseEntity.status(201).body(assetDTO));
+        when(assetService.create(any(Asset.class))).thenReturn(assetDTO);
 
         mockMvc.perform(post("/api/asset")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -70,7 +64,7 @@ public class CreateAssetsTest {
                 .andExpect(jsonPath("$.conditionStatus").value("FAIR"))
                 .andExpect(jsonPath("$.assignment").value("ASSIGNED"));
 
-        verify(createAssetService, times(1)).execute(any(Asset.class));
+        verify(assetService, times(1)).create(any(Asset.class));
     }
 
     @Test
@@ -89,8 +83,7 @@ public class CreateAssetsTest {
         asset.setType("Desktop");
         AssetDTO desktopDTO = new AssetDTO(asset);
 
-        when(createAssetService.execute(any(Asset.class)))
-                .thenReturn(ResponseEntity.status(201).body(desktopDTO));
+        when(assetService.create(any(Asset.class))).thenReturn(desktopDTO);
 
         mockMvc.perform(post("/api/asset")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -105,8 +98,7 @@ public class CreateAssetsTest {
         asset.setUsageStatus(Usage.STORAGE);
         AssetDTO storageAssetDTO = new AssetDTO(asset);
 
-        when(createAssetService.execute(any(Asset.class)))
-                .thenReturn(ResponseEntity.status(201).body(storageAssetDTO));
+        when(assetService.create(any(Asset.class))).thenReturn(storageAssetDTO);
 
         mockMvc.perform(post("/api/asset")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -121,8 +113,7 @@ public class CreateAssetsTest {
         asset.setConditionStatus(ConditionStatus.BAD);
         AssetDTO badAssetDTO = new AssetDTO(asset);
 
-        when(createAssetService.execute(any(Asset.class)))
-                .thenReturn(ResponseEntity.status(201).body(badAssetDTO));
+        when(assetService.create(any(Asset.class))).thenReturn(badAssetDTO);
 
         mockMvc.perform(post("/api/asset")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -142,7 +133,7 @@ public class CreateAssetsTest {
         assetWithoutId.setConditionStatus(ConditionStatus.GOOD);
         assetWithoutId.setUsageStatus(Usage.STORAGE);
 
-        Asset saved =  new Asset();
+        Asset saved = new Asset();
         saved.setId(1000L);
         saved.setName(assetWithoutId.getName());
         saved.setType(assetWithoutId.getType());
@@ -151,12 +142,11 @@ public class CreateAssetsTest {
         saved.setConditionStatus(assetWithoutId.getConditionStatus());
         saved.setUsageStatus(assetWithoutId.getUsageStatus());
 
-        when(createAssetService.execute(any(Asset.class))).thenReturn(ResponseEntity.status(201).body(new AssetDTO(saved)));
+        when(assetService.create(any(Asset.class))).thenReturn(new AssetDTO(saved));
 
         mockMvc.perform(post("/api/asset").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(assetWithoutId)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1000));
     }
-
 }

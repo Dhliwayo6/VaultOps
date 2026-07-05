@@ -7,8 +7,7 @@ import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
 import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.model.Asset;
-import com.vaultops.model.UpdateAssetCommand;
-import com.vaultops.services.asset.*;
+import com.vaultops.services.AssetService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,11 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,16 +27,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@org.springframework.security.test.context.support.WithMockUser
 @DisplayName("Test Update Asset endpoint")
 public class UpdateAssetsTests {
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper objectMapper;
-    @MockitoBean private CreateAssetService createAssetService;
-    @MockitoBean private GetAssetService getAssetService;
-    @MockitoBean private GetAssetsService getAssetsService;
-    @MockitoBean private DeleteAssetService deleteAssetService;
-    @MockitoBean private UpdateAssetService updateAssetService;
-    @MockitoBean private SearchAssetService searchAssetService;
+    @MockitoBean private AssetService assetService;
     private Asset asset;
     private AssetDTO assetDTO;
 
@@ -67,7 +62,7 @@ public class UpdateAssetsTests {
 
         AssetDTO updatedAssetDTO = new AssetDTO(updatedAsset);
 
-        when(updateAssetService.execute(any(UpdateAssetCommand.class))).thenReturn(ResponseEntity.ok(updatedAssetDTO));
+        when(assetService.update(eq(1L), any(Asset.class))).thenReturn(updatedAssetDTO);
 
         mockMvc.perform(put("/api/asset/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -79,20 +74,20 @@ public class UpdateAssetsTests {
                 .andExpect(jsonPath("$.conditionStatus").value("FAIR"))
                 .andExpect(jsonPath("$.assignment").value("UNASSIGNED"));
 
-        verify(updateAssetService, times(1)).execute(any(UpdateAssetCommand.class));
+        verify(assetService, times(1)).update(eq(1L), any(Asset.class));
     }
 
     @Test
     @DisplayName("Should return 404 NOT FOUND status when asset does exist")
     void updateAsset_WhenAssetDoesNotExist_ShouldReturnNotFound() throws Exception{
-        when(updateAssetService.execute(any(UpdateAssetCommand.class))).thenThrow(new AssetNotFoundException());
+        when(assetService.update(eq(1000L), any(Asset.class))).thenThrow(new AssetNotFoundException());
 
         mockMvc.perform(put("/api/asset/1000")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(asset)))
                 .andExpect(status().isNotFound());
 
-        verify(updateAssetService, times(1)).execute(any(UpdateAssetCommand.class));
+        verify(assetService, times(1)).update(eq(1000L), any(Asset.class));
     }
 
     @Test
@@ -101,7 +96,7 @@ public class UpdateAssetsTests {
         mockMvc.perform(put("/api/asset/foo"))
                 .andExpect(status().isBadRequest());
 
-        verify(updateAssetService, never()).execute(any(UpdateAssetCommand.class));
+        verify(assetService, never()).update(any(), any());
     }
 
     @Test
@@ -112,7 +107,7 @@ public class UpdateAssetsTests {
 
         AssetDTO updatedAssetDTO = new AssetDTO(updatedAsset);
 
-        when(updateAssetService.execute(any(UpdateAssetCommand.class))).thenReturn(ResponseEntity.ok(updatedAssetDTO));
+        when(assetService.update(eq(1L), any(Asset.class))).thenReturn(updatedAssetDTO);
 
         mockMvc.perform(put("/api/asset/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -120,6 +115,6 @@ public class UpdateAssetsTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.conditionStatus").value("DAMAGED"));
 
-        verify(updateAssetService, times(1)).execute(any(UpdateAssetCommand.class));
+        verify(assetService, times(1)).update(eq(1L), any(Asset.class));
     }
 }

@@ -7,14 +7,13 @@ import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
 import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.model.Asset;
-import com.vaultops.services.asset.*;
+import com.vaultops.services.AssetService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,17 +24,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@org.springframework.security.test.context.support.WithMockUser
 @DisplayName("Tests for Get Asset By Id Endpoint")
 public class GetAssetsByIdTests {
 
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper objectMapper;
-    @MockitoBean private CreateAssetService createAssetService;
-    @MockitoBean private GetAssetService getAssetService;
-    @MockitoBean private GetAssetsService getAssetsService;
-    @MockitoBean private DeleteAssetService deleteAssetService;
-    @MockitoBean private UpdateAssetService updateAssetService;
-    @MockitoBean private SearchAssetService searchAssetService;
+    @MockitoBean private AssetService assetService;
 
     private Asset asset;
     private AssetDTO assetDTO;
@@ -51,13 +46,12 @@ public class GetAssetsByIdTests {
         asset.setAssignment(Assignment.ASSIGNED);
 
         assetDTO = new AssetDTO(asset);
-
     }
 
     @Test
     @DisplayName("Should return valid asset when found by ID")
     void getAssetById_WhenAssetsIsPresent_ReturnAsset() throws Exception{
-        when(getAssetService.execute(1L)).thenReturn(ResponseEntity.ok(assetDTO));
+        when(assetService.getById(1L)).thenReturn(assetDTO);
 
         mockMvc.perform(get("/api/asset/1"))
                 .andExpect(status().isOk())
@@ -68,16 +62,16 @@ public class GetAssetsByIdTests {
                 .andExpect(jsonPath("$.conditionStatus").value("FAIR"))
                 .andExpect(jsonPath("$.assignment").value("ASSIGNED"));
 
-        verify(getAssetService, times(1)).execute(1L);
+        verify(assetService, times(1)).getById(1L);
     }
 
     @Test
     @DisplayName("Should 404 NOT FOUND error code when asset is not present")
     void getAssetById_WhenAssetNotFound_ReturnNotFoundError() throws Exception {
-        when(getAssetService.execute(1000L)).thenThrow(new AssetNotFoundException());
+        when(assetService.getById(1000L)).thenThrow(new AssetNotFoundException());
 
         mockMvc.perform(get("/api/asset/1000")).andExpect(status().isNotFound());
-        verify(getAssetService, times(1)).execute(1000L);
+        verify(assetService, times(1)).getById(1000L);
     }
 
     @Test
@@ -85,24 +79,22 @@ public class GetAssetsByIdTests {
     void getAssetById_WhenInvalidIdFormat_ShouldReturnBadRequest() throws Exception {
         mockMvc.perform(get("/api/asset/foo")).andExpect(status().isBadRequest());
 
-        verify(getAssetService, never()).execute(any());
-
+        verify(assetService, never()).getById(any());
     }
 
     @Test
     @DisplayName("Should return correct content-type")
     void getAssetsById_ShouldReturnContentAsJson() throws Exception{
-        when(getAssetService.execute(1L)).thenReturn(ResponseEntity.ok(assetDTO));
+        when(assetService.getById(1L)).thenReturn(assetDTO);
 
         mockMvc.perform(get("/api/asset/1")).andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"));
-
     }
 
     @Test
     @DisplayName("Test should return result with populated fields")
     void getAssetsById_ShouldReturnFullFields() throws Exception{
-        when(getAssetService.execute(1L)).thenReturn(ResponseEntity.ok(assetDTO));
+        when(assetService.getById(1L)).thenReturn(assetDTO);
 
         mockMvc.perform(get("/api/asset/1"))
                 .andExpect(status().isOk())
