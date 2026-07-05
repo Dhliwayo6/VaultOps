@@ -2,6 +2,7 @@ package com.vaultops.controllers;
 
 import com.vaultops.dtos.ImportResponse;
 import com.vaultops.exceptions.NoDataException;
+import com.vaultops.exceptions.JobNotFoundException;
 import com.vaultops.model.ImportLog;
 import com.vaultops.repository.ImportLogRepository;
 import com.vaultops.services.AssetImportService;
@@ -22,11 +23,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
 @RequestMapping("/api/import")
 @Validated
 @Slf4j
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class ImportController {
 
     private final AssetImportService importService;
@@ -44,7 +48,32 @@ public class ImportController {
 
         fileValidator.validateFile(file);
 
-        ImportResponse response = importService.processImport(file, dryRun);
+        // Create and persist the ImportLog with PENDING status
+        ImportLog importLog = new ImportLog();
+        importLog.setUserId("system");
+        importLog.setFileName(file.getOriginalFilename());
+        importLog.setFileSize(file.getSize());
+        importLog.setStatus(com.vaultops.enums.ImportStatus.PENDING);
+        importLog.setStartedAt(java.time.LocalDateTime.now());
+        importLog = importLogRepository.save(importLog);
+
+        byte[] fileBytes;
+        try {
+            fileBytes = file.getBytes();
+        } catch (java.io.IOException e) {
+            throw new com.vaultops.exceptions.InvalidFileException("Failed to read file bytes: " + e.getMessage());
+        }
+
+        // Kick off async processing
+        importService.processImportAsync(importLog.getId(), fileBytes, file.getOriginalFilename(), dryRun);
+
+        // Return immediately with importLogId
+        ImportResponse response = ImportResponse.builder()
+                .success(true)
+                .message("Import job started successfully")
+                .importLogId(importLog.getId())
+                .startTime(importLog.getStartedAt())
+                .build();
 
         return ResponseEntity.ok(response);
     }
@@ -97,7 +126,7 @@ public class ImportController {
         log.info("Fetching import log with id: {}", id);
 
         ImportLog log = importLogRepository.findById(id)
-                .orElseThrow(() -> new NoDataException("Import log not found: " + id));
+                .orElseThrow(() -> new JobNotFoundException("Import log not found: " + id));
 
         return ResponseEntity.ok(log);
     }

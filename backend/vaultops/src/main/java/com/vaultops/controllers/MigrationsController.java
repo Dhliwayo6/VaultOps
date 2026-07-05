@@ -2,49 +2,48 @@ package com.vaultops.controllers;
 
 import com.vaultops.dtos.MigrationDTO;
 import com.vaultops.model.Migration;
-import com.vaultops.model.UpdateMigration;
-import com.vaultops.services.migration.*;
+import com.vaultops.services.MigrationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class MigrationsController {
 
-    private final CreateMigrationService createMigrationService;
-    private final GetMigrationsService getMigrationsService;
-    private final GetMigrationService getMigrationService;
-    private final UpdateMigrationService updateMigrationService;
-    private final DeleteMigrationService deleteMigrationService;
+    private final MigrationService migrationService;
 
     @PostMapping("/migration")
     public ResponseEntity<MigrationDTO> createMigration(@RequestBody Migration migration) {
-        return createMigrationService.execute(migration);
+        return ResponseEntity.status(HttpStatus.CREATED).body(migrationService.create(migration));
     }
 
     @GetMapping("/migration")
     public ResponseEntity<List<MigrationDTO>> getMigrations() {
-        return getMigrationsService.execute(null);
+        return ResponseEntity.ok(migrationService.getAll());
     }
 
     @GetMapping("/migration/{id}")
     public ResponseEntity<MigrationDTO> getMigrationById(@PathVariable Long id) {
-        return getMigrationService.execute(id);
+        return ResponseEntity.ok(migrationService.getById(id));
     }
 
     @PutMapping("/migration/{id}")
-    public ResponseEntity<MigrationDTO> updateMigration(@PathVariable Long id,
-                                                        @RequestBody Migration migration) {
-        return updateMigrationService.execute(new UpdateMigration(id, migration));
+    public ResponseEntity<MigrationDTO> updateMigration(@PathVariable Long id, @RequestBody Migration migration) {
+        return ResponseEntity.ok(migrationService.update(id, migration));
     }
 
     @DeleteMapping("/migration/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteMigration(@PathVariable Long id) {
-        return deleteMigrationService.execute(id);
+        migrationService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
-

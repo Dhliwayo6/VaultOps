@@ -14,20 +14,25 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/export")
 @Slf4j
 @RequiredArgsConstructor
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class ExportController {
 
     private final AssetExportService exportService;
 
     @GetMapping("/assets/excel")
-    public ResponseEntity<Resource> exportToExcel(
+    public ResponseEntity<StreamingResponseBody> exportToExcel(
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String condition,
             @RequestParam(required = false) String usage,
@@ -41,16 +46,17 @@ public class ExportController {
         ExportFilter filter = buildFilter(category, condition, usage, location,
                 purchaseDateFrom, purchaseDateTo);
 
-        ByteArrayResource resource = exportService.exportToExcel(filter);
-
         String filename = String.format("assets-export-%s.xlsx",
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss")));
 
+        StreamingResponseBody responseBody = outputStream -> {
+            exportService.exportToExcel(filter, outputStream);
+        };
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .contentLength(resource.contentLength())
-                .body(resource);
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(responseBody);
     }
 
     @GetMapping("/assets/csv")
