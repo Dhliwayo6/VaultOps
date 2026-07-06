@@ -44,6 +44,7 @@ public class CreateAssetsTest {
         asset.setUsageStatus(Usage.IN_USE);
         asset.setConditionStatus(ConditionStatus.FAIR);
         asset.setAssignment(Assignment.ASSIGNED);
+        asset.setLocation("Office");
 
         assetDTO = new AssetDTO(asset);
     }

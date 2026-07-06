@@ -45,6 +45,7 @@ public class UpdateAssetsTests {
         asset.setUsageStatus(Usage.IN_USE);
         asset.setConditionStatus(ConditionStatus.FAIR);
         asset.setAssignment(Assignment.ASSIGNED);
+        asset.setLocation("Office");
 
         assetDTO = new AssetDTO(asset);
     }
@@ -59,6 +60,7 @@ public class UpdateAssetsTests {
         updatedAsset.setUsageStatus(Usage.STORAGE);
         updatedAsset.setConditionStatus(ConditionStatus.FAIR);
         updatedAsset.setAssignment(Assignment.UNASSIGNED);
+        updatedAsset.setLocation("Office");
 
         AssetDTO updatedAssetDTO = new AssetDTO(updatedAsset);
 
@@ -103,6 +105,11 @@ public class UpdateAssetsTests {
     @DisplayName("Should update only one field")
     void updateAsset_ShouldUpdateOnlyOneField() throws Exception{
         Asset updatedAsset = new Asset();
+        updatedAsset.setName("Macbook Laptop");
+        updatedAsset.setType("Laptop");
+        updatedAsset.setUsageStatus(Usage.IN_USE);
+        updatedAsset.setAssignment(Assignment.ASSIGNED);
+        updatedAsset.setLocation("Office");
         updatedAsset.setConditionStatus(ConditionStatus.DAMAGED);
 
         AssetDTO updatedAssetDTO = new AssetDTO(updatedAsset);
