@@ -25,4 +25,6 @@ jacoco.exec
 # Environment variables
 .env
 .env.*
-!.env.example
+!.env.exampledocker-compose.yml
+*.task.md
+ANALYSIS.md
