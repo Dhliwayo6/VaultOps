@@ -21,3 +21,8 @@ jacoco.exec
 **/node_modules/
 **/dist/
 *.log
+
+# Environment variables
+.env
+.env.*
+!.env.example
