@@ -36,12 +36,8 @@ public class AuthController {
     }
 
     @PostMapping("/resend-otp")
-    public ResponseEntity<?> resendOtp(@RequestBody Map<String, String> body) {
-        String email = body.get("email");
-        if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException("Email is required");
-        }
-        authService.resendOtp(email);
+    public ResponseEntity<?> resendOtp(@Valid @RequestBody ResendOtpRequest request) {
+        authService.resendOtp(request.getEmail());
         return ResponseEntity.ok(Map.of("success", true, "message", "New OTP code sent"));
     }
 
@@ -66,16 +62,13 @@ public class AuthController {
         }
 
         try {
-            String newAccessToken = authService.refresh(refreshToken);
-            DecodedJWT decoded = JWT.decode(newAccessToken);
+            AuthService.LoginResult result = authService.refresh(refreshToken);
+            setRefreshTokenCookie(response, result.getRefreshToken());
 
+            User user = result.getUser();
             AuthResponse authResponse = new AuthResponse(
-                    newAccessToken,
-                    new AuthResponse.UserInfo(
-                            decoded.getClaim("name").asString(),
-                            decoded.getSubject(),
-                            decoded.getClaim("role").asString()
-                    )
+                    result.getAccessToken(),
+                    new AuthResponse.UserInfo(user.getName(), user.getEmail(), user.getRole().name())
             );
             return ResponseEntity.ok(authResponse);
         } catch (IllegalArgumentException e) {
@@ -84,7 +77,16 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        String authHeader = request.getHeader("Authorization");
+        String accessToken = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            accessToken = authHeader.substring(7);
+        }
+        String refreshToken = extractRefreshToken(request);
+
+        authService.logout(accessToken, refreshToken);
+
         ResponseCookie cookie = ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
                 .secure(true)
@@ -94,6 +96,18 @@ public class AuthController {
                 .build();
         response.addHeader("Set-Cookie", cookie.toString());
         return ResponseEntity.ok(Map.of("success", true, "message", "Logged out successfully"));
+    }
+
+    @PostMapping("/request-reset")
+    public ResponseEntity<?> requestReset(@Valid @RequestBody RequestResetRequest request) {
+        authService.requestReset(request.getEmail());
+        return ResponseEntity.ok(Map.of("success", true, "message", "If the email is registered, a reset link has been sent."));
+    }
+
+    @PostMapping("/complete-reset")
+    public ResponseEntity<?> completeReset(@Valid @RequestBody CompleteResetRequest request) {
+        authService.completeReset(request.getToken(), request.getPassword());
+        return ResponseEntity.ok(Map.of("success", true, "message", "Password has been reset successfully"));
     }
 
     private void setRefreshTokenCookie(HttpServletResponse response, String token) {

@@ -28,13 +28,17 @@ public class Asset {
 
     @Column(name = "name")
     @NotBlank(message = "Asset name cannot be blank")
+    @jakarta.validation.constraints.Size(max = 255, message = "Name must not exceed 255 characters")
     private String name;
 
     @Column(name = "type", nullable = false)
     @NotBlank(message = "Asset type is required")
+    @jakarta.validation.constraints.Size(max = 255, message = "Type must not exceed 255 characters")
     private String type;
 
     @Column(name = "location", nullable = false)
+    @NotBlank(message = "Asset location is required")
+    @jakarta.validation.constraints.Size(max = 255, message = "Location must not exceed 255 characters")
     private String location;
 
     @NotNull(message = "Assignment status is required")
@@ -43,12 +47,16 @@ public class Asset {
     private Assignment assignment;
 
     @Column(name = "serial_number", unique = true)
+    @jakarta.validation.constraints.Size(max = 100, message = "Serial number must not exceed 100 characters")
+    @jakarta.validation.constraints.Pattern(regexp = "^[A-Z0-9-]+$", message = "Serial number must contain only uppercase letters, numbers, and hyphens")
     private String serialNumber;
 
     @Column(name = "purchase_price")
+    @jakarta.validation.constraints.DecimalMin(value = "0.0", message = "Purchase price must be positive or zero")
     private BigDecimal purchasePrice;
 
     @Column(name = "purchase_date")
+    @jakarta.validation.constraints.PastOrPresent(message = "Purchase date cannot be in the future")
     private LocalDate purchaseDate;
 
     @NotNull(message = "Condition status is required")
@@ -61,6 +69,7 @@ public class Asset {
     @Enumerated(EnumType.STRING)
     private Usage usageStatus;
 
+    @jakarta.validation.constraints.Size(max = 255, message = "Assigned to must not exceed 255 characters")
     private String assignedTo;
 
     @CreationTimestamp

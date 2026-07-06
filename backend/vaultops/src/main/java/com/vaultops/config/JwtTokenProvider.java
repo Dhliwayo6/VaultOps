@@ -37,6 +37,7 @@ public class JwtTokenProvider {
     public String generateRefreshToken(String email) {
         return JWT.create()
                 .withSubject(email)
+                .withClaim("jti", java.util.UUID.randomUUID().toString())
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRY))
                 .sign(Algorithm.HMAC256(jwtSecret));

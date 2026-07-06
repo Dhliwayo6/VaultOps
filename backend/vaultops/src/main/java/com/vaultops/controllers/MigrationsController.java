@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,12 +18,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+@Validated
 public class MigrationsController {
 
     private final MigrationService migrationService;
 
     @PostMapping("/migration")
-    public ResponseEntity<MigrationDTO> createMigration(@RequestBody Migration migration) {
+    public ResponseEntity<MigrationDTO> createMigration(@Valid @RequestBody Migration migration) {
         return ResponseEntity.status(HttpStatus.CREATED).body(migrationService.create(migration));
     }
 
@@ -36,7 +39,7 @@ public class MigrationsController {
     }
 
     @PutMapping("/migration/{id}")
-    public ResponseEntity<MigrationDTO> updateMigration(@PathVariable Long id, @RequestBody Migration migration) {
+    public ResponseEntity<MigrationDTO> updateMigration(@PathVariable Long id, @Valid @RequestBody Migration migration) {
         return ResponseEntity.ok(migrationService.update(id, migration));
     }
 
