@@ -1,5 +1,5 @@
 package com.vaultops.enums;
 
 public enum UserStatus {
-    PENDING, ACTIVE
+    PENDING, ACTIVE, SUSPENDED
 }
