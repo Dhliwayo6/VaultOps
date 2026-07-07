@@ -24,11 +24,11 @@ export function useDashboardStats() {
 
       // Format bento stats
       const statsArray = [
-        { label: "Total Assets", value: (statsData.totalAssets || 0).toLocaleString(), color: "bg-white text-slate-800" },
-        { label: "In Use", value: (statsData.inUseCount || 0).toLocaleString(), color: "bg-[#0EA5E9] text-white" },
-        { label: "In Storage", value: (statsData.inStorageCount || 0).toLocaleString(), color: "bg-white text-slate-800" },
-        { label: "In Service", value: (statsData.inServiceCount || 0).toLocaleString(), color: "bg-white text-slate-800" },
-        { label: "Damaged", value: (statsData.damagedCount || 0).toLocaleString(), color: "bg-red-50 text-red-600" },
+        { label: "Total Assets", value: (statsData.totalAssets || 0).toLocaleString(), color: "bg-surface-elevated text-text-primary" },
+        { label: "In Use", value: (statsData.inUseCount || 0).toLocaleString(), color: "bg-accent text-white" },
+        { label: "In Storage", value: (statsData.inStorageCount || 0).toLocaleString(), color: "bg-surface-elevated text-text-primary" },
+        { label: "In Service", value: (statsData.inServiceCount || 0).toLocaleString(), color: "bg-surface-elevated text-text-primary" },
+        { label: "Damaged", value: (statsData.damagedCount || 0).toLocaleString(), color: "bg-red-500/10 text-red-600 dark:text-red-400" },
       ];
       setStats(statsArray);
 

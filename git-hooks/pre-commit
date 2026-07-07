@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+import sys
+import subprocess
+import re
+
+# Regular expressions for potential secrets
+SECRET_PATTERNS = {
+    "Brevo SMTP Key": r"xsmtpsib-[0-9a-fA-F]{64}-[0-9a-zA-Z]{16}",
+    "Private Key": r"-----BEGIN [A-Z ]*PRIVATE KEY-----",
+    "Generic Password Assignment": r"\b(?:password|passwd|pwd|secret|key|token|smtp_pass)\b\s*[:=]\s*['\"]([^'\"\$\{\}\s]+)['\"]",
+    "Connection String Creds": r"[a-zA-Z0-9]+://[^:\s]+:[^@\s]+@[^:\s]+:[0-9]+/[^?\s]+",
+    "API Key / Secret Token": r"\b(?:api_key|apikey|jwt_secret|signing_secret|access_token|refresh_token)\b\s*[:=]\s*['\"]([^'\"\$\{\}\s]+)['\"]"
+}
+
+def scan_staged_changes():
+    print("=== VaultOps Pre-commit Security Scan ===")
+    
+    # Get diff of staged changes
+    try:
+        cmd = ["git", "diff", "--cached", "-U0"]
+        diff_output = subprocess.check_output(cmd, text=True, errors="ignore")
+    except Exception as e:
+        print(f"Error running git diff: {e}")
+        return True # Permit commit on tool error
+        
+    violations = []
+    current_file = None
+    
+    for line in diff_output.splitlines():
+        if line.startswith("+++ b/"):
+            current_file = line[6:]
+        elif line.startswith("+") and not line.startswith("+++"):
+            added_content = line[1:]
+            for name, pattern in SECRET_PATTERNS.items():
+                matches = re.findall(pattern, added_content, re.IGNORECASE)
+                for m in matches:
+                    val = m if isinstance(m, str) else m[0]
+                    # Filter out placeholders and variables
+                    if len(val) < 6 or "${" in val or "your_" in val or "example" in val or "placeholder" in val or "password" in val.lower() or "test" in val.lower() or "dummy" in val.lower():
+                        continue
+                    violations.append({
+                        "file": current_file,
+                        "type": name,
+                        "match": val,
+                        "line": added_content.strip()
+                    })
+
+    if violations:
+        print("\n[SECURITY ALERT] Staged changes contain potential secrets!")
+        for v in violations:
+            print(f"  File: {v['file']}")
+            print(f"  Type: {v['type']}")
+            print(f"  Match: {v['match']}")
+            print(f"  Content: {v['line'][:100]}")
+            print("-" * 50)
+        print("\nCommit blocked. Please remove the secrets or move them to a secure environment variable config.")
+        return False
+        
+    print("No secrets detected in staged changes. Commit allowed.")
+    return True
+
+if __name__ == "__main__":
+    if not scan_staged_changes():
+        sys.exit(1)
+    sys.exit(0)
