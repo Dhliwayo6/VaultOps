@@ -17,7 +17,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${app.jwt.secret:default-secret-key-that-is-very-long-and-secure-for-vaultops-2026}")
+    @Value("${app.jwt.secret}")
     private String jwtSecret;
 
     private static final long ACCESS_TOKEN_EXPIRY = 15 * 60 * 1000; // 15 minutes

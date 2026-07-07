@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final AuthService authService;
@@ -30,9 +32,17 @@ public class AuthController {
     }
 
     @PostMapping("/verify-otp")
-    public ResponseEntity<?> verifyOtp(@Valid @RequestBody VerifyOtpRequest request) {
-        authService.verifyOtp(request);
-        return ResponseEntity.ok(Map.of("success", true, "message", "Account activated successfully"));
+    public ResponseEntity<?> verifyOtp(@Valid @RequestBody VerifyOtpRequest request, HttpServletRequest httpRequest) {
+        String ip = getClientIP(httpRequest);
+        log.info("OTP verification attempt - Email: {}, IP: {}", request.getEmail(), ip);
+        try {
+            authService.verifyOtp(request);
+            log.info("OTP verification success - Email: {}, IP: {}", request.getEmail(), ip);
+            return ResponseEntity.ok(Map.of("success", true, "message", "Account activated successfully"));
+        } catch (Exception e) {
+            log.warn("OTP verification failure - Email: {}, IP: {}, Reason: {}", request.getEmail(), ip, e.getMessage());
+            throw e;
+        }
     }
 
     @PostMapping("/resend-otp")
@@ -42,16 +52,24 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
-        AuthService.LoginResult result = authService.login(request);
-        setRefreshTokenCookie(response, result.getRefreshToken());
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest, HttpServletResponse response) {
+        String ip = getClientIP(httpRequest);
+        log.info("Authentication attempt - Email: {}, IP: {}", request.getEmail(), ip);
+        try {
+            AuthService.LoginResult result = authService.login(request);
+            log.info("Authentication success - Email: {}, IP: {}", request.getEmail(), ip);
+            setRefreshTokenCookie(response, result.getRefreshToken());
 
-        User user = result.getUser();
-        AuthResponse authResponse = new AuthResponse(
-                result.getAccessToken(),
-                new AuthResponse.UserInfo(user.getName(), user.getEmail(), user.getRole().name())
-        );
-        return ResponseEntity.ok(authResponse);
+            User user = result.getUser();
+            AuthResponse authResponse = new AuthResponse(
+                    result.getAccessToken(),
+                    new AuthResponse.UserInfo(user.getName(), user.getEmail(), user.getRole().name())
+            );
+            return ResponseEntity.ok(authResponse);
+        } catch (Exception e) {
+            log.warn("Authentication failure - Email: {}, IP: {}, Reason: {}", request.getEmail(), ip, e.getMessage());
+            throw e;
+        }
     }
 
     @PostMapping("/refresh")
@@ -99,15 +117,26 @@ public class AuthController {
     }
 
     @PostMapping("/request-reset")
-    public ResponseEntity<?> requestReset(@Valid @RequestBody RequestResetRequest request) {
+    public ResponseEntity<?> requestReset(@Valid @RequestBody RequestResetRequest request, HttpServletRequest httpRequest) {
+        String ip = getClientIP(httpRequest);
+        log.info("Password reset request attempt - Email: {}, IP: {}", request.getEmail(), ip);
         authService.requestReset(request.getEmail());
+        log.info("Password reset request success - Email: {}, IP: {}", request.getEmail(), ip);
         return ResponseEntity.ok(Map.of("success", true, "message", "If the email is registered, a reset link has been sent."));
     }
 
     @PostMapping("/complete-reset")
-    public ResponseEntity<?> completeReset(@Valid @RequestBody CompleteResetRequest request) {
-        authService.completeReset(request.getToken(), request.getPassword());
-        return ResponseEntity.ok(Map.of("success", true, "message", "Password has been reset successfully"));
+    public ResponseEntity<?> completeReset(@Valid @RequestBody CompleteResetRequest request, HttpServletRequest httpRequest) {
+        String ip = getClientIP(httpRequest);
+        log.info("Password reset completion attempt - IP: {}", ip);
+        try {
+            authService.completeReset(request.getToken(), request.getPassword());
+            log.info("Password reset completion success - IP: {}", ip);
+            return ResponseEntity.ok(Map.of("success", true, "message", "Password has been reset successfully"));
+        } catch (Exception e) {
+            log.warn("Password reset completion failure - IP: {}, Reason: {}", ip, e.getMessage());
+            throw e;
+        }
     }
 
     private void setRefreshTokenCookie(HttpServletResponse response, String token) {
@@ -130,5 +159,13 @@ public class AuthController {
             }
         }
         return null;
+    }
+
+    private String getClientIP(HttpServletRequest request) {
+        String xfHeader = request.getHeader("X-Forwarded-For");
+        if (xfHeader == null || xfHeader.isEmpty()) {
+            return request.getRemoteAddr();
+        }
+        return xfHeader.split(",")[0].trim();
     }
 }

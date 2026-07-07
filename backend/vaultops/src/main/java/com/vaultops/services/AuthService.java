@@ -20,6 +20,7 @@ import com.vaultops.utils.SecurityUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,12 +34,12 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
 
     private final UserRepository userRepository;
     private final UserOtpRepository userOtpRepository;
     private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
     private final MailService mailService;
     private final JwtTokenProvider jwtTokenProvider;
     private final DenylistedTokenRepository denylistedTokenRepository;
@@ -55,18 +56,25 @@ public class AuthService {
 
     @Transactional
     public void register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+        Optional<User> existingUserOpt = userRepository.findByEmail(request.getEmail());
+
+        User user;
+        if (existingUserOpt.isPresent()) {
+            user = existingUserOpt.get();
+            if (user.getStatus() != UserStatus.PENDING) {
+                throw new IllegalArgumentException("Email already exists");
+            }
+        } else {
+            user = new User();
+            user.setEmail(request.getEmail());
+            user.setRole(UserRole.USER);
+            user.setStatus(UserStatus.PENDING);
+            user.setCreatedAt(LocalDateTime.now());
         }
 
-        User user = new User();
         user.setName(request.getName());
-        user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(UserRole.USER);
-        user.setStatus(UserStatus.PENDING);
-        user.setCreatedAt(LocalDateTime.now());
 
         User savedUser = userRepository.save(user);
         sendVerificationOtp(savedUser);
@@ -117,8 +125,9 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
 
-        // Reject login for unverified accounts with the exact same generic message
-        if (user.getStatus() == UserStatus.PENDING) {
+        // Reject login for unverified or suspended accounts with the exact same generic
+        // message
+        if (user.getStatus() == UserStatus.PENDING || user.getStatus() == UserStatus.SUSPENDED) {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
@@ -126,14 +135,14 @@ public class AuthService {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
-        String accessToken = jwtTokenProvider.generateAccessToken(user.getEmail(), user.getRole().name(), user.getName(), user.getId());
+        String accessToken = jwtTokenProvider.generateAccessToken(user.getEmail(), user.getRole().name(),
+                user.getName(), user.getId());
         String refreshToken = jwtTokenProvider.generateRefreshToken(user.getEmail());
 
         // Store refresh token hash in database for rotation/revocation
         String tokenHash = SecurityUtils.hashSha256(refreshToken);
         UserRefreshToken userRefreshToken = new UserRefreshToken(
-                user, tokenHash, LocalDateTime.now().plusDays(7)
-        );
+                user, tokenHash, LocalDateTime.now().plusDays(7));
         userRefreshTokenRepository.save(userRefreshToken);
 
         return new LoginResult(accessToken, refreshToken, user);
@@ -169,13 +178,13 @@ public class AuthService {
         userRefreshTokenRepository.save(storedToken);
 
         // Generate new rotated access and refresh tokens
-        String newAccessToken = jwtTokenProvider.generateAccessToken(user.getEmail(), user.getRole().name(), user.getName(), user.getId());
+        String newAccessToken = jwtTokenProvider.generateAccessToken(user.getEmail(), user.getRole().name(),
+                user.getName(), user.getId());
         String newRefreshToken = jwtTokenProvider.generateRefreshToken(user.getEmail());
 
         String newTokenHash = SecurityUtils.hashSha256(newRefreshToken);
         UserRefreshToken newUserRefreshToken = new UserRefreshToken(
-                user, newTokenHash, LocalDateTime.now().plusDays(7)
-        );
+                user, newTokenHash, LocalDateTime.now().plusDays(7));
         userRefreshTokenRepository.save(newUserRefreshToken);
 
         return new LoginResult(newAccessToken, newRefreshToken, user);
@@ -210,7 +219,8 @@ public class AuthService {
 
     @Transactional
     public void requestReset(String email) {
-        // Return same generic response shape (completed in controller) to prevent enumeration.
+        // Return same generic response shape (completed in controller) to prevent
+        // enumeration.
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
@@ -221,8 +231,7 @@ public class AuthService {
 
             // Store hashed token with 15 minutes expiry
             PasswordResetToken resetToken = new PasswordResetToken(
-                    user, tokenHash, LocalDateTime.now().plusMinutes(15)
-            );
+                    user, tokenHash, LocalDateTime.now().plusMinutes(15));
             passwordResetTokenRepository.save(resetToken);
 
             // Email reset link containing the raw token
@@ -231,11 +240,11 @@ public class AuthService {
                     user.getEmail(),
                     "VaultOps - Password Reset Request",
                     "Hello " + user.getName() + ",\n\n" +
-                    "To reset your password, please click the link below or copy and paste it into your browser:\n" +
-                    resetLink + "\n\n" +
-                    "This link will expire in 15 minutes.\n\n" +
-                    "If you did not request a password reset, please ignore this email."
-            );
+                            "To reset your password, please click the link below or copy and paste it into your browser:\n"
+                            +
+                            resetLink + "\n\n" +
+                            "This link will expire in 15 minutes.\n\n" +
+                            "If you did not request a password reset, please ignore this email.");
         }
     }
 
@@ -265,16 +274,24 @@ public class AuthService {
 
         // Invalidate token immediately
         passwordResetTokenRepository.delete(resetToken);
+
+        log.info("Password reset completion success - Email: {}", user.getEmail());
     }
 
     private void sendVerificationOtp(User user) {
         String code = String.format("%06d", new Random().nextInt(1000000));
-        UserOtp userOtp = new UserOtp();
+        UserOtp userOtp = userOtpRepository.findByUserId(user.getId()).orElse(new UserOtp());
         userOtp.setUser(user);
         userOtp.setCode(code);
         userOtp.setExpiryTime(LocalDateTime.now().plusMinutes(5));
 
         userOtpRepository.save(userOtp);
-        emailService.sendOtp(user.getEmail(), code);
+        mailService.sendPlainTextEmail(
+                user.getEmail(),
+                "VaultOps - Account Verification OTP",
+                "Hello " + user.getName() + ",\n\n" +
+                "Your verification OTP code is: " + code + "\n\n" +
+                "This code will expire in 5 minutes."
+        );
     }
 }
