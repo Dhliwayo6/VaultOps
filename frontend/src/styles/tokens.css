@@ -1,0 +1,156 @@
+:root {
+  /* Light Theme (Default) */
+  --bg-base: #fafafa;
+  --surface-elevated: #ffffff;
+  --border-token: rgba(0, 0, 0, 0.08);
+  --text-primary: #0a0a0c;
+  --text-secondary: #5c5c64;
+  --accent: #0f766e; /* Premium teal/turquoise - darker for contrast */
+  --accent-hover: #115e59;
+  --accent-glow: rgba(15, 118, 110, 0.2);
+  
+  --sidebar-bg: #ffffff;
+  --sidebar-text: #5c5c64;
+  --sidebar-active-bg: #f3f4f6;
+  --sidebar-active-text: #0a0a0c;
+  --sidebar-border: rgba(0, 0, 0, 0.06);
+
+  --shadow-elevation: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 8px -1px rgba(0, 0, 0, 0.03);
+  --shadow-glow: none;
+  
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-duration: 200ms;
+}
+
+:root.dark, html[data-theme="dark"] {
+  /* Dark Theme */
+  --bg-base: #0a0a0c;
+  --surface-elevated: #131316;
+  --border-token: rgba(255, 255, 255, 0.08);
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --accent: #14b8a6; /* Teal-500 */
+  --accent-hover: #2dd4bf;
+  --accent-glow: rgba(20, 184, 166, 0.35);
+  
+  --sidebar-bg: #131316;
+  --sidebar-text: #9ca3af;
+  --sidebar-active-bg: rgba(20, 184, 166, 0.15);
+  --sidebar-active-text: #14b8a6;
+  --sidebar-border: rgba(255, 255, 255, 0.04);
+
+  --shadow-elevation: 0 4px 30px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 15px rgba(20, 184, 166, 0.2);
+}
+
+@theme {
+  --font-display: "Oswald", sans-serif;
+  --font-sans: "Oswald", sans-serif;
+  
+  --color-bg-base: var(--bg-base);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border-token: var(--border-token);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-glow: var(--accent-glow);
+  
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-text: var(--sidebar-text);
+  --color-sidebar-active-bg: var(--sidebar-active-bg);
+  --color-sidebar-active-text: var(--sidebar-active-text);
+  --color-sidebar-border: var(--sidebar-border);
+  
+  --shadow-elevation: var(--shadow-elevation);
+  --shadow-glow: var(--shadow-glow);
+  
+  --radius-button: 9999px;
+  --radius-card: 24px;
+  --radius-input: 12px;
+  
+  --animate-orbit: orbit 60s linear infinite;
+  --animate-pulse-slow: pulse-slow 3s ease-in-out infinite;
+
+  @keyframes orbit {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  @keyframes pulse-slow {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+}
+
+@utility display-headline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  border-radius: var(--radius-button);
+  background-color: var(--accent);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all var(--transition-duration) var(--transition-timing);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--accent-hover);
+    box-shadow: 0 4px 20px var(--accent-glow);
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: scale(0.97);
+  }
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--bg-base), 0 0 0 4px var(--accent);
+  }
+}
+
+@utility btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--border-token);
+  background-color: var(--surface-elevated);
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all var(--transition-duration) var(--transition-timing);
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), var(--shadow-elevation);
+
+  &:hover {
+    background-color: var(--bg-base);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: scale(0.97);
+  }
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--bg-base), 0 0 0 4px var(--accent);
+  }
+}
+
+@utility logo-3d {
+  background: linear-gradient(135deg, #2dd4bf 0%, var(--accent) 100%);
+  box-shadow: 
+    0 4px 12px var(--accent-glow),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}

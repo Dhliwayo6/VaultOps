@@ -3,18 +3,24 @@ import { Outlet } from 'react-router-dom';
 
 export default function Portal() {
   return (
-    <article className="bg-[#F8FAFC] min-h-[100dvh] flex flex-col md:flex-row font-sans text-slate-900">
+    <article className="bg-bg-base min-h-[100dvh] flex flex-col lg:flex-row font-sans text-text-primary">
+      <a href="#main-content" className="skip-link">Skip to main content</a>
       <Sidebar />
       
-      <main className="
-        flex-1 
-        w-full 
-        pb-24 md:pb-8 /* Space for mobile bottom nav */
-        md:ml-[120px] 
-        lg:ml-[250px] 
-        xl:ml-[300px]
-        transition-all duration-300
-      ">
+      <main 
+        id="main-content"
+        tabIndex="-1"
+        className="
+          flex-1 
+          w-full 
+          pt-16 lg:pt-0
+          pb-8
+          lg:ml-[260px] 
+          xl:ml-[300px]
+          transition-all duration-300
+          outline-none
+        "
+      >
         <div className="max-w-[1600px] mx-auto p-4 md:p-8 lg:p-12">
           <Outlet />
         </div>

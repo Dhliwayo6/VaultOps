@@ -1,19 +1,29 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AuthProvider } from '@context/AuthContext';
 import { ROUTES } from '@constants/routes';
 import Home from './pages/Home';
-import Portal from './pages/Portal';
-import SignIn from '@features/auth/SignIn';
-import SignUp from '@features/auth/SignUp';
-import OtpActivation from '@features/auth/OtpActivation';
-import Dashboard from '@features/dashboard/Dashboard';
-import Assets from '@features/assets/Assets';
 import ProtectedRoute from '@components/ProtectedRoute';
 import AdminRoute from '@components/AdminRoute';
-import UserManagement from '@features/admin/UserManagement';
-import ImportAssets from '@features/admin/ImportAssets';
+import Loading from '@components/Loading';
 import '@styles/App.css';
+
+// Lazy load non-critical pages & routes
+const SignIn = lazy(() => import('@features/auth/SignIn'));
+const SignUp = lazy(() => import('@features/auth/SignUp'));
+const OtpActivation = lazy(() => import('@features/auth/OtpActivation'));
+const Portal = lazy(() => import('./pages/Portal'));
+const Dashboard = lazy(() => import('@features/dashboard/Dashboard'));
+const Assets = lazy(() => import('@features/assets/Assets'));
+const UserManagement = lazy(() => import('@features/admin/UserManagement'));
+const ImportAssets = lazy(() => import('@features/admin/ImportAssets'));
+const Reports = lazy(() => import('@features/reports/Reports'));
+
+const withSuspense = (Component) => (
+  <Suspense fallback={<Loading message="Connecting to vault..." />}>
+    <Component />
+  </Suspense>
+);
 
 function App() {
   const router = createBrowserRouter([
@@ -23,15 +33,15 @@ function App() {
     },
     {
       path: ROUTES.SIGN_IN,
-      element: <SignIn />
+      element: withSuspense(SignIn)
     },
     {
       path: ROUTES.SIGN_UP,
-      element: <SignUp />
+      element: withSuspense(SignUp)
     },
     {
       path: ROUTES.OTP,
-      element: <OtpActivation />
+      element: withSuspense(OtpActivation)
     },
     {
       path: ROUTES.PORTAL,
@@ -39,26 +49,30 @@ function App() {
       children: [
         {
           path: "",
-          element: <Portal />,
+          element: withSuspense(Portal),
           children: [
             {
               index: true,
-              element: <Dashboard />
+              element: withSuspense(Dashboard)
             },
             {
               path: "assets",
-              element: <Assets />
+              element: withSuspense(Assets)
+            },
+            {
+              path: "reports",
+              element: withSuspense(Reports)
             },
             {
               element: <AdminRoute />,
               children: [
                 {
                   path: "users",
-                  element: <UserManagement />
+                  element: withSuspense(UserManagement)
                 },
                 {
                   path: "import",
-                  element: <ImportAssets />
+                  element: withSuspense(ImportAssets)
                 }
               ]
             }

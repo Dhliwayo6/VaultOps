@@ -27,13 +27,8 @@ export const sidebarItems = [
     adminOnly: true,
   },
   {
-    path: "#",
+    path: ROUTES.REPORTS,
     title: "Reports",
     icon: GiWallet,
-  },
-  {
-    path: "#",
-    title: "Settings",
-    icon: FaBookOpen,
   },
 ];
