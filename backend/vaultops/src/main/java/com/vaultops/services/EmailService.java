@@ -9,7 +9,7 @@ public class EmailService {
     public void sendOtp(String email, String otpCode) {
         log.info("--------------------------------------------------");
         log.info("TRANSACTIONAL EMAIL SIMULATION:");
-        log.info("Sending OTP [{}] to email [{}]", otpCode, email);
+        log.info("Sending OTP [******] to email [{}]", email);
         log.info("--------------------------------------------------");
     }
 }

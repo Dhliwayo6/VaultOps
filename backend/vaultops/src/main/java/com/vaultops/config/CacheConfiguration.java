@@ -20,7 +20,10 @@ public class CacheConfiguration {
     public CacheManager cacheManager() {
         ConcurrentMapCacheManager manager = new ConcurrentMapCacheManager();
         manager.setAllowNullValues(false);
-        manager.setCacheNames(Arrays.asList("productCache"));
+        // Register productCache and assetStatsCache.
+        // Note: For a horizontally scaled production deployment, a distributed cache provider 
+        // like Redis (e.g., via spring-boot-starter-data-redis) would be required instead of this local in-memory manager.
+        manager.setCacheNames(Arrays.asList("productCache", "assetStatsCache"));
         return manager;
     }
 
@@ -28,5 +31,11 @@ public class CacheConfiguration {
     @Scheduled(fixedDelay = 10000, initialDelay = 0)
     public void evictDataCache() {
         System.out.println("Evicting data cache");
+    }
+
+    @CacheEvict(value = "assetStatsCache", allEntries = true)
+    @Scheduled(fixedDelay = 60000, initialDelay = 60000)
+    public void evictAssetStatsCache() {
+        System.out.println("Evicting asset stats cache");
     }
 }

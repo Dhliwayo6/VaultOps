@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,11 +18,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+@Validated
 public class MaintenanceController {
     private final MaintenanceService maintenanceService;
 
     @PostMapping("/maintenance")
-    public ResponseEntity<MaintenanceDTO> createMaintenance(@RequestBody Maintenance maintenance) {
+    public ResponseEntity<MaintenanceDTO> createMaintenance(@Valid @RequestBody Maintenance maintenance) {
         return ResponseEntity.status(HttpStatus.CREATED).body(maintenanceService.create(maintenance));
     }
 
@@ -35,7 +38,7 @@ public class MaintenanceController {
     }
 
     @PutMapping("/maintenance/{id}")
-    public ResponseEntity<MaintenanceDTO> updateMaintenance(@PathVariable Long id, @RequestBody Maintenance maintenance) {
+    public ResponseEntity<MaintenanceDTO> updateMaintenance(@PathVariable Long id, @Valid @RequestBody Maintenance maintenance) {
         return ResponseEntity.ok(maintenanceService.update(id, maintenance));
     }
 

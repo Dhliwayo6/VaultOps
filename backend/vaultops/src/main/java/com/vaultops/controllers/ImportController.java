@@ -24,33 +24,37 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import com.vaultops.services.SecurityService;
 
 @RestController
 @RequestMapping("/api/import")
 @Validated
 @Slf4j
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class ImportController {
 
     private final AssetImportService importService;
     private final FileValidator fileValidator;
     private final TemplateService templateService;
     private final ImportLogRepository importLogRepository;
+    private final SecurityService securityService;
 
     @PostMapping("/assets")
     public ResponseEntity<ImportResponse> importAssets(
             @RequestParam("file") MultipartFile file,
-            @RequestParam(defaultValue = "false") boolean dryRun) {
+            @RequestParam(defaultValue = "false") boolean dryRun,
+            Authentication authentication) {
 
-        log.info("Import request - file: {}, size: {} bytes, dryRun: {}",
-                file.getOriginalFilename(), file.getSize(), dryRun);
+        log.info("Import request - file: {}, size: {} bytes, dryRun: {}, user: {}",
+                file.getOriginalFilename(), file.getSize(), dryRun, authentication.getName());
 
         fileValidator.validateFile(file);
 
         // Create and persist the ImportLog with PENDING status
         ImportLog importLog = new ImportLog();
-        importLog.setUserId("system");
+        importLog.setUserId(authentication.getName());
         importLog.setFileName(file.getOriginalFilename());
         importLog.setFileSize(file.getSize());
         importLog.setStatus(com.vaultops.enums.ImportStatus.PENDING);
@@ -108,22 +112,37 @@ public class ImportController {
 
     @GetMapping("/logs")
     public ResponseEntity<List<ImportLog>> getImportLogs(
-            @RequestParam(defaultValue = "50") int limit) {
+            @RequestParam(defaultValue = "50") int limit,
+            Authentication authentication) {
 
-        log.info("Fetching import logs, limit: {}", limit);
+        log.info("Fetching import logs, limit: {}, user: {}", limit, authentication.getName());
 
-        List<ImportLog> logs = importLogRepository.findAll(
-                        Sort.by(Sort.Direction.DESC, "startedAt")
-                ).stream()
-                .limit(limit)
-                .collect(Collectors.toList());
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        List<ImportLog> logs;
+        if (isAdmin) {
+            logs = importLogRepository.findAll(
+                            Sort.by(Sort.Direction.DESC, "startedAt")
+                    ).stream()
+                    .limit(limit)
+                    .collect(Collectors.toList());
+        } else {
+            logs = importLogRepository.findByUserIdOrderByStartedAtDesc(authentication.getName()).stream()
+                    .limit(limit)
+                    .collect(Collectors.toList());
+        }
 
         return ResponseEntity.ok(logs);
     }
 
     @GetMapping("/logs/{id}")
-    public ResponseEntity<ImportLog> getImportLog(@PathVariable Long id) {
-        log.info("Fetching import log with id: {}", id);
+    public ResponseEntity<ImportLog> getImportLog(
+            @PathVariable Long id,
+            Authentication authentication) {
+        log.info("Fetching import log with id: {}, user: {}", id, authentication.getName());
+
+        securityService.checkOwnershipOrAdmin(id, "ImportLog");
 
         ImportLog log = importLogRepository.findById(id)
                 .orElseThrow(() -> new JobNotFoundException("Import log not found: " + id));

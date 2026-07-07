@@ -14,12 +14,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.validation.annotation.Validated;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+@Validated
 public class AssetController {
     private final AssetService assetService;
 
@@ -45,8 +51,8 @@ public class AssetController {
 
     @GetMapping("/assets")
     public ResponseEntity<Object> getAssets(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) @Min(value = 0, message = "Page number cannot be negative") Integer page,
+            @RequestParam(required = false) @Min(value = 1, message = "Page size must be at least 1") @Max(value = 100, message = "Page size cannot exceed 100") Integer size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "ASC") String direction) {
         
@@ -60,12 +66,13 @@ public class AssetController {
     }
 
     @GetMapping("/asset/search")
-    public ResponseEntity<List<AssetDTO>> searchAssetByName(@RequestParam String name) {
+    public ResponseEntity<List<AssetDTO>> searchAssetByName(
+            @RequestParam @NotBlank(message = "Search term cannot be blank") @Size(max = 255, message = "Search term too long") String name) {
         return ResponseEntity.ok(assetService.search(name));
     }
 
     @PutMapping("/asset/{id}")
-    public ResponseEntity<AssetDTO> updateAsset(@PathVariable Long id, @RequestBody Asset asset) {
+    public ResponseEntity<AssetDTO> updateAsset(@PathVariable Long id, @Valid @RequestBody Asset asset) {
         return ResponseEntity.ok(assetService.update(id, asset));
     }
 

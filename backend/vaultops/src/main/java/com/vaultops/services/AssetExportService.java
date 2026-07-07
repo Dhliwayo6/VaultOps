@@ -85,14 +85,14 @@ public class AssetExportService {
 
     private void populateAssetRow(Row row, Asset asset, CellStyle dateStyle, CellStyle currencyStyle) {
         row.createCell(0).setCellValue(asset.getId());
-        row.createCell(1).setCellValue(asset.getName());
-        row.createCell(2).setCellValue(asset.getType());
-        row.createCell(3).setCellValue(asset.getSerialNumber() != null ? asset.getSerialNumber() : "");
-        row.createCell(4).setCellValue(asset.getLocation());
+        row.createCell(1).setCellValue(sanitizeForFormulaInjection(asset.getName()));
+        row.createCell(2).setCellValue(sanitizeForFormulaInjection(asset.getType()));
+        row.createCell(3).setCellValue(sanitizeForFormulaInjection(asset.getSerialNumber()));
+        row.createCell(4).setCellValue(sanitizeForFormulaInjection(asset.getLocation()));
         row.createCell(5).setCellValue(asset.getAssignment().toString());
         row.createCell(6).setCellValue(asset.getConditionStatus().toString());
         row.createCell(7).setCellValue(asset.getUsageStatus().toString());
-        row.createCell(8).setCellValue(asset.getAssignedTo() != null ? asset.getAssignedTo() : "");
+        row.createCell(8).setCellValue(sanitizeForFormulaInjection(asset.getAssignedTo()));
 
         if (asset.getPurchaseDate() != null) {
             Cell dateCell = row.createCell(9);
@@ -145,14 +145,14 @@ public class AssetExportService {
             for (Asset asset : assets) {
                 String[] data = {
                         String.valueOf(asset.getId()),
-                        asset.getName(),
-                        asset.getType(),
-                        asset.getSerialNumber() != null ? asset.getSerialNumber() : "",
-                        asset.getLocation(),
+                        sanitizeForFormulaInjection(asset.getName()),
+                        sanitizeForFormulaInjection(asset.getType()),
+                        sanitizeForFormulaInjection(asset.getSerialNumber()),
+                        sanitizeForFormulaInjection(asset.getLocation()),
                         asset.getAssignment().toString(),
                         asset.getConditionStatus().toString(),
                         asset.getUsageStatus().toString(),
-                        asset.getAssignedTo() != null ? asset.getAssignedTo() : "",
+                        sanitizeForFormulaInjection(asset.getAssignedTo()),
                         asset.getPurchaseDate() != null ? asset.getPurchaseDate().toString() : "",
                         asset.getPurchasePrice() != null ? asset.getPurchasePrice().toString() : "",
                         asset.getCreatedAt() != null ? asset.getCreatedAt().toString() : "",
@@ -168,6 +168,17 @@ public class AssetExportService {
         } catch (IOException e) {
             throw new ExportException("Failed to export to CSV", e);
         }
+    }
+
+    private String sanitizeForFormulaInjection(String val) {
+        if (val == null || val.isEmpty()) {
+            return "";
+        }
+        char firstChar = val.charAt(0);
+        if (firstChar == '=' || firstChar == '+' || firstChar == '-' || firstChar == '@') {
+            return "'" + val;
+        }
+        return val;
     }
 
     private List<Asset> fetchAssets(ExportFilter filter) {

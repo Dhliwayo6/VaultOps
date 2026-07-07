@@ -41,17 +41,46 @@ public class FileParserService {
         throw new InvalidFileException("Unsupported file format");
     }
 
+    public List<AssetImportDTO> parseFile(byte[] fileBytes, String filename) throws IOException {
+        if (filename == null) {
+            throw new InvalidFileException("File name is null");
+        }
+
+        try (InputStream is = new java.io.ByteArrayInputStream(fileBytes)) {
+            if (filename.endsWith(".xlsx")) {
+                return parseExcel(is);
+            } else if (filename.endsWith(".csv")) {
+                return parseCsv(is);
+            }
+        }
+
+        throw new InvalidFileException("Unsupported file format");
+    }
+
     private List<AssetImportDTO> parseExcel(InputStream inputStream) throws IOException {
         List<AssetImportDTO> dtos = new ArrayList<>();
 
-        try (Workbook workbook = new XSSFWorkbook(inputStream)) {
-            Sheet sheet = workbook.getSheetAt(0);
+        Workbook workbook;
+        try {
+            workbook = new XSSFWorkbook(inputStream);
+        } catch (Exception e) {
+            throw new InvalidFileException("Failed to parse Excel workbook: " + e.getMessage());
+        }
+
+        try (Workbook wb = workbook) {
+            if (wb.getNumberOfSheets() == 0) {
+                throw new InvalidFileException("Workbook contains no sheets");
+            }
+            Sheet sheet = wb.getSheetAt(0);
 
             if (sheet.getLastRowNum() < 1) {
                 throw new InvalidFileException("File contains no data rows");
             }
 
             Row headerRow = sheet.getRow(0);
+            if (headerRow == null) {
+                throw new InvalidFileException("Header row is missing");
+            }
             Map<String, Integer> columnMap = mapHeaders(headerRow);
             validateRequiredColumns(columnMap);
 
