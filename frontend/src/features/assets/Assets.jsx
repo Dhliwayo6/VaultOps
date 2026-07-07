@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAssets } from './hooks/useAssets';
 import { Assignment, ConditionStatus, Usage } from '@constants/assets';
 import { useAuth } from '@context/AuthContext';
 import { createAsset, updateAsset, deleteAsset } from '@api/assetsApi';
 import Loading from '@components/Loading';
 import ErrorState from '@components/ErrorState';
+import { useFocusTrap } from '@hooks/useFocusTrap';
 
 export default function Assets() {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const {
-    assets,
+    assets: filteredAssets,
     isLoading,
     error,
     page,
@@ -34,6 +37,7 @@ export default function Assets() {
   // Modal form state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAsset, setEditingAsset] = useState(null);
+  const modalRef = useFocusTrap(isModalOpen, () => setIsModalOpen(false));
   
   const [formName, setFormName] = useState('');
   const [formType, setFormType] = useState('');
@@ -98,6 +102,15 @@ export default function Assets() {
     setIsModalOpen(true);
   };
 
+  useEffect(() => {
+    if (searchParams.get('create') === 'true') {
+      handleOpenAddModal();
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('create');
+      setSearchParams(newParams);
+    }
+  }, [searchParams, setSearchParams]);
+
   // Handle Form submit
   const handleSaveAssetAsync = async (e) => {
     e.preventDefault();
@@ -157,27 +170,27 @@ export default function Assets() {
       {/* Header */}
       <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
         <div>
-          <h2 className="text-4xl font-black tracking-tight text-slate-900">
+          <h2 className="text-3xl md:text-4xl font-black tracking-tight text-text-primary font-display">
             All Assets
           </h2>
-          <p className="text-slate-500 font-medium mt-1">Manage and track your vault inventory</p>
+          <p className="text-text-secondary font-medium mt-1">Manage and track your vault inventory</p>
         </div>
         
         <div className="flex gap-4 items-center w-full sm:w-auto">
           {/* Sort Buttons */}
-          <div className="flex gap-2 bg-white border-2 border-slate-100 p-1 rounded-xl">
+          <div className="flex gap-2 bg-surface-elevated border border-border-token p-1 rounded-xl shadow-xs">
             <button 
               onClick={() => handleSortChange(sortBy === 'createdAt' || sortBy === 'date' ? 'createdAt' : 'createdAt')}
-              className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1 ${
-                sortBy === 'createdAt' || sortBy === 'date' ? 'bg-[#0EA5E9] text-white' : 'text-slate-400 hover:text-slate-600'
+              className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none ${
+                sortBy === 'createdAt' || sortBy === 'date' ? 'bg-accent text-white shadow-xs' : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               Date {sortBy === 'createdAt' && (direction === 'ASC' ? '↑' : '↓')}
             </button>
             <button 
               onClick={() => handleSortChange('name')}
-              className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1 ${
-                sortBy === 'name' ? 'bg-[#0EA5E9] text-white' : 'text-slate-400 hover:text-slate-600'
+              className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none ${
+                sortBy === 'name' ? 'bg-accent text-white shadow-xs' : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               Name {sortBy === 'name' && (direction === 'ASC' ? '↑' : '↓')}
@@ -188,30 +201,34 @@ export default function Assets() {
           {user?.role === 'ADMIN' && (
             <button
               onClick={handleOpenAddModal}
-              className="px-6 py-3 bg-[#0EA5E9] hover:bg-[#0EA5E9]/90 text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all active:scale-[0.98] shadow-lg shadow-blue-100 ml-auto sm:ml-0"
+              className="px-6 py-3 bg-accent hover:bg-accent-hover text-white rounded-xl font-black text-xs uppercase tracking-widest transition-all active:scale-[0.98] shadow-glow ml-auto sm:ml-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none focus-visible:ring-offset-2 dark:focus-visible:ring-offset-bg-base"
             >
               Add Asset
             </button>
           )}
         </div>
+
       </div>
 
       {/* Filter and Search controls */}
-      <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between bg-white border-2 border-slate-100 p-4 rounded-3xl shadow-sm">
+      <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between bg-surface-elevated border border-border-token p-4 rounded-card shadow-elevation">
         <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center flex-1">
           {/* Search Box */}
           <div className="relative flex-1 max-w-md">
+            <label htmlFor="search-assets" className="sr-only">Search assets by name</label>
             <input
+              id="search-assets"
               type="text"
               placeholder="Search assets by name..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full h-11 pl-4 pr-10 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-[#0EA5E9] focus:bg-white focus:outline-none font-semibold text-sm transition-all"
+              className="w-full h-11 pl-4 pr-10 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent font-semibold text-sm transition-all text-text-primary"
             />
             {searchTerm && (
               <button 
                 onClick={() => setSearchTerm('')}
-                className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 font-black text-xs"
+                className="absolute right-3 top-3 text-text-secondary hover:text-text-primary font-black text-xs cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none rounded"
+                aria-label="Clear search"
               >
                 ✕
               </button>
@@ -220,10 +237,12 @@ export default function Assets() {
 
           {/* Filters Selects */}
           <div className="flex flex-wrap gap-2">
+            <label htmlFor="filter-condition" className="sr-only">Filter by Condition</label>
             <select
+              id="filter-condition"
               value={conditionFilter}
               onChange={e => setConditionFilter(e.target.value)}
-              className="h-11 px-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-[#0EA5E9] focus:bg-white focus:outline-none text-xs font-black uppercase tracking-wider text-slate-500"
+              className="h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent text-xs font-black uppercase tracking-wider text-text-secondary"
             >
               <option value="">All Conditions</option>
               {Object.values(ConditionStatus).map(c => (
@@ -231,10 +250,12 @@ export default function Assets() {
               ))}
             </select>
 
+            <label htmlFor="filter-usage" className="sr-only">Filter by Usage Status</label>
             <select
+              id="filter-usage"
               value={usageFilter}
               onChange={e => setUsageFilter(e.target.value)}
-              className="h-11 px-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-[#0EA5E9] focus:bg-white focus:outline-none text-xs font-black uppercase tracking-wider text-slate-500"
+              className="h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent text-xs font-black uppercase tracking-wider text-text-secondary"
             >
               <option value="">All Usage Statuses</option>
               {Object.values(Usage).map(u => (
@@ -242,10 +263,12 @@ export default function Assets() {
               ))}
             </select>
 
+            <label htmlFor="filter-assignment" className="sr-only">Filter by Assignment</label>
             <select
+              id="filter-assignment"
               value={assignmentFilter}
               onChange={e => setAssignmentFilter(e.target.value)}
-              className="h-11 px-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-[#0EA5E9] focus:bg-white focus:outline-none text-xs font-black uppercase tracking-wider text-slate-500"
+              className="h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent text-xs font-black uppercase tracking-wider text-text-secondary"
             >
               <option value="">All Assignments</option>
               {Object.values(Assignment).map(a => (
@@ -262,14 +285,14 @@ export default function Assets() {
       ) : error ? (
         <ErrorState title="Inventory Fetch Error" message={error} onRetry={refetch} />
       ) : filteredAssets.length === 0 ? (
-        <div className="bg-white border-2 border-slate-100 border-dashed rounded-[2.5rem] p-12 text-center">
-          <p className="text-slate-400 font-bold text-sm uppercase tracking-widest">No assets found</p>
-          <p className="text-slate-300 text-xs mt-1">Try adjusting your filters or search terms</p>
+        <div className="bg-surface-elevated border border-border-token border-dashed rounded-card p-12 text-center shadow-elevation">
+          <p className="text-text-secondary font-bold text-sm uppercase tracking-widest">No assets found</p>
+          <p className="text-text-secondary/60 text-xs mt-1">Try adjusting your filters or search terms</p>
         </div>
       ) : (
         <div className="space-y-8">
-          {/* Asset Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {/* Asset Inventory Registry */}
+          <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" aria-label="Asset Inventory Registry">
             {filteredAssets.map(asset => {
               const {
                 id,
@@ -286,20 +309,20 @@ export default function Assets() {
               } = asset;
 
               return (
-                <div 
-                  className="bg-white border-2 border-slate-100 rounded-[2.5rem] p-8 flex flex-col gap-6 transition-all hover:-translate-y-1 hover:border-[#0EA5E9]/30 shadow-sm hover:shadow-md" 
+                <li 
+                  className="bg-surface-elevated border border-border-token rounded-card p-8 flex flex-col gap-6 transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 shadow-elevation hover:shadow-glow" 
                   key={id}
                 >
                   {/* Card Header */}
                   <div className="w-full flex items-center justify-between">
-                    <h2 className="text-[#0EA5E9] font-black font-mono text-sm tracking-tighter">
+                    <h2 className="text-accent font-black font-mono text-sm tracking-tighter">
                       VO-{id.toString().padStart(4, '0')}
                     </h2>
 
                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                      usageStatus === Usage.IN_USE ? 'bg-blue-50 text-[#0EA5E9]' :
-                      usageStatus === Usage.SERVICE ? 'bg-amber-50 text-amber-600' :
-                      'bg-slate-100 text-slate-500'
+                      usageStatus === Usage.IN_USE ? 'bg-accent/15 text-accent' :
+                      usageStatus === Usage.SERVICE ? 'bg-amber-500/10 text-amber-800 dark:text-amber-400' :
+                      'bg-bg-base text-text-secondary border border-border-token'
                     }`}>
                       {usageStatus.replace('_', ' ')}
                     </span>
@@ -307,17 +330,17 @@ export default function Assets() {
 
                   {/* Asset Info */}
                   <div className="space-y-1">
-                    <h2 className="text-2xl font-black text-slate-900 leading-tight">
+                    <h2 className="text-2xl font-black text-text-primary leading-tight">
                       {name}
                     </h2>
 
                     <div>
-                      <div className="flex items-center gap-2 font-bold text-slate-400 text-sm">
+                      <div className="flex items-center gap-2 font-bold text-text-secondary text-sm">
                         <p>{type}</p>
-                        <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
+                        <span className="w-1.5 h-1.5 bg-border-token rounded-full"></span>
                         <p>{location}</p>
                       </div>
-                      <h2 className="text-xs font-mono text-slate-300 mt-1 uppercase tracking-widest">
+                      <h2 className="text-xs font-mono text-text-secondary/60 mt-1 uppercase tracking-widest">
                         SN: {serialNumber || 'N/A'}
                       </h2>
                     </div>
@@ -325,37 +348,37 @@ export default function Assets() {
 
                   {/* Assigned to Details */}
                   {assignment === Assignment.ASSIGNED ? (
-                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Assigned To</p>
-                      <h2 className="font-bold text-slate-800 flex items-center gap-2">
+                    <div className="bg-bg-base p-4 rounded-2xl border border-border-token">
+                      <p className="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">Assigned To</p>
+                      <h2 className="font-bold text-text-primary flex items-center gap-2">
                         <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
                         {assignedTo || 'Unspecified User'}
                       </h2>
                     </div>
                   ) : (
-                    <div className="bg-slate-50 p-4 rounded-2xl border border-dashed border-slate-200">
-                      <p className="text-xs font-bold text-slate-400 italic">Available for assignment</p>
+                    <div className="bg-bg-base p-4 rounded-2xl border border-dashed border-border-token">
+                      <p className="text-xs font-bold text-text-secondary italic">Available for assignment</p>
                     </div>
                   )}
 
                   {/* Price and Acquired Date Footer */}
-                  <div className="mt-auto pt-4 border-t border-slate-100 flex flex-col gap-4">
+                  <div className="mt-auto pt-4 border-t border-border-token flex flex-col gap-4">
                     <div className="w-full flex items-end justify-between">
                       <div>
-                        <h2 className="text-2xl font-black text-slate-900">
+                        <h2 className="text-2xl font-black text-text-primary">
                           R {(purchasePrice || 0).toLocaleString()}
                         </h2>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+                        <p className="text-[10px] font-bold text-text-secondary uppercase tracking-tight">
                           Acquired: {purchaseDate ? new Date(purchaseDate).toLocaleDateString() : 'N/A'}
                         </p>
                       </div>
 
                       {/* Condition Status Indicator */}
-                      <div className={`px-3 py-1 rounded-lg border-2 font-black text-[10px] uppercase tracking-tighter ${
-                        conditionStatus === ConditionStatus.EXCELLENT ? 'border-emerald-100 text-emerald-600 bg-emerald-50/10' :
-                        conditionStatus === ConditionStatus.GOOD ? 'border-blue-100 text-blue-600 bg-blue-50/10' :
-                        conditionStatus === ConditionStatus.FAIR ? 'border-yellow-100 text-yellow-600 bg-yellow-50/10' :
-                        'border-red-100 text-red-600 bg-red-50/10'
+                      <div className={`px-3 py-1 rounded-lg border font-black text-[10px] uppercase tracking-tighter ${
+                        conditionStatus === ConditionStatus.EXCELLENT ? 'border-emerald-500/20 text-emerald-700 dark:text-emerald-400 bg-emerald-500/10' :
+                        conditionStatus === ConditionStatus.GOOD ? 'border-accent/20 text-accent bg-accent/10' :
+                        conditionStatus === ConditionStatus.FAIR ? 'border-amber-500/20 text-amber-800 dark:text-amber-400 bg-amber-500/10' :
+                        'border-red-500/20 text-red-700 dark:text-red-400 bg-red-500/10'
                       }`}>
                         {conditionStatus}
                       </div>
@@ -366,45 +389,47 @@ export default function Assets() {
                       <div className="flex gap-2 w-full">
                         <button
                           onClick={() => handleOpenEditModal(asset)}
-                          className="flex-1 py-2 bg-slate-50 border-2 border-slate-100 hover:bg-slate-100 text-slate-700 rounded-xl font-black text-[10px] uppercase tracking-wider transition-all"
+                          className="flex-1 py-2 bg-bg-base border border-border-token hover:bg-surface-elevated text-text-primary rounded-xl font-black text-[10px] uppercase tracking-wider transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
+                          aria-label={`Edit asset ${name}`}
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDeleteAssetAsync(id)}
-                          className="flex-1 py-2 bg-red-50 border-2 border-red-100 hover:bg-red-100 text-red-600 rounded-xl font-black text-[10px] uppercase tracking-wider transition-all"
+                          className="flex-1 py-2 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 text-red-700 dark:text-red-400 rounded-xl font-black text-[10px] uppercase tracking-wider transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:outline-none"
+                          aria-label={`Delete asset ${name}`}
                         >
                           Delete
                         </button>
                       </div>
                     )}
                   </div>
-                </div>
+                </li>
               );
             })}
-          </div>
+          </ul>
 
           {/* Pagination Controls */}
           {!searchTerm.trim() && totalPages > 1 && (
-            <div className="w-full flex flex-col sm:flex-row items-center justify-between border-t-2 border-slate-100 pt-6 gap-4">
-              <p className="text-sm font-bold text-slate-400">
+            <div className="w-full flex flex-col sm:flex-row items-center justify-between border-t border-border-token pt-6 gap-4">
+              <p className="text-sm font-bold text-text-secondary">
                 Showing {filteredAssets.length} of {totalElements} Assets
               </p>
               <div className="flex gap-2">
                 <button
                   disabled={page === 0}
                   onClick={() => setPage(page - 1)}
-                  className="px-4 py-2 border-2 border-slate-100 rounded-xl text-xs font-black uppercase tracking-wider text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-all cursor-pointer"
+                  className="px-4 py-2 border border-border-token rounded-xl text-xs font-black uppercase tracking-wider text-text-secondary disabled:opacity-50 disabled:cursor-not-allowed hover:bg-bg-base transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
                 >
                   Previous
                 </button>
-                <div className="flex items-center px-4 bg-slate-50 rounded-xl border border-slate-100">
-                  <span className="text-xs font-black text-slate-700">Page {page + 1} of {totalPages}</span>
+                <div className="flex items-center px-4 bg-bg-base rounded-xl border border-border-token">
+                  <span className="text-xs font-black text-text-primary">Page {page + 1} of {totalPages}</span>
                 </div>
                 <button
                   disabled={page >= totalPages - 1}
                   onClick={() => setPage(page + 1)}
-                  className="px-4 py-2 border-2 border-slate-100 rounded-xl text-xs font-black uppercase tracking-wider text-slate-500 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-all cursor-pointer"
+                  className="px-4 py-2 border border-border-token rounded-xl text-xs font-black uppercase tracking-wider text-text-secondary disabled:opacity-50 disabled:cursor-not-allowed hover:bg-bg-base transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
                 >
                   Next
                 </button>
@@ -417,28 +442,29 @@ export default function Assets() {
       {/* Add/Edit Asset Modal Dialog */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 overflow-y-auto animate-in fade-in duration-200">
-          <div className="bg-white border-2 border-slate-200 rounded-[2.5rem] p-8 shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col relative animate-in zoom-in-95 duration-200">
+          <div ref={modalRef} className="bg-surface-elevated border border-border-token rounded-card p-8 shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col relative animate-in zoom-in-95 duration-200">
             {/* Close Button */}
             <button 
               onClick={() => setIsModalOpen(false)} 
-              className="absolute right-6 top-6 text-slate-400 hover:text-slate-600 font-black text-lg transition-colors cursor-pointer"
+              className="absolute right-6 top-6 text-text-secondary hover:text-text-primary font-black text-lg transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none rounded-lg p-1"
+              aria-label="Close modal"
             >
               ✕
             </button>
 
             {/* Modal Title */}
             <div className="mb-6">
-              <h3 className="text-2xl font-black text-slate-900">
+              <h3 className="text-2xl font-black text-text-primary font-display">
                 {editingAsset ? 'Edit Asset Parameters' : 'Register New Asset'}
               </h3>
-              <p className="text-slate-400 text-xs font-bold uppercase mt-1 tracking-widest">
+              <p className="text-text-secondary text-xs font-bold uppercase mt-1 tracking-widest">
                 {editingAsset ? `ID: VO-${editingAsset.id.toString().padStart(4, '0')}` : 'Establish vault record'}
               </p>
             </div>
 
             {/* Error Notification */}
             {formError && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl text-xs font-semibold text-red-600 text-center">
+              <div role="alert" className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-xs font-semibold text-red-500 text-center">
                 {formError}
               </div>
             )}
@@ -448,86 +474,96 @@ export default function Assets() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Name */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Asset Name *</label>
+                  <label htmlFor="form-asset-name" className="text-[10px] font-black uppercase tracking-widest text-text-secondary px-1">Asset Name *</label>
                   <input
+                    id="form-asset-name"
                     type="text"
                     required
+                    aria-required="true"
                     placeholder="e.g. Server Node A"
                     value={formName}
                     onChange={e => setFormName(e.target.value)}
-                    className="w-full h-11 px-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-[#0EA5E9] focus:bg-white focus:outline-none font-semibold text-sm transition-all"
+                    className="w-full h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent font-semibold text-sm transition-all text-text-primary"
                   />
                 </div>
 
                 {/* Type */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Asset Type *</label>
+                  <label htmlFor="form-asset-type" className="text-[10px] font-black uppercase tracking-widest text-text-secondary px-1">Asset Type *</label>
                   <input
+                    id="form-asset-type"
                     type="text"
                     required
+                    aria-required="true"
                     placeholder="e.g. Hardware, License"
                     value={formType}
                     onChange={e => setFormType(e.target.value)}
-                    className="w-full h-11 px-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-[#0EA5E9] focus:bg-white focus:outline-none font-semibold text-sm transition-all"
+                    className="w-full h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent font-semibold text-sm transition-all text-text-primary"
                   />
                 </div>
 
                 {/* Location */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Location *</label>
+                  <label htmlFor="form-asset-location" className="text-[10px] font-black uppercase tracking-widest text-text-secondary px-1">Location *</label>
                   <input
+                    id="form-asset-location"
                     type="text"
                     required
+                    aria-required="true"
                     placeholder="e.g. Cape Town Vault, Rack 4B"
                     value={formLocation}
                     onChange={e => setFormLocation(e.target.value)}
-                    className="w-full h-11 px-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-[#0EA5E9] focus:bg-white focus:outline-none font-semibold text-sm transition-all"
+                    className="w-full h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent font-semibold text-sm transition-all text-text-primary"
                   />
                 </div>
 
                 {/* Serial Number */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Serial Number</label>
+                  <label htmlFor="form-asset-serial" className="text-[10px] font-black uppercase tracking-widest text-text-secondary px-1">Serial Number</label>
                   <input
+                    id="form-asset-serial"
                     type="text"
                     placeholder="e.g. SN-998273-X"
                     value={formSerialNumber}
                     onChange={e => setFormSerialNumber(e.target.value)}
-                    className="w-full h-11 px-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-[#0EA5E9] focus:bg-white focus:outline-none font-semibold text-sm transition-all"
+                    className="w-full h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent font-semibold text-sm transition-all text-text-primary"
                   />
                 </div>
 
                 {/* Price */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Purchase Price (R)</label>
+                  <label htmlFor="form-asset-price" className="text-[10px] font-black uppercase tracking-widest text-text-secondary px-1">Purchase Price (R)</label>
                   <input
+                    id="form-asset-price"
                     type="number"
                     step="0.01"
                     placeholder="e.g. 15999.99"
                     value={formPurchasePrice}
                     onChange={e => setFormPurchasePrice(e.target.value)}
-                    className="w-full h-11 px-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-[#0EA5E9] focus:bg-white focus:outline-none font-semibold text-sm transition-all"
+                    className="w-full h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent font-semibold text-sm transition-all text-text-primary"
                   />
                 </div>
 
                 {/* Purchase Date */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Acquired Date</label>
+                  <label htmlFor="form-asset-date" className="text-[10px] font-black uppercase tracking-widest text-text-secondary px-1">Acquired Date</label>
                   <input
+                    id="form-asset-date"
                     type="date"
                     value={formPurchaseDate}
                     onChange={e => setFormPurchaseDate(e.target.value)}
-                    className="w-full h-11 px-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-[#0EA5E9] focus:bg-white focus:outline-none font-semibold text-sm text-slate-700 transition-all"
+                    className="w-full h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent font-semibold text-sm text-text-secondary transition-all"
                   />
                 </div>
 
                 {/* Condition Status */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Condition Status *</label>
+                  <label htmlFor="form-asset-condition" className="text-[10px] font-black uppercase tracking-widest text-text-secondary px-1">Condition Status *</label>
                   <select
+                    id="form-asset-condition"
                     value={formConditionStatus}
                     onChange={e => setFormConditionStatus(e.target.value)}
-                    className="w-full h-11 px-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-[#0EA5E9] focus:bg-white focus:outline-none font-semibold text-sm text-slate-700 transition-all"
+                    className="w-full h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent font-semibold text-sm text-text-primary transition-all"
                   >
                     {Object.values(ConditionStatus).map(c => (
                       <option key={c} value={c}>{c}</option>
@@ -537,11 +573,12 @@ export default function Assets() {
 
                 {/* Usage Status */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Usage Status *</label>
+                  <label htmlFor="form-asset-usage" className="text-[10px] font-black uppercase tracking-widest text-text-secondary px-1">Usage Status *</label>
                   <select
+                    id="form-asset-usage"
                     value={formUsageStatus}
                     onChange={e => setFormUsageStatus(e.target.value)}
-                    className="w-full h-11 px-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-[#0EA5E9] focus:bg-white focus:outline-none font-semibold text-sm text-slate-700 transition-all"
+                    className="w-full h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent font-semibold text-sm text-text-primary transition-all"
                   >
                     {Object.values(Usage).map(u => (
                       <option key={u} value={u}>{u.replace('_', ' ')}</option>
@@ -551,8 +588,9 @@ export default function Assets() {
 
                 {/* Assignment Status */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Assignment status *</label>
+                  <label htmlFor="form-asset-assignment" className="text-[10px] font-black uppercase tracking-widest text-text-secondary px-1">Assignment status *</label>
                   <select
+                    id="form-asset-assignment"
                     value={formAssignment}
                     onChange={e => {
                       setFormAssignment(e.target.value);
@@ -560,7 +598,7 @@ export default function Assets() {
                         setFormAssignedTo('');
                       }
                     }}
-                    className="w-full h-11 px-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-[#0EA5E9] focus:bg-white focus:outline-none font-semibold text-sm text-slate-700 transition-all"
+                    className="w-full h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent font-semibold text-sm text-text-primary transition-all"
                   >
                     {Object.values(Assignment).map(a => (
                       <option key={a} value={a}>{a}</option>
@@ -570,32 +608,33 @@ export default function Assets() {
 
                 {/* Assigned To */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Assigned To User</label>
+                  <label htmlFor="form-asset-assigned-to" className="text-[10px] font-black uppercase tracking-widest text-text-secondary px-1">Assigned To User</label>
                   <input
+                    id="form-asset-assigned-to"
                     type="text"
                     disabled={formAssignment === Assignment.UNASSIGNED}
                     placeholder="e.g. John Doe"
                     value={formAssignedTo}
                     onChange={e => setFormAssignedTo(e.target.value)}
-                    className="w-full h-11 px-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-[#0EA5E9] focus:bg-white focus:outline-none font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent font-semibold text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed text-text-primary"
                   />
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-4 pt-4 border-t border-slate-100">
+              <div className="flex gap-4 pt-4 border-t border-border-token">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
                   disabled={isSaving}
-                  className="flex-1 py-4 border-2 border-slate-100 hover:bg-slate-50 text-slate-500 rounded-2xl font-black text-sm uppercase tracking-widest transition-all"
+                  className="flex-1 py-4 border border-border-token hover:bg-bg-base text-text-secondary rounded-2xl font-black text-sm uppercase tracking-widest transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="flex-1 py-4 bg-[#0EA5E9] hover:brightness-110 text-white rounded-2xl font-black text-sm uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+                  className="flex-1 py-4 bg-accent hover:bg-accent-hover text-white rounded-2xl font-black text-sm uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer shadow-glow focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none focus-visible:ring-offset-2 dark:focus-visible:ring-offset-bg-base"
                 >
                   {isSaving ? (
                     <>

@@ -66,34 +66,34 @@ export default function OtpActivation() {
     }
 
     return (
-        <article className='w-full min-h-screen flex flex-col items-center bg-slate-50'>
+        <article className='w-full min-h-screen flex flex-col items-center bg-bg-base text-text-primary transition-colors duration-300'>
 
             <div className='flex flex-1 w-full items-center justify-center px-6'>
                 <div className='w-full max-w-[450px] flex flex-col items-center'>
                     
                     {/* Header */}
                     <div className='text-center mb-10'>
-                        <h2 className='text-4xl font-black tracking-tight text-slate-900'>
+                        <h2 className='text-4xl font-black tracking-tight text-text-primary font-display'>
                             Verify Access
                         </h2>
-                        <p className='text-slate-500 font-medium mt-2'>
-                            Sent to <span className="text-slate-900 font-bold">{email || "your email"}</span>
+                        <p className='text-text-secondary font-medium mt-2'>
+                            Sent to <span className="text-text-primary font-bold">{email || "your email"}</span>
                         </p>
                     </div>
 
                     {/* Verification Card */}
-                    <div className="bg-white border-2 border-slate-200 rounded-3xl p-8 shadow-sm w-full relative overflow-hidden">
+                    <div className="bg-surface-elevated border border-border-token rounded-card p-8 shadow-elevation w-full relative overflow-hidden">
                         {isLoading && (
-                            <div className="absolute top-0 left-0 w-full h-1 bg-slate-100 overflow-hidden">
-                                <div className="h-full bg-[#0EA5E9] animate-[loading_1.5s_infinite_linear]" 
-                                     style={{ width: '30%', backgroundImage: 'linear-gradient(to right, transparent, #0EA5E9, transparent)' }} 
+                            <div className="absolute top-0 left-0 w-full h-1 bg-bg-base overflow-hidden">
+                                <div className="h-full bg-accent animate-[loading_1.5s_infinite_linear]" 
+                                     style={{ width: '30%', backgroundImage: 'linear-gradient(to right, transparent, var(--color-accent), transparent)' }} 
                                 />
                             </div>
                         )}
 
                         <form onSubmit={handleAccountActivationAsync} className='flex flex-col items-center gap-8'>
                             {errorMsg && (
-                                <div className="w-full p-4 bg-red-50 border border-red-100 rounded-2xl text-xs font-semibold text-red-600 text-center">
+                                <div role="alert" className="w-full p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-xs font-semibold text-red-500 text-center">
                                     {errorMsg}
                                 </div>
                             )}
@@ -105,7 +105,8 @@ export default function OtpActivation() {
                                         value={digit}
                                         maxLength={1}
                                         inputMode="numeric"
-                                        className="w-10 h-14 sm:w-14 sm:h-16 border-2 border-slate-100 bg-slate-50 rounded-xl text-center text-2xl font-black text-slate-900 focus:border-[#0EA5E9] focus:bg-white focus:outline-none transition-all"
+                                        aria-label={`Digit ${index + 1} of ${length}`}
+                                        className="w-10 h-14 sm:w-14 sm:h-16 border border-border-token bg-bg-base rounded-xl text-center text-2xl font-black text-text-primary focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent transition-all"
                                         onChange={(e) => handleChange(e.target.value, index)}
                                         onKeyDown={(e) => handleKeyDown(e, index)}
                                     />
@@ -115,15 +116,15 @@ export default function OtpActivation() {
                             <button 
                                 type="submit"
                                 disabled={isLoading || otp.some(d => !d)}
-                                className={`w-full py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all flex items-center justify-center gap-3
+                                className={`w-full py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all flex items-center justify-center gap-3 cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none focus-visible:ring-offset-2 dark:focus-visible:ring-offset-bg-base
                                     ${isLoading || otp.some(d => !d)
-                                        ? 'bg-slate-100 text-slate-400 cursor-not-allowed' 
-                                        : 'bg-[#0EA5E9] text-white hover:brightness-110 active:scale-[0.98] shadow-lg shadow-blue-100'
+                                        ? 'bg-bg-base text-text-secondary opacity-50 cursor-not-allowed border border-border-token' 
+                                        : 'bg-accent text-white hover:bg-accent-hover active:scale-[0.98] shadow-glow'
                                     }`}
                             >
                                 {isLoading ? (
                                     <>
-                                        <div className="w-4 h-4 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin" />
+                                        <div className="w-4 h-4 border-2 border-text-secondary border-t-text-primary rounded-full animate-spin" />
                                         Verifying...
                                     </>
                                 ) : (
@@ -135,11 +136,11 @@ export default function OtpActivation() {
 
                     {/* Footer Actions */}
                     <div className="mt-8 flex flex-col items-center gap-4">
-                        <p className='text-sm font-medium text-slate-500'>
+                        <p className='text-sm font-medium text-text-secondary'>
                             Didn't receive the code? 
                             <button 
                                 onClick={HandleResendCodeAsync} 
-                                className='ml-2 text-[#0EA5E9] font-black hover:underline disabled:opacity-50'
+                                className='ml-2 text-accent font-black hover:underline disabled:opacity-50 cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none rounded px-1'
                                 disabled={isLoading}
                             >
                                 RESEND
@@ -147,8 +148,8 @@ export default function OtpActivation() {
                         </p>
 
                         {codeSent && (
-                            <div className="px-4 py-2 bg-blue-50 border border-blue-100 rounded-full">
-                                <p className='text-[#0EA5E9] text-[11px] font-black uppercase tracking-widest'>
+                            <div role="status" aria-live="polite" className="px-4 py-2 bg-accent/15 border border-accent/20 rounded-full">
+                                <p className='text-accent text-[11px] font-black uppercase tracking-widest'>
                                     New Security Token Sent
                                 </p>
                             </div>

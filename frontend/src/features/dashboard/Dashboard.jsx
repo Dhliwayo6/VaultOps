@@ -28,110 +28,117 @@ const Dashboard = () => {
       {/* Header */}
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-black tracking-tight text-slate-900">Dashboard</h1>
-          <p className="text-slate-500 font-medium">Control your vault today</p>
+          <h1 className="text-3xl md:text-4xl font-black tracking-tight text-text-primary">Dashboard</h1>
+          <p className="text-text-secondary font-medium">Control your vault today</p>
         </div>
         <AddAssetButton />
       </header>
-
+ 
       {/* Bento Grid Stats */}
-      <section className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" aria-label="Vault Statistics">
         {stats.map((stat, i) => (
-          <div key={i} className={`${stat.color} p-6 rounded-2xl border-2 border-slate-200 flex flex-col justify-between min-h-[140px] transition-transform hover:-translate-y-1 cursor-default`}>
+          <li key={i} className={`${stat.color} p-6 rounded-card border border-border-token flex flex-col justify-between min-h-[140px] transition-transform hover:-translate-y-1 cursor-default shadow-elevation`}>
             <span className="text-xs font-black uppercase tracking-widest opacity-70">{stat.label}</span>
             <span className="text-4xl font-black">{stat.value}</span>
-          </div>
+          </li>
         ))}
-      </section>
-
+      </ul>
+ 
       {/* Main Content Area */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         
         {/* Active Items List */}
         <section className="xl:col-span-2 space-y-4">
           <div className="flex items-center justify-between px-2">
-            <h3 className="text-xl font-bold">Active Inventory</h3>
-            <span 
+            <h3 className="text-xl font-bold text-text-primary">Active Inventory</h3>
+            <button 
               onClick={() => navigate(ROUTES.ASSETS)}
-              className="text-sm font-bold text-[#0EA5E9] cursor-pointer hover:underline"
+              className="text-sm font-bold text-accent cursor-pointer hover:underline focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none rounded px-1"
             >
               View Registry
-            </span>
+            </button>
           </div>
-
-          <div className="bg-white border-2 border-slate-200 rounded-3xl overflow-hidden">
+ 
+          <div className="bg-surface-elevated border border-border-token rounded-card overflow-hidden shadow-elevation">
             {/* Desktop Table - Hidden on Mobile */}
             <table className="hidden md:table w-full text-left border-collapse">
               <thead>
-                <tr className="border-b-2 border-slate-100 text-[10px] uppercase tracking-widest font-black text-slate-400">
+                <tr className="border-b border-border-token text-[10px] uppercase tracking-widest font-black text-text-secondary">
                   <th className="px-8 py-5">Asset</th>
                   <th className="px-8 py-5">Assigned To</th>
                   <th className="px-8 py-5">Status</th>
                   <th className="px-8 py-5 text-right">Activity</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-border-token">
                 {recentAssets.map((asset) => (
-                  <tr key={asset.id} className="group hover:bg-slate-50 transition-colors">
+                  <tr key={asset.id} className="group hover:bg-bg-base transition-colors">
                     <td className="px-8 py-6">
-                      <p className="font-bold text-slate-900">{asset.name}</p>
-                      <p className="text-xs font-mono text-[#0EA5E9]">{asset.id}</p>
+                      <p className="font-bold text-text-primary">{asset.name}</p>
+                      <p className="text-xs font-mono text-accent">{asset.id}</p>
                     </td>
-                    <td className="px-8 py-6 font-semibold text-slate-600">{asset.user}</td>
+                    <td className="px-8 py-6 font-semibold text-text-secondary">{asset.user}</td>
                     <td className="px-8 py-6">
-                      <span className="px-3 py-1 bg-blue-50 text-[#0EA5E9] rounded-full text-[10px] font-black uppercase">
+                      <span className="px-3 py-1 bg-accent/10 text-accent rounded-full text-[10px] font-black uppercase">
                         {asset.status}
                       </span>
                     </td>
-                    <td className="px-8 py-6 text-right text-sm text-slate-400 font-medium">{asset.lastUpdated}</td>
+                    <td className="px-8 py-6 text-right text-sm text-text-secondary font-medium">{asset.lastUpdated}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-
+ 
             {/* Mobile Cards - Visible only on Small Screens */}
-            <div className="md:hidden divide-y divide-slate-100">
+            <ul className="md:hidden divide-y divide-border-token" aria-label="Recent Asset Inventory">
               {recentAssets.map((asset) => (
-                <div key={asset.id} className="p-6 space-y-3">
+                <li key={asset.id} className="p-6 space-y-3">
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="font-bold text-slate-900">{asset.name}</p>
-                      <p className="text-xs font-mono text-[#0EA5E9]">{asset.id}</p>
+                      <p className="font-bold text-text-primary">{asset.name}</p>
+                      <p className="text-xs font-mono text-accent">{asset.id}</p>
                     </div>
-                    <span className="px-3 py-1 bg-blue-50 text-[#0EA5E9] rounded-full text-[10px] font-black uppercase">
+                    <span className="px-3 py-1 bg-accent/10 text-accent rounded-full text-[10px] font-black uppercase">
                       {asset.status}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-500">User: <b className="text-slate-800">{asset.user}</b></span>
-                    <span className="text-slate-400">{asset.lastUpdated}</span>
+                    <span className="text-text-secondary">User: <b className="text-text-primary">{asset.user}</b></span>
+                    <span className="text-text-secondary">{asset.lastUpdated}</span>
                   </div>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </section>
-
+ 
         {/* Sidebar Activity Widget */}
-        <section className="bg-white border-2 border-slate-200 rounded-3xl p-8">
-          <h3 className="text-xl font-bold mb-6">Storage Health</h3>
+        <section className="bg-surface-elevated border border-border-token rounded-card p-8 shadow-elevation">
+          <h3 className="text-xl font-bold mb-6 text-text-primary">Storage Health</h3>
           <div className="space-y-6">
             <div className="space-y-2">
-              <div className="flex justify-between text-sm font-bold">
+              <div className="flex justify-between text-sm font-bold text-text-primary">
                 <span>Vault Capacity</span>
                 <span>{vaultCapacity}%</span>
               </div>
-              <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
-                <div className="h-full bg-[#0EA5E9] w-[82%] rounded-full" />
+              <div 
+                role="progressbar" 
+                aria-valuenow={vaultCapacity} 
+                aria-valuemin="0" 
+                aria-valuemax="100" 
+                aria-label="Vault storage capacity usage"
+                className="w-full h-3 bg-bg-base rounded-full overflow-hidden"
+              >
+                <div className="h-full bg-accent rounded-full transition-all duration-500" style={{ width: `${vaultCapacity}%` }} />
               </div>
             </div>
-            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-              <p className="text-xs font-bold text-slate-400 uppercase mb-2">Notice</p>
-              <p className="text-sm font-medium text-slate-600">{serviceNotice}</p>
+            <div className="p-4 bg-bg-base rounded-2xl border border-border-token">
+              <p className="text-xs font-bold text-text-secondary uppercase mb-2">Notice</p>
+              <p className="text-sm font-medium text-text-secondary">{serviceNotice}</p>
             </div>
           </div>
         </section>
-
+ 
       </div>
     </div>
   );

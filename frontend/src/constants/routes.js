@@ -8,4 +8,5 @@ export const ROUTES = {
   ASSETS: '/portal/assets',
   USERS: '/portal/users',
   IMPORT: '/portal/import',
+  REPORTS: '/portal/reports',
 };

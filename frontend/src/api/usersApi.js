@@ -13,3 +13,21 @@ export async function changeUserRole(id, role) {
   });
   return handleResponse(response);
 }
+
+export async function changeUserStatus(id, status) {
+  const response = await apiFetch(`/api/users/${id}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({ status }),
+  });
+  return handleResponse(response);
+}
+
+export async function deleteUser(id) {
+  const response = await apiFetch(`/api/users/${id}`, {
+    method: 'DELETE',
+  });
+  if (response.status === 204) {
+    return true;
+  }
+  return handleResponse(response);
+}
