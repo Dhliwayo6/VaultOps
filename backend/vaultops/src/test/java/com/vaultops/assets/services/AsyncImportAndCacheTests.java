@@ -183,16 +183,24 @@ public class AsyncImportAndCacheTests {
     void testStatsCachingAndEviction() {
         Cache cache = cacheManager.getCache("assetStatsCache");
         assertThat(cache).isNotNull();
-        assertThat(cache.get(SimpleKey.EMPTY)).isNull();
+        assertThat(cache.get("getDashboardStats")).isNull();
+        assertThat(cache.get("getDashboardAlerts")).isNull();
 
         // Call the service to populate cache
         DashboardStatsDTO stats1 = assetStatsService.getDashboardStats();
         assertThat(stats1).isNotNull();
+        
+        var alerts1 = assetStatsService.getDashboardAlerts();
+        assertThat(alerts1).isNotNull();
 
-        // Verify it is now cached
-        Cache.ValueWrapper wrapper = cache.get(SimpleKey.EMPTY);
-        assertThat(wrapper).isNotNull();
-        assertThat(wrapper.get()).isEqualTo(stats1);
+        // Verify they are now cached
+        Cache.ValueWrapper statsWrapper = cache.get("getDashboardStats");
+        assertThat(statsWrapper).isNotNull();
+        assertThat(statsWrapper.get()).isEqualTo(stats1);
+
+        Cache.ValueWrapper alertsWrapper = cache.get("getDashboardAlerts");
+        assertThat(alertsWrapper).isNotNull();
+        assertThat(alertsWrapper.get()).isEqualTo(alerts1);
 
         // Perform asset creation and check eviction
         Asset asset = new Asset();
@@ -208,6 +216,7 @@ public class AsyncImportAndCacheTests {
         assetService.create(asset);
 
         // Cache must be evicted
-        assertThat(cache.get(SimpleKey.EMPTY)).isNull();
+        assertThat(cache.get("getDashboardStats")).isNull();
+        assertThat(cache.get("getDashboardAlerts")).isNull();
     }
 }

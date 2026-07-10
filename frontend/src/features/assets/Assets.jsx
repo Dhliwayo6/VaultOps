@@ -31,6 +31,8 @@ export default function Assets() {
     setUsageFilter,
     assignmentFilter,
     setAssignmentFilter,
+    warrantyExpiringFilter,
+    setWarrantyExpiringFilter,
     refetch
   } = useAssets();
 
@@ -109,7 +111,19 @@ export default function Assets() {
       newParams.delete('create');
       setSearchParams(newParams);
     }
-  }, [searchParams, setSearchParams]);
+    const cond = searchParams.get('condition');
+    if (cond) {
+      setConditionFilter(cond);
+    }
+    const usage = searchParams.get('usage');
+    if (usage) {
+      setUsageFilter(usage);
+    }
+    const warranty = searchParams.get('warrantyExpiring');
+    if (warranty === 'true') {
+      setWarrantyExpiringFilter(true);
+    }
+  }, [searchParams, setSearchParams, setConditionFilter, setUsageFilter, setWarrantyExpiringFilter]);
 
   // Handle Form submit
   const handleSaveAssetAsync = async (e) => {

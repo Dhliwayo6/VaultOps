@@ -72,6 +72,9 @@ public class Asset {
     @jakarta.validation.constraints.Size(max = 255, message = "Assigned to must not exceed 255 characters")
     private String assignedTo;
 
+    @Column(name = "warranty_expiry_date")
+    private LocalDate warrantyExpiryDate;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;

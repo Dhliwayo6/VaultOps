@@ -21,6 +21,7 @@ public record AssetDTO(
     ConditionStatus conditionStatus,
     Usage usageStatus,
     String assignedTo,
+    LocalDate warrantyExpiryDate,
     LocalDateTime createdAt,
     LocalDateTime latestUpdatedDate
 ) {
@@ -37,6 +38,7 @@ public record AssetDTO(
             asset.getConditionStatus(),
             asset.getUsageStatus(),
             asset.getAssignedTo(),
+            asset.getWarrantyExpiryDate(),
             asset.getCreatedAt(),
             asset.getLatestUpdatedDate()
         );

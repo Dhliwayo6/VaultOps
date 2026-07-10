@@ -19,6 +19,7 @@ export function useAssets() {
   const [conditionFilter, setConditionFilter] = useState('');
   const [usageFilter, setUsageFilter] = useState('');
   const [assignmentFilter, setAssignmentFilter] = useState('');
+  const [warrantyExpiringFilter, setWarrantyExpiringFilter] = useState(false);
 
   const fetchAssetsData = useCallback(async () => {
     setIsLoading(true);
@@ -76,6 +77,16 @@ export function useAssets() {
     if (conditionFilter && asset.conditionStatus !== conditionFilter) return false;
     if (usageFilter && asset.usageStatus !== usageFilter) return false;
     if (assignmentFilter && asset.assignment !== assignmentFilter) return false;
+    if (warrantyExpiringFilter) {
+      if (!asset.warrantyExpiryDate) return false;
+      const expiry = new Date(asset.warrantyExpiryDate);
+      const now = new Date();
+      expiry.setHours(0,0,0,0);
+      now.setHours(0,0,0,0);
+      const diffTime = expiry - now;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays < 0 || diffDays > 30) return false;
+    }
     return true;
   });
 
@@ -101,6 +112,8 @@ export function useAssets() {
     setUsageFilter,
     assignmentFilter,
     setAssignmentFilter,
+    warrantyExpiringFilter,
+    setWarrantyExpiringFilter,
     refetch: fetchAssetsData
   };
 }
