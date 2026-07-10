@@ -6,6 +6,7 @@ import com.vaultops.model.Maintenance;
 import com.vaultops.repository.MaintenanceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.CacheEvict;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ public class MaintenanceService {
 
     private final MaintenanceRepository maintenanceRepository;
 
+    @CacheEvict(value = "assetStatsCache", allEntries = true)
     public MaintenanceDTO create(Maintenance maintenance) {
         Maintenance saved = maintenanceRepository.save(maintenance);
         return new MaintenanceDTO(saved);
@@ -35,6 +37,7 @@ public class MaintenanceService {
         return list.stream().map(MaintenanceDTO::new).toList();
     }
 
+    @CacheEvict(value = "assetStatsCache", allEntries = true)
     public MaintenanceDTO update(Long id, Maintenance maintenance) {
         Optional<Maintenance> optional = maintenanceRepository.findById(id);
         if (optional.isPresent()) {
@@ -45,6 +48,7 @@ public class MaintenanceService {
         throw new IllegalArgumentException("Maintenance history not found!");
     }
 
+    @CacheEvict(value = "assetStatsCache", allEntries = true)
     public void delete(Long id) {
         Optional<Maintenance> optional = maintenanceRepository.findById(id);
         if (optional.isPresent()) {
