@@ -142,6 +142,16 @@ public class RateLimitingFilter extends OncePerRequestFilter {
             return rateLimitingService.resolveGeneralBucket("search:" + userOrIP, 30, Duration.ofMinutes(1));
         }
 
+        // Stats endpoints (20 per minute per User/IP)
+        if (uri.startsWith("/api/stats/")) {
+            return rateLimitingService.resolveGeneralBucket("stats:" + userOrIP, 20, Duration.ofMinutes(1));
+        }
+
+        // Audit log endpoint (20 per minute per User/IP)
+        if (uri.startsWith("/api/audit-log")) {
+            return rateLimitingService.resolveGeneralBucket("audit-log:" + userOrIP, 20, Duration.ofMinutes(1));
+        }
+
         // G. General endpoints (100 per minute per User/IP)
         if (uri.startsWith("/api/")) {
             return rateLimitingService.resolveGeneralBucket("general:" + userOrIP, 100, Duration.ofMinutes(1));

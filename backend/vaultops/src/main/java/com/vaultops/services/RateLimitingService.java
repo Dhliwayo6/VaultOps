@@ -38,4 +38,9 @@ public class RateLimitingService {
     public void resetFailedLoginBucket(String key) {
         failedLoginBuckets.remove(key);
     }
+
+    public void clearAllBuckets() {
+        generalBuckets.clear();
+        failedLoginBuckets.clear();
+    }
 }
