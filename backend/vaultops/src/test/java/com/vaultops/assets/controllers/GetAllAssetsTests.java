@@ -68,7 +68,7 @@ public class GetAllAssetsTests {
     @Test
     @DisplayName("Should return list of all assets")
     void getAllAssets_WhenAssetsArePresent_ReturnList() throws Exception{
-        when(assetService.getAllNonPaginated()).thenReturn(assetDTOS);
+        when(assetService.getAllNonPaginated(any())).thenReturn(assetDTOS);
 
         mockMvc.perform(get("/api/assets"))
                 .andExpect(status().isOk())
@@ -77,13 +77,13 @@ public class GetAllAssetsTests {
                 .andExpect(jsonPath("$[1].name").value("MSi Modern 14 Laptop"))
                 .andExpect(jsonPath("$[2].name").value("ViewChoice Monitor"));
 
-        verify(assetService, times(1)).getAllNonPaginated();
+        verify(assetService, times(1)).getAllNonPaginated(any());
     }
 
     @Test
     @DisplayName("Should return list of all assets with different usage statuses")
     void getAllAssets_ReturnListOfAssetsWithDifferentUsageStatuses() throws Exception{
-        when(assetService.getAllNonPaginated()).thenReturn(assetDTOS);
+        when(assetService.getAllNonPaginated(any())).thenReturn(assetDTOS);
 
         mockMvc.perform(get("/api/assets"))
                 .andExpect(status().isOk())
@@ -96,18 +96,18 @@ public class GetAllAssetsTests {
     @Test
     @DisplayName("Should throw custom exception NoResultsException when list is empty")
     void getAllAssets_WhenListIsEmpty_ThrowCustomException() throws Exception{
-        when(assetService.getAllNonPaginated()).thenThrow(new NoResultsException());
+        when(assetService.getAllNonPaginated(any())).thenThrow(new NoResultsException());
 
         mockMvc.perform(get("/api/assets"))
                 .andExpect(status().isOk());
 
-        verify(assetService, times(1)).getAllNonPaginated();
+        verify(assetService, times(1)).getAllNonPaginated(any());
     }
 
     @Test
     @DisplayName("Should return the correct content-type")
     void getAllAssets_ShouldReturnJSONContentType() throws Exception{
-        when(assetService.getAllNonPaginated()).thenReturn(assetDTOS);
+        when(assetService.getAllNonPaginated(any())).thenReturn(assetDTOS);
 
         mockMvc.perform(get("/api/assets"))
                 .andExpect(status().isOk())
@@ -117,7 +117,7 @@ public class GetAllAssetsTests {
     @Test
     @DisplayName("Test should return results with populated fields")
     void getAssetsById_ShouldReturnFullFields() throws Exception {
-        when(assetService.getAllNonPaginated()).thenReturn(assetDTOS);
+        when(assetService.getAllNonPaginated(any())).thenReturn(assetDTOS);
 
         mockMvc.perform(get("/api/assets"))
                 .andExpect(status().isOk())

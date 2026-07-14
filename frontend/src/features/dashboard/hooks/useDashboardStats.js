@@ -1,34 +1,55 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getDashboardStats } from '@api/statsApi';
+import { getDashboardStats, getMonthlyTrends, getCategoryConditionStats, getFinancialStats, getDashboardAlerts } from '@api/statsApi';
 import { getAssets } from '@api/assetsApi';
+import { useAuth } from '@context/AuthContext';
 
-export function useDashboardStats() {
+export function useDashboardStats(locationId = null) {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'ADMIN';
+
   const [stats, setStats] = useState([]);
+  const [alerts, setAlerts] = useState([]);
   const [recentAssets, setRecentAssets] = useState([]);
   const [vaultCapacity, setVaultCapacity] = useState(0);
   const [serviceNotice, setServiceNotice] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // New chart state variables
+  const [allocationData, setAllocationData] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
+  const [trendData, setTrendData] = useState([]);
+  const [financialData, setFinancialData] = useState(null);
+  const [chartsLoading, setChartsLoading] = useState(true);
+  const [chartsError, setChartsError] = useState(null);
+
   const fetchData = useCallback(async () => {
     setIsLoading(true);
+    setChartsLoading(true);
     setError(null);
+    setChartsError(null);
     try {
-      const [statsData, assetsData] = await Promise.all([
-        getDashboardStats(),
-        getAssets({ page: 0, size: 5, sortBy: 'createdAt', direction: 'DESC' }).catch(err => {
-          // If no assets yet, return an empty page shape
+      // 1. Fetch base dashboard statistics, alerts, and recent assets
+      const [statsData, assetsData, alertsData] = await Promise.all([
+        getDashboardStats(locationId),
+        getAssets({ page: 0, size: 5, sortBy: 'createdAt', direction: 'DESC', locationId }).catch(err => {
           return { content: [] };
+        }),
+        getDashboardAlerts(locationId).catch(err => {
+          console.error("Failed to fetch alerts", err);
+          return [];
         })
       ]);
 
+      setAlerts(alertsData || []);
+
       // Format bento stats
       const statsArray = [
-        { label: "Total Assets", value: (statsData.totalAssets || 0).toLocaleString(), color: "bg-surface-elevated text-text-primary" },
-        { label: "In Use", value: (statsData.inUseCount || 0).toLocaleString(), color: "bg-accent text-white" },
-        { label: "In Storage", value: (statsData.inStorageCount || 0).toLocaleString(), color: "bg-surface-elevated text-text-primary" },
-        { label: "In Service", value: (statsData.inServiceCount || 0).toLocaleString(), color: "bg-surface-elevated text-text-primary" },
-        { label: "Damaged", value: (statsData.damagedCount || 0).toLocaleString(), color: "bg-red-500/10 text-red-600 dark:text-red-400" },
+        { label: "Total Assets", value: statsData.totalAssets || 0 },
+        { label: "In Use", value: statsData.inUseCount || 0 },
+        { label: "In Storage", value: statsData.inStorageCount || 0 },
+        { label: "In Service", value: statsData.inServiceCount || 0 },
+        { label: "Damaged", value: statsData.damagedCount || 0 },
       ];
       setStats(statsArray);
 
@@ -50,7 +71,7 @@ export function useDashboardStats() {
       }));
       setRecentAssets(mappedAssets);
 
-      // Calculate capacity dynamically (e.g. storage count relative to a vault size of 500)
+      // Calculate capacity dynamically
       const storageCount = statsData.inStorageCount || 0;
       const capacityPercentage = Math.min(Math.round((storageCount / 500) * 100), 100);
       setVaultCapacity(capacityPercentage || 0);
@@ -65,13 +86,58 @@ export function useDashboardStats() {
         setServiceNotice("All vault hardware operating nominal. No items scheduled for repairs.");
       }
 
+      // Format allocation doughnut chart data
+      const allocation = [
+        { name: 'In Use', value: statsData.inUseCount || 0 },
+        { name: 'In Storage', value: statsData.inStorageCount || 0 },
+        { name: 'Under Maintenance', value: statsData.inServiceCount || 0 }
+      ];
+      setAllocationData(allocation);
+
+      // 2. Fetch trends, category-condition distributions, and financial metrics (if admin)
+      const [trends, categories] = await Promise.all([
+        getMonthlyTrends(locationId).catch(err => {
+          console.error("Failed to fetch trends", err);
+          return [];
+        }),
+        getCategoryConditionStats(locationId).catch(err => {
+          console.error("Failed to fetch categories", err);
+          return [];
+        })
+      ]);
+
+      setTrendData(trends);
+
+      // Group categories for stacked bar chart: { category, EXCELLENT, GOOD, FAIR, BAD, DAMAGED }
+      const categoryGroups = {};
+      categories.forEach(item => {
+        const cat = item.category || 'Uncategorized';
+        if (!categoryGroups[cat]) {
+          categoryGroups[cat] = { category: cat, EXCELLENT: 0, GOOD: 0, FAIR: 0, BAD: 0, DAMAGED: 0 };
+        }
+        categoryGroups[cat][item.conditionStatus] = item.count;
+      });
+      setCategoryData(Object.values(categoryGroups));
+
+      if (isAdmin) {
+        try {
+          const financial = await getFinancialStats(locationId);
+          setFinancialData(financial);
+        } catch (err) {
+          console.error("Failed to fetch financial metrics", err);
+          setFinancialData(null);
+        }
+      }
+
     } catch (err) {
       console.error(err);
       setError(err.message || 'Failed to load dashboard statistics.');
+      setChartsError(err.message || 'Failed to load chart data.');
     } finally {
       setIsLoading(false);
+      setChartsLoading(false);
     }
-  }, []);
+  }, [isAdmin, locationId]);
 
   useEffect(() => {
     fetchData();
@@ -79,11 +145,20 @@ export function useDashboardStats() {
 
   return {
     stats,
+    alerts,
     recentAssets,
     vaultCapacity,
     serviceNotice,
     isLoading,
     error,
-    refetch: fetchData
+    refetch: fetchData,
+    // Chart data props
+    allocationData,
+    categoryData,
+    trendData,
+    financialData,
+    chartsLoading,
+    chartsError,
+    isAdmin
   };
 }

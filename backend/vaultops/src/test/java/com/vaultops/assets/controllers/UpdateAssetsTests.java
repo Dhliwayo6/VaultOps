@@ -45,7 +45,7 @@ public class UpdateAssetsTests {
         asset.setUsageStatus(Usage.IN_USE);
         asset.setConditionStatus(ConditionStatus.FAIR);
         asset.setAssignment(Assignment.ASSIGNED);
-        asset.setLocation("Office");
+        asset.setLocationByName("Office");
 
         assetDTO = new AssetDTO(asset);
     }
@@ -60,7 +60,7 @@ public class UpdateAssetsTests {
         updatedAsset.setUsageStatus(Usage.STORAGE);
         updatedAsset.setConditionStatus(ConditionStatus.FAIR);
         updatedAsset.setAssignment(Assignment.UNASSIGNED);
-        updatedAsset.setLocation("Office");
+        updatedAsset.setLocationByName("Office");
 
         AssetDTO updatedAssetDTO = new AssetDTO(updatedAsset);
 
@@ -109,7 +109,7 @@ public class UpdateAssetsTests {
         updatedAsset.setType("Laptop");
         updatedAsset.setUsageStatus(Usage.IN_USE);
         updatedAsset.setAssignment(Assignment.ASSIGNED);
-        updatedAsset.setLocation("Office");
+        updatedAsset.setLocationByName("Office");
         updatedAsset.setConditionStatus(ConditionStatus.DAMAGED);
 
         AssetDTO updatedAssetDTO = new AssetDTO(updatedAsset);

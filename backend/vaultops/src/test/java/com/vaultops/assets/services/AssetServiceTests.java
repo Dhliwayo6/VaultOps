@@ -8,7 +8,9 @@ import com.vaultops.enums.Usage;
 import com.vaultops.exceptions.AssetNotFoundException;
 import com.vaultops.exceptions.NoResultsException;
 import com.vaultops.model.Asset;
+import com.vaultops.model.Location;
 import com.vaultops.repository.AssetRepository;
+import com.vaultops.repository.LocationRepository;
 import com.vaultops.services.AssetMapperService;
 import com.vaultops.services.AssetService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,9 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -40,21 +40,37 @@ import static org.mockito.Mockito.*;
 public class AssetServiceTests {
 
     @Mock private AssetRepository assetRepository;
-    @Spy private AssetMapperService assetMapperService;
-    @InjectMocks private AssetService assetService;
+    @Mock private LocationRepository locationRepository;
+
+    private AssetMapperService assetMapperService;
+    private AssetService assetService;
 
     private Asset asset;
+    private Location location;
 
     @BeforeEach
     void setUp() {
+        assetMapperService = new AssetMapperService(locationRepository);
+        assetService = new AssetService(assetRepository, assetMapperService, locationRepository);
+
+        location = new Location();
+        location.setId(1L);
+        location.setName("Unassigned");
+        location.setMaxCapacity(100);
+
         asset = new Asset();
         asset.setId(1L);
         asset.setName("Laptop");
         asset.setType("Electronics");
+        asset.setLocation(location);
         asset.setUsageStatus(Usage.IN_USE);
         asset.setConditionStatus(ConditionStatus.FAIR);
         asset.setAssignment(Assignment.ASSIGNED);
         asset.setCreatedAt(LocalDateTime.now());
+
+        lenient().when(locationRepository.findById(anyLong())).thenReturn(Optional.of(location));
+        lenient().when(locationRepository.findByNameIgnoreCase(anyString())).thenReturn(Optional.of(location));
+        lenient().when(locationRepository.save(any(Location.class))).thenAnswer(invocation -> invocation.getArgument(0));
     }
 
     // --- CREATE TESTS ---

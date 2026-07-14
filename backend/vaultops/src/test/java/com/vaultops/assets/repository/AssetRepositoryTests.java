@@ -44,7 +44,7 @@ public class AssetRepositoryTests {
             Asset asset = new Asset();
             asset.setName("Asset " + i);
             asset.setType("Laptop");
-            asset.setLocation("Office " + i);
+            asset.setLocationByName("Office " + i);
             asset.setAssignment(Assignment.UNASSIGNED);
             asset.setConditionStatus(ConditionStatus.EXCELLENT);
             asset.setUsageStatus(Usage.IN_USE);
@@ -60,7 +60,7 @@ public class AssetRepositoryTests {
         Asset storageAsset = new Asset();
         storageAsset.setName("Storage Asset");
         storageAsset.setType("Laptop");
-        storageAsset.setLocation("Storage");
+        storageAsset.setLocationByName("Storage");
         storageAsset.setAssignment(Assignment.UNASSIGNED);
         storageAsset.setConditionStatus(ConditionStatus.GOOD);
         storageAsset.setUsageStatus(Usage.STORAGE);
@@ -181,7 +181,7 @@ public class AssetRepositoryTests {
         a.setName(name);
         a.setType(type);
         a.setSerialNumber(serial);
-        a.setLocation("Cape Town");
+        a.setLocationByName("Cape Town");
         a.setAssignment(Assignment.UNASSIGNED);
         a.setUsageStatus(usage);
         a.setConditionStatus(condition);

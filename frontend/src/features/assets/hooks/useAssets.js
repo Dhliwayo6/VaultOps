@@ -19,6 +19,7 @@ export function useAssets() {
   const [conditionFilter, setConditionFilter] = useState('');
   const [usageFilter, setUsageFilter] = useState('');
   const [assignmentFilter, setAssignmentFilter] = useState('');
+  const [locationFilter, setLocationFilter] = useState('');
   const [warrantyExpiringFilter, setWarrantyExpiringFilter] = useState(false);
 
   const fetchAssetsData = useCallback(async () => {
@@ -40,7 +41,13 @@ export function useAssets() {
         setTotalElements(list.length);
       } else {
         // Otherwise paginated getAssets
-        data = await getAssets({ page, size, sortBy, direction }).catch(err => {
+        data = await getAssets({ 
+          page, 
+          size, 
+          sortBy, 
+          direction, 
+          locationId: locationFilter ? parseInt(locationFilter, 10) : null 
+        }).catch(err => {
           // Handle empty list gracefully (NoResultsException)
           return { content: [], totalPages: 0, totalElements: 0 };
         });
@@ -61,22 +68,23 @@ export function useAssets() {
     } finally {
       setIsLoading(false);
     }
-  }, [page, size, sortBy, direction, searchTerm]);
+  }, [page, size, sortBy, direction, searchTerm, locationFilter]);
 
   useEffect(() => {
     fetchAssetsData();
   }, [fetchAssetsData]);
 
-  // Reset page when searching or changing sort
+  // Reset page when searching or changing sort or location filter
   useEffect(() => {
     setPage(0);
-  }, [searchTerm, sortBy, direction]);
+  }, [searchTerm, sortBy, direction, locationFilter]);
 
-  // Client-side filtering on the retrieved asset list
+  // Client-side filtering on the retrieved asset list (fallback for search / general sanity)
   const filteredAssets = assets.filter(asset => {
     if (conditionFilter && asset.conditionStatus !== conditionFilter) return false;
     if (usageFilter && asset.usageStatus !== usageFilter) return false;
     if (assignmentFilter && asset.assignment !== assignmentFilter) return false;
+    if (locationFilter && (!asset.location || asset.location.id !== parseInt(locationFilter, 10))) return false;
     if (warrantyExpiringFilter) {
       if (!asset.warrantyExpiryDate) return false;
       const expiry = new Date(asset.warrantyExpiryDate);
@@ -112,6 +120,8 @@ export function useAssets() {
     setUsageFilter,
     assignmentFilter,
     setAssignmentFilter,
+    locationFilter,
+    setLocationFilter,
     warrantyExpiringFilter,
     setWarrantyExpiringFilter,
     refetch: fetchAssetsData

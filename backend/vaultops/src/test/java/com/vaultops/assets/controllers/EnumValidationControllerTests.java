@@ -44,7 +44,7 @@ public class EnumValidationControllerTests {
                 Asset asset = new Asset();
                 asset.setName("Test Laptop");
                 asset.setType("Laptop");
-                asset.setLocation("Office 1");
+                asset.setLocationByName("Office 1");
                 asset.setAssignment(Assignment.UNASSIGNED);
                 asset.setUsageStatus(usage);
                 asset.setConditionStatus(condition);

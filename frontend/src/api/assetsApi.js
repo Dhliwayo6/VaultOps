@@ -1,13 +1,14 @@
 import { apiFetch } from '@utils/api';
 import { handleResponse } from './apiHelper';
 
-export async function getAssets({ page, size, sortBy, direction } = {}) {
+export async function getAssets({ page, size, sortBy, direction, locationId } = {}) {
   let query = '';
   const params = [];
   if (page !== undefined && page !== null) params.push(`page=${page}`);
   if (size !== undefined && size !== null) params.push(`size=${size}`);
   if (sortBy) params.push(`sortBy=${sortBy}`);
   if (direction) params.push(`direction=${direction}`);
+  if (locationId !== undefined && locationId !== null) params.push(`locationId=${locationId}`);
   
   if (params.length > 0) {
     query = `?${params.join('&')}`;

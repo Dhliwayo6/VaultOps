@@ -91,7 +91,7 @@ describe('Assets Component Tests', () => {
     useAuth.mockReturnValue({ user: { role: 'ADMIN' } });
     useAssets.mockReturnValue({
       assets: [
-        { id: 1, name: 'Office Laptop', type: 'Hardware', location: 'Cape Town', assignment: 'UNASSIGNED', conditionStatus: 'EXCELLENT', usageStatus: 'STORAGE', serialNumber: 'SN-001', purchasePrice: 12000, purchaseDate: '2026-01-01' },
+        { id: 1, name: 'Office Laptop', type: 'Hardware', location: { id: 1, name: 'Cape Town' }, assignment: 'UNASSIGNED', conditionStatus: 'EXCELLENT', usageStatus: 'STORAGE', serialNumber: 'SN-001', purchasePrice: 12000, purchaseDate: '2026-01-01' },
       ],
       isLoading: false,
       error: null,

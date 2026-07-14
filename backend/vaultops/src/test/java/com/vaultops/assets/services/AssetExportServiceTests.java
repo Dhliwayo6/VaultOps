@@ -51,7 +51,7 @@ public class AssetExportServiceTests {
         asset.setName("Laptop");
         asset.setType("Electronics");
         asset.setSerialNumber("SN-12345");
-        asset.setLocation("Cape Town");
+        asset.setLocationByName("Cape Town");
         asset.setAssignment(Assignment.UNASSIGNED);
         asset.setConditionStatus(ConditionStatus.EXCELLENT);
         asset.setUsageStatus(Usage.STORAGE);

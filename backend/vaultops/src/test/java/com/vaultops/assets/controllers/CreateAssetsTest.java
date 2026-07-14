@@ -44,7 +44,7 @@ public class CreateAssetsTest {
         asset.setUsageStatus(Usage.IN_USE);
         asset.setConditionStatus(ConditionStatus.FAIR);
         asset.setAssignment(Assignment.ASSIGNED);
-        asset.setLocation("Office");
+        asset.setLocationByName("Office");
 
         assetDTO = new AssetDTO(asset);
     }
@@ -129,7 +129,7 @@ public class CreateAssetsTest {
         Asset assetWithoutId = new Asset();
         assetWithoutId.setName("Lenovo ThinkPad");
         assetWithoutId.setType("Laptop");
-        assetWithoutId.setLocation("First floor board room");
+        assetWithoutId.setLocationByName("First floor board room");
         assetWithoutId.setAssignment(Assignment.UNASSIGNED);
         assetWithoutId.setConditionStatus(ConditionStatus.GOOD);
         assetWithoutId.setUsageStatus(Usage.STORAGE);

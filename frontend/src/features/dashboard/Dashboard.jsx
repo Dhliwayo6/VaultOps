@@ -1,20 +1,78 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDashboardStats } from './hooks/useDashboardStats';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@constants/routes';
 import { exportToExcel } from '@api/exportApi';
+import { getLocations } from '@api/locationsApi';
 
 import Loading from '@components/Loading';
 import ErrorState from '@components/ErrorState';
 import { DoughnutStat, StackedBarStat, TrendLineStat } from './components/ChartWrapper';
 import AdminActivityFeed from './components/AdminActivityFeed';
+import { Package, Activity, Database, Wrench, AlertTriangle } from 'lucide-react';
+
+const AnimatedNumber = ({ value }) => {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTest = typeof process !== 'undefined' && process.env?.NODE_ENV === 'test';
+    if (prefersReducedMotion || isTest) {
+      setDisplayValue(value);
+      return;
+    }
+
+    const endValue = parseInt(value, 10);
+    if (isNaN(endValue)) {
+      setDisplayValue(value);
+      return;
+    }
+
+    let startTimestamp = null;
+    const duration = 400; // ms
+
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      setDisplayValue(Math.floor(progress * endValue));
+
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+
+    window.requestAnimationFrame(step);
+  }, [value]);
+
+  return <span>{displayValue.toLocaleString()}</span>;
+};
+
+const getStatIcon = (label) => {
+  switch (label) {
+    case "Total Assets": return Package;
+    case "In Use": return Activity;
+    case "In Storage": return Database;
+    case "In Service": return Wrench;
+    case "Damaged": return AlertTriangle;
+    default: return Package;
+  }
+};
 
 const formatCurrency = (value) => {
-  if (value === undefined || value === null) return '$0.00';
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+  if (value === undefined || value === null) return 'R 0.00';
+  return new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(value);
 };
 
 const Dashboard = () => {
+  const [selectedLocationId, setSelectedLocationId] = useState('');
+  const [locations, setLocations] = useState([]);
+
+  useEffect(() => {
+    getLocations()
+      .then(data => setLocations(data || []))
+      .catch(err => console.error("Failed to load locations", err));
+  }, []);
+
   const {
     stats,
     alerts,
@@ -32,7 +90,7 @@ const Dashboard = () => {
     chartsLoading,
     chartsError,
     isAdmin
-  } = useDashboardStats();
+  } = useDashboardStats(selectedLocationId ? parseInt(selectedLocationId, 10) : null);
 
   const navigate = useNavigate();
   const [isExporting, setIsExporting] = useState(false);
@@ -79,27 +137,91 @@ const Dashboard = () => {
   return (
     <div className="space-y-10">
       {/* Header */}
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl md:text-4xl font-black tracking-tight text-text-primary">Dashboard</h1>
           <p className="text-text-secondary font-medium">Control your vault today</p>
         </div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="location-filter" className="text-xs font-black uppercase tracking-widest text-text-secondary">
+            Filter:
+          </label>
+          <select
+            id="location-filter"
+            value={selectedLocationId}
+            onChange={(e) => setSelectedLocationId(e.target.value)}
+            className="px-4 py-2.5 bg-surface-elevated border border-border-token rounded-xl text-sm font-bold text-text-primary focus:outline-none focus:border-accent transition-colors"
+          >
+            <option value="">All Locations</option>
+            {locations.map(loc => (
+              <option key={loc.id} value={loc.id}>{loc.name}</option>
+            ))}
+          </select>
+        </div>
       </header>
+  
+      {/* Overview Zone */}
+      <section className="relative space-y-6" aria-label="Overview Statistics">
+        <div className="absolute inset-x-0 -top-10 -bottom-10 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.07),transparent_70%)] pointer-events-none z-0" />
+        <div className="relative z-10">
+          <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-text-secondary mb-1">Overview</p>
+          <h2 className="text-xl md:text-2xl font-black text-text-primary">Vault Statistics</h2>
+        </div>
  
-      {/* Bento Grid Stats */}
-      <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" aria-label="Vault Statistics">
-        {stats.map((stat, i) => (
-          <li key={i} className={`${stat.color} p-6 rounded-card border border-border-token flex flex-col justify-between min-h-[140px] transition-transform hover:-translate-y-1 cursor-default shadow-elevation`}>
-            <span className="text-xs font-black uppercase tracking-widest opacity-70">{stat.label}</span>
-            <span className="text-4xl font-black">{stat.value}</span>
-          </li>
-        ))}
-      </ul>
+        {/* Bento Grid Stats */}
+        <ul className="relative z-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" aria-label="Vault Statistics">
+          {stats.map((stat, i) => {
+            const isHeadline = stat.label === "Total Assets";
+            const IconComponent = getStatIcon(stat.label);
+            
+            if (isHeadline) {
+              return (
+                <li 
+                  key={i} 
+                  className="col-span-2 md:col-span-2 lg:col-span-2 p-8 rounded-card bg-surface-elevated border border-accent/40 flex flex-col justify-between min-h-[160px] transition-all duration-300 hover:-translate-y-1 hover:border-accent shadow-glow cursor-default"
+                >
+                  <div className="flex justify-between items-start">
+                    <span className="text-[10px] md:text-xs font-black uppercase tracking-widest text-text-secondary">
+                      {stat.label}
+                    </span>
+                    <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent flex-shrink-0">
+                      <IconComponent className="w-6 h-6" />
+                    </div>
+                  </div>
+                  <span className="text-5xl md:text-6xl font-black text-accent mt-4">
+                    <AnimatedNumber value={stat.value} />
+                  </span>
+                </li>
+              );
+            }
+            
+            return (
+              <li 
+                key={i} 
+                className="col-span-1 p-6 rounded-card bg-surface-elevated border border-border-token flex flex-col justify-between min-h-[140px] transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 shadow-elevation hover:shadow-glow cursor-default"
+              >
+                <div className="flex justify-between items-start">
+                  <span className="text-[10px] md:text-xs font-black uppercase tracking-widest text-text-secondary">
+                    {stat.label}
+                  </span>
+                  <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center text-accent flex-shrink-0">
+                    <IconComponent className="w-5 h-5" />
+                  </div>
+                </div>
+                <span className="text-3xl md:text-4xl font-black text-text-primary mt-4">
+                  <AnimatedNumber value={stat.value} />
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
 
-      {/* Analytical Charts Grid */}
+      {/* Trends Zone */}
       <section className="space-y-6" aria-label="Analytical Visualizations">
-        <div className="flex items-center justify-between px-2">
-          <h3 className="text-xl font-bold text-text-primary">Visual Diagnostics</h3>
+        <div className="px-2">
+          <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-text-secondary mb-1">Trends</p>
+          <h2 className="text-xl md:text-2xl font-black text-text-primary">Visual Diagnostics</h2>
         </div>
 
         {/* Row 1: Pie, Bar & Gated Financial */}
@@ -185,11 +307,14 @@ const Dashboard = () => {
         {/* Active Items List & Admin Feed */}
         <div className="xl:col-span-2 space-y-8">
           <section className="space-y-4">
-            <div className="flex items-center justify-between px-2">
-              <h3 className="text-xl font-bold text-text-primary">Active Inventory</h3>
+            <div className="flex items-end justify-between px-2">
+              <div>
+                <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-text-secondary mb-1">Inventory</p>
+                <h3 className="text-xl md:text-2xl font-black text-text-primary">Active Inventory</h3>
+              </div>
               <button 
                 onClick={() => navigate(ROUTES.ASSETS)}
-                className="text-sm font-bold text-accent cursor-pointer hover:underline focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none rounded px-1"
+                className="text-sm font-bold text-text-secondary cursor-pointer hover:text-accent hover:underline focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none rounded px-1 transition-colors"
               >
                 View Registry
               </button>
@@ -211,11 +336,11 @@ const Dashboard = () => {
                     <tr key={asset.id} className="group hover:bg-bg-base transition-colors">
                       <td className="px-8 py-6">
                         <p className="font-bold text-text-primary">{asset.name}</p>
-                        <p className="text-xs font-mono text-accent">{asset.id}</p>
+                        <p className="text-xs font-mono text-text-secondary">{asset.id}</p>
                       </td>
                       <td className="px-8 py-6 font-semibold text-text-secondary">{asset.user}</td>
                       <td className="px-8 py-6">
-                        <span className="px-3 py-1 bg-accent/10 text-accent rounded-full text-[10px] font-black uppercase">
+                        <span className="px-3 py-1 bg-text-secondary/10 text-text-secondary rounded-full text-[10px] font-black uppercase">
                           {asset.status}
                         </span>
                       </td>
@@ -232,9 +357,9 @@ const Dashboard = () => {
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="font-bold text-text-primary">{asset.name}</p>
-                        <p className="text-xs font-mono text-accent">{asset.id}</p>
+                        <p className="text-xs font-mono text-text-secondary">{asset.id}</p>
                       </div>
-                      <span className="px-3 py-1 bg-accent/10 text-accent rounded-full text-[10px] font-black uppercase">
+                      <span className="px-3 py-1 bg-text-secondary/10 text-text-secondary rounded-full text-[10px] font-black uppercase">
                         {asset.status}
                       </span>
                     </div>
@@ -269,7 +394,7 @@ const Dashboard = () => {
                   aria-label="Vault storage capacity usage"
                   className="w-full h-3 bg-bg-base rounded-full overflow-hidden"
                 >
-                  <div className="h-full bg-accent rounded-full transition-all duration-500" style={{ width: `${vaultCapacity}%` }} />
+                  <div className="h-full bg-text-primary rounded-full transition-all duration-500" style={{ width: `${vaultCapacity}%` }} />
                 </div>
               </div>
             </div>
@@ -277,7 +402,8 @@ const Dashboard = () => {
 
           {/* Alerts Feed */}
           <section className="bg-surface-elevated border border-border-token rounded-card p-8 shadow-elevation">
-            <h3 className="text-xl font-bold mb-6 text-text-primary">System Alerts</h3>
+            <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-text-secondary mb-1">Alerts</p>
+            <h3 className="text-xl md:text-2xl font-black mb-6 text-text-primary">System Alerts</h3>
             {alerts.length === 0 ? (
               <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
@@ -351,13 +477,14 @@ const Dashboard = () => {
 
           {/* Quick Actions Panel */}
           <section className="bg-surface-elevated border border-border-token rounded-card p-8 shadow-elevation">
-            <h3 className="text-xl font-bold mb-6 text-text-primary">Quick Actions</h3>
+            <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-text-secondary mb-1">Quick Actions</p>
+            <h3 className="text-xl md:text-2xl font-black mb-6 text-text-primary">Quick Actions</h3>
             <div className="flex flex-col gap-3">
               <button
                 onClick={() => navigate(`${ROUTES.ASSETS}?usage=SERVICE`)}
                 className="flex items-center gap-4 p-4 rounded-xl border border-border-token/50 bg-bg-base hover:bg-surface-elevated hover:border-accent transition-all text-left w-full group cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
               >
-                <div className="w-10 h-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center font-bold group-hover:scale-105 transition-transform flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-text-secondary/10 text-text-secondary flex items-center justify-center font-bold group-hover:bg-accent/10 group-hover:text-accent group-hover:scale-105 transition-all flex-shrink-0">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -373,7 +500,7 @@ const Dashboard = () => {
                 onClick={() => navigate(`${ROUTES.ASSETS}?assignment=UNASSIGNED`)}
                 className="flex items-center gap-4 p-4 rounded-xl border border-border-token/50 bg-bg-base hover:bg-surface-elevated hover:border-accent transition-all text-left w-full group cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
               >
-                <div className="w-10 h-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center font-bold group-hover:scale-105 transition-transform flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-text-secondary/10 text-text-secondary flex items-center justify-center font-bold group-hover:bg-accent/10 group-hover:text-accent group-hover:scale-105 transition-all flex-shrink-0">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                   </svg>
@@ -388,7 +515,7 @@ const Dashboard = () => {
                 onClick={() => navigate(`${ROUTES.ASSETS}?condition=DAMAGED`)}
                 className="flex items-center gap-4 p-4 rounded-xl border border-border-token/50 bg-bg-base hover:bg-surface-elevated hover:border-accent transition-all text-left w-full group cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
               >
-                <div className="w-10 h-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center font-bold group-hover:scale-105 transition-transform flex-shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-text-secondary/10 text-text-secondary flex items-center justify-center font-bold group-hover:bg-accent/10 group-hover:text-accent group-hover:scale-105 transition-all flex-shrink-0">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
@@ -405,7 +532,7 @@ const Dashboard = () => {
                     onClick={() => navigate(ROUTES.IMPORT)}
                     className="flex items-center gap-4 p-4 rounded-xl border border-border-token/50 bg-bg-base hover:bg-surface-elevated hover:border-accent transition-all text-left w-full group cursor-pointer focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center font-bold group-hover:scale-105 transition-transform flex-shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-text-secondary/10 text-text-secondary flex items-center justify-center font-bold group-hover:bg-accent/10 group-hover:text-accent group-hover:scale-105 transition-all flex-shrink-0">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                       </svg>
@@ -421,7 +548,7 @@ const Dashboard = () => {
                     disabled={isExporting}
                     className="flex items-center gap-4 p-4 rounded-xl border border-border-token/50 bg-bg-base hover:bg-surface-elevated hover:border-accent transition-all text-left w-full group cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center font-bold group-hover:scale-105 transition-transform flex-shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-text-secondary/10 text-text-secondary flex items-center justify-center font-bold group-hover:bg-accent/10 group-hover:text-accent group-hover:scale-105 transition-all flex-shrink-0">
                       {isExporting ? (
                         <div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" />
                       ) : (

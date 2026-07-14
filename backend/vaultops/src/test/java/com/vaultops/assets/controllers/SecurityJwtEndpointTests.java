@@ -100,7 +100,7 @@ public class SecurityJwtEndpointTests {
         Asset asset = new Asset();
         asset.setName("Server");
         asset.setType("Hardware");
-        asset.setLocation("Cape Town");
+        asset.setLocationByName("Cape Town");
         asset.setAssignment(Assignment.UNASSIGNED);
         asset.setConditionStatus(ConditionStatus.EXCELLENT);
         asset.setUsageStatus(Usage.STORAGE);
@@ -118,7 +118,7 @@ public class SecurityJwtEndpointTests {
         Asset asset = new Asset();
         asset.setName("Server");
         asset.setType("Hardware");
-        asset.setLocation("Cape Town");
+        asset.setLocationByName("Cape Town");
         asset.setAssignment(Assignment.UNASSIGNED);
         asset.setConditionStatus(ConditionStatus.EXCELLENT);
         asset.setUsageStatus(Usage.STORAGE);

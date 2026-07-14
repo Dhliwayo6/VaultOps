@@ -84,7 +84,7 @@ public class AsyncImportAndCacheTests {
         asset.setConditionStatus(ConditionStatus.EXCELLENT);
         asset.setAssignment(Assignment.UNASSIGNED);
         asset.setSerialNumber("SN12345");
-        asset.setLocation("Office");
+        asset.setLocationByName("Office");
         asset.setCreatedAt(LocalDateTime.now());
         assetRepository.save(asset);
 
@@ -183,22 +183,22 @@ public class AsyncImportAndCacheTests {
     void testStatsCachingAndEviction() {
         Cache cache = cacheManager.getCache("assetStatsCache");
         assertThat(cache).isNotNull();
-        assertThat(cache.get("getDashboardStats")).isNull();
-        assertThat(cache.get("getDashboardAlerts")).isNull();
+        assertThat(cache.get("getDashboardStats_all")).isNull();
+        assertThat(cache.get("getDashboardAlerts_all")).isNull();
 
         // Call the service to populate cache
-        DashboardStatsDTO stats1 = assetStatsService.getDashboardStats();
+        DashboardStatsDTO stats1 = assetStatsService.getDashboardStats(null);
         assertThat(stats1).isNotNull();
         
-        var alerts1 = assetStatsService.getDashboardAlerts();
+        var alerts1 = assetStatsService.getDashboardAlerts(null);
         assertThat(alerts1).isNotNull();
 
         // Verify they are now cached
-        Cache.ValueWrapper statsWrapper = cache.get("getDashboardStats");
+        Cache.ValueWrapper statsWrapper = cache.get("getDashboardStats_all");
         assertThat(statsWrapper).isNotNull();
         assertThat(statsWrapper.get()).isEqualTo(stats1);
 
-        Cache.ValueWrapper alertsWrapper = cache.get("getDashboardAlerts");
+        Cache.ValueWrapper alertsWrapper = cache.get("getDashboardAlerts_all");
         assertThat(alertsWrapper).isNotNull();
         assertThat(alertsWrapper.get()).isEqualTo(alerts1);
 
@@ -210,13 +210,13 @@ public class AsyncImportAndCacheTests {
         asset.setConditionStatus(ConditionStatus.GOOD);
         asset.setAssignment(Assignment.UNASSIGNED);
         asset.setSerialNumber("SN77777");
-        asset.setLocation("Storage Room");
+        asset.setLocationByName("Storage Room");
         asset.setCreatedAt(LocalDateTime.now());
         
         assetService.create(asset);
 
         // Cache must be evicted
-        assertThat(cache.get("getDashboardStats")).isNull();
-        assertThat(cache.get("getDashboardAlerts")).isNull();
+        assertThat(cache.get("getDashboardStats_all")).isNull();
+        assertThat(cache.get("getDashboardAlerts_all")).isNull();
     }
 }

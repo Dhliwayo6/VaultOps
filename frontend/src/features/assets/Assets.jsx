@@ -4,6 +4,7 @@ import { useAssets } from './hooks/useAssets';
 import { Assignment, ConditionStatus, Usage } from '@constants/assets';
 import { useAuth } from '@context/AuthContext';
 import { createAsset, updateAsset, deleteAsset } from '@api/assetsApi';
+import { getLocations } from '@api/locationsApi';
 import Loading from '@components/Loading';
 import ErrorState from '@components/ErrorState';
 import { useFocusTrap } from '@hooks/useFocusTrap';
@@ -31,10 +32,20 @@ export default function Assets() {
     setUsageFilter,
     assignmentFilter,
     setAssignmentFilter,
+    locationFilter,
+    setLocationFilter,
     warrantyExpiringFilter,
     setWarrantyExpiringFilter,
     refetch
   } = useAssets();
+
+  const [locations, setLocations] = useState([]);
+
+  useEffect(() => {
+    getLocations()
+      .then(data => setLocations(data || []))
+      .catch(err => console.error("Failed to load locations", err));
+  }, []);
 
   // Modal form state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -69,7 +80,7 @@ export default function Assets() {
   const resetForm = () => {
     setFormName('');
     setFormType('');
-    setFormLocation('');
+    setFormLocation('1');
     setFormSerialNumber('');
     setFormPurchasePrice('');
     setFormPurchaseDate('');
@@ -92,7 +103,7 @@ export default function Assets() {
     setEditingAsset(asset);
     setFormName(asset.name || '');
     setFormType(asset.type || '');
-    setFormLocation(asset.location || '');
+    setFormLocation(asset.location ? asset.location.id.toString() : '1');
     setFormSerialNumber(asset.serialNumber || '');
     setFormPurchasePrice(asset.purchasePrice !== null && asset.purchasePrice !== undefined ? asset.purchasePrice.toString() : '');
     setFormPurchaseDate(asset.purchaseDate || '');
@@ -139,7 +150,7 @@ export default function Assets() {
     const payload = {
       name: formName.trim(),
       type: formType.trim(),
-      location: formLocation.trim(),
+      location: { id: parseInt(formLocation, 10) },
       serialNumber: formSerialNumber.trim() || null,
       purchasePrice: formPurchasePrice.trim() ? parseFloat(formPurchasePrice) : null,
       purchaseDate: formPurchaseDate.trim() || null,
@@ -289,6 +300,19 @@ export default function Assets() {
                 <option key={a} value={a}>{a}</option>
               ))}
             </select>
+
+            <label htmlFor="filter-location" className="sr-only">Filter by Location</label>
+            <select
+              id="filter-location"
+              value={locationFilter}
+              onChange={e => setLocationFilter(e.target.value)}
+              className="h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent text-xs font-black uppercase tracking-wider text-text-secondary"
+            >
+              <option value="">All Locations</option>
+              {locations.map(loc => (
+                <option key={loc.id} value={loc.id}>{loc.name}</option>
+              ))}
+            </select>
           </div>
         </div>
       </div>
@@ -352,7 +376,7 @@ export default function Assets() {
                       <div className="flex items-center gap-2 font-bold text-text-secondary text-sm">
                         <p>{type}</p>
                         <span className="w-1.5 h-1.5 bg-border-token rounded-full"></span>
-                        <p>{location}</p>
+                        <p>{location?.name || 'Unassigned'}</p>
                       </div>
                       <h2 className="text-xs font-mono text-text-secondary/60 mt-1 uppercase tracking-widest">
                         SN: {serialNumber || 'N/A'}
@@ -380,7 +404,7 @@ export default function Assets() {
                     <div className="w-full flex items-end justify-between">
                       <div>
                         <h2 className="text-2xl font-black text-text-primary">
-                          R {(purchasePrice || 0).toLocaleString()}
+                          R {(purchasePrice || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </h2>
                         <p className="text-[10px] font-bold text-text-secondary uppercase tracking-tight">
                           Acquired: {purchaseDate ? new Date(purchaseDate).toLocaleDateString() : 'N/A'}
@@ -519,16 +543,19 @@ export default function Assets() {
                 {/* Location */}
                 <div className="space-y-2">
                   <label htmlFor="form-asset-location" className="text-[10px] font-black uppercase tracking-widest text-text-secondary px-1">Location *</label>
-                  <input
+                  <select
                     id="form-asset-location"
-                    type="text"
                     required
                     aria-required="true"
-                    placeholder="e.g. Cape Town Vault, Rack 4B"
                     value={formLocation}
                     onChange={e => setFormLocation(e.target.value)}
                     className="w-full h-11 px-4 bg-bg-base border border-border-token rounded-xl focus:border-accent focus:bg-surface-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-accent font-semibold text-sm transition-all text-text-primary"
-                  />
+                  >
+                    <option value="" disabled>Select a location</option>
+                    {locations.map(loc => (
+                      <option key={loc.id} value={loc.id}>{loc.name}</option>
+                    ))}
+                  </select>
                 </div>
 
                 {/* Serial Number */}

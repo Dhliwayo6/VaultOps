@@ -93,7 +93,7 @@ public class StatsControllerTests {
         Asset asset1 = new Asset();
         asset1.setName("Dell XPS Laptop");
         asset1.setType("Laptop");
-        asset1.setLocation("HQ");
+        asset1.setLocationByName("HQ");
         asset1.setSerialNumber("SN-XYZ-111");
         asset1.setAssignment(Assignment.UNASSIGNED);
         asset1.setUsageStatus(Usage.IN_USE);
@@ -106,7 +106,7 @@ public class StatsControllerTests {
         Asset asset2 = new Asset();
         asset2.setName("Server Pro");
         asset2.setType("Server");
-        asset2.setLocation("Datacenter");
+        asset2.setLocationByName("Datacenter");
         asset2.setSerialNumber("SN-XYZ-222");
         asset2.setAssignment(Assignment.UNASSIGNED);
         asset2.setUsageStatus(Usage.STORAGE);
@@ -201,7 +201,7 @@ public class StatsControllerTests {
         Asset damagedAsset = new Asset();
         damagedAsset.setName("Damaged Laptop");
         damagedAsset.setType("Laptop");
-        damagedAsset.setLocation("HQ");
+        damagedAsset.setLocationByName("HQ");
         damagedAsset.setSerialNumber("SN-DMG");
         damagedAsset.setAssignment(Assignment.UNASSIGNED);
         damagedAsset.setUsageStatus(Usage.IN_USE);
@@ -215,7 +215,7 @@ public class StatsControllerTests {
         Asset overdueAsset = new Asset();
         overdueAsset.setName("Repairing Server");
         overdueAsset.setType("Server");
-        overdueAsset.setLocation("HQ");
+        overdueAsset.setLocationByName("HQ");
         overdueAsset.setSerialNumber("SN-REP");
         overdueAsset.setAssignment(Assignment.UNASSIGNED);
         overdueAsset.setUsageStatus(Usage.SERVICE);
@@ -232,7 +232,7 @@ public class StatsControllerTests {
         Asset warrantyAsset = new Asset();
         warrantyAsset.setName("New Tablet");
         warrantyAsset.setType("Tablet");
-        warrantyAsset.setLocation("HQ");
+        warrantyAsset.setLocationByName("HQ");
         warrantyAsset.setSerialNumber("SN-WRR");
         warrantyAsset.setAssignment(Assignment.UNASSIGNED);
         warrantyAsset.setUsageStatus(Usage.IN_USE);
