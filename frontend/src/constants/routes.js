@@ -9,4 +9,5 @@ export const ROUTES = {
   USERS: '/portal/users',
   IMPORT: '/portal/import',
   REPORTS: '/portal/reports',
+  LOCATIONS: '/portal/locations',
 };

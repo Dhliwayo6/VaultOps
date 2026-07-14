@@ -18,6 +18,7 @@ const Assets = lazy(() => import('@features/assets/Assets'));
 const UserManagement = lazy(() => import('@features/admin/UserManagement'));
 const ImportAssets = lazy(() => import('@features/admin/ImportAssets'));
 const Reports = lazy(() => import('@features/reports/Reports'));
+const LocationManagement = lazy(() => import('@features/admin/LocationManagement'));
 
 const withSuspense = (Component) => (
   <Suspense fallback={<Loading message="Connecting to vault..." />}>
@@ -73,6 +74,10 @@ function App() {
                 {
                   path: "import",
                   element: withSuspense(ImportAssets)
+                },
+                {
+                  path: "locations",
+                  element: withSuspense(LocationManagement)
                 }
               ]
             }

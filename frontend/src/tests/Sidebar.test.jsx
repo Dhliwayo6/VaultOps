@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Sidebar from '../layout/Sidebar/Sidebar';
+import Portal from '../app/pages/Portal';
 import { useAuth } from '@context/AuthContext';
 
 vi.mock('@context/AuthContext', () => ({
@@ -90,4 +91,90 @@ describe('Sidebar Component Tests', () => {
     expect(assetsLink.className).toContain('bg-sidebar-active-bg');
     expect(homeLink.className).not.toContain('bg-sidebar-active-bg');
   });
+
+  test('should render toggle button and trigger onToggleCollapse when clicked', () => {
+    useAuth.mockReturnValue({
+      user: { name: 'Admin User', role: 'ADMIN' },
+      logout: mockLogout,
+    });
+    const mockToggle = vi.fn();
+
+    render(
+      <MemoryRouter initialEntries={['/portal']}>
+        <Sidebar isCollapsed={false} onToggleCollapse={mockToggle} />
+      </MemoryRouter>
+    );
+
+    const toggleBtn = screen.getByRole('button', { name: /collapse sidebar/i });
+    expect(toggleBtn).toBeInTheDocument();
+    expect(toggleBtn).toHaveAttribute('aria-expanded', 'true');
+
+    fireEvent.click(toggleBtn);
+    expect(mockToggle).toHaveBeenCalledTimes(1);
+  });
+
+  test('should display tooltips and correct aria attributes when collapsed', () => {
+    useAuth.mockReturnValue({
+      user: { name: 'Admin User', role: 'ADMIN' },
+      logout: mockLogout,
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/portal']}>
+        <Sidebar isCollapsed={true} onToggleCollapse={vi.fn()} />
+      </MemoryRouter>
+    );
+
+    const toggleBtn = screen.getByRole('button', { name: /expand sidebar/i });
+    expect(toggleBtn).toBeInTheDocument();
+    expect(toggleBtn).toHaveAttribute('aria-expanded', 'false');
+
+    // Check tooltips and aria-labels on nav items
+    const homeLink = screen.getByRole('link', { name: /home/i });
+    expect(homeLink).toHaveAttribute('title', 'Home');
+    expect(homeLink).toHaveAttribute('aria-label', 'Home');
+  });
+
+  test('should apply active classes to NavLink when collapsed', () => {
+    useAuth.mockReturnValue({
+      user: { name: 'Regular User', role: 'USER' },
+      logout: mockLogout,
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/portal/assets']}>
+        <Sidebar isCollapsed={true} />
+      </MemoryRouter>
+    );
+
+    const assetsLink = screen.getByRole('link', { name: /assets/i });
+    expect(assetsLink.className).toContain('bg-sidebar-active-bg');
+  });
+
+  test('should toggle collapsed state and persist to localStorage', () => {
+    localStorage.clear();
+    useAuth.mockReturnValue({
+      user: { name: 'Admin User', role: 'ADMIN' },
+      logout: mockLogout,
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/portal']}>
+        <Portal />
+      </MemoryRouter>
+    );
+
+    const toggleBtn = screen.getByRole('button', { name: /collapse sidebar/i });
+    expect(toggleBtn).toBeInTheDocument();
+    expect(localStorage.getItem('vaultops_sidebar_collapsed')).toBeNull();
+
+    fireEvent.click(toggleBtn);
+    expect(localStorage.getItem('vaultops_sidebar_collapsed')).toBe('true');
+
+    expect(screen.getByRole('button', { name: /expand sidebar/i })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /expand sidebar/i }));
+    expect(localStorage.getItem('vaultops_sidebar_collapsed')).toBe('false');
+  });
 });
+
