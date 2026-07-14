@@ -2,6 +2,7 @@ package com.vaultops.dtos;
 
 import com.vaultops.enums.Assignment;
 import com.vaultops.model.Asset;
+import com.vaultops.model.Location;
 import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
 
@@ -13,7 +14,7 @@ public record AssetDTO(
     Long id,
     String name,
     String type,
-    String location,
+    Location location,
     Assignment assignment,
     String serialNumber,
     BigDecimal purchasePrice,

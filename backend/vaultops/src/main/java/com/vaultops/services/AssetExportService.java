@@ -88,7 +88,7 @@ public class AssetExportService {
         row.createCell(1).setCellValue(sanitizeForFormulaInjection(asset.getName()));
         row.createCell(2).setCellValue(sanitizeForFormulaInjection(asset.getType()));
         row.createCell(3).setCellValue(sanitizeForFormulaInjection(asset.getSerialNumber()));
-        row.createCell(4).setCellValue(sanitizeForFormulaInjection(asset.getLocation()));
+        row.createCell(4).setCellValue(sanitizeForFormulaInjection(asset.getLocation() != null ? asset.getLocation().getName() : ""));
         row.createCell(5).setCellValue(asset.getAssignment().toString());
         row.createCell(6).setCellValue(asset.getConditionStatus().toString());
         row.createCell(7).setCellValue(asset.getUsageStatus().toString());
@@ -148,7 +148,7 @@ public class AssetExportService {
                         sanitizeForFormulaInjection(asset.getName()),
                         sanitizeForFormulaInjection(asset.getType()),
                         sanitizeForFormulaInjection(asset.getSerialNumber()),
-                        sanitizeForFormulaInjection(asset.getLocation()),
+                        sanitizeForFormulaInjection(asset.getLocation() != null ? asset.getLocation().getName() : ""),
                         asset.getAssignment().toString(),
                         asset.getConditionStatus().toString(),
                         asset.getUsageStatus().toString(),
@@ -207,7 +207,7 @@ public class AssetExportService {
             }
 
             if (filter.getLocation() != null) {
-                predicates.add(cb.like(cb.lower(root.get("location")),
+                predicates.add(cb.like(cb.lower(root.get("location").get("name")),
                         "%" + filter.getLocation().toLowerCase() + "%"));
             }
 

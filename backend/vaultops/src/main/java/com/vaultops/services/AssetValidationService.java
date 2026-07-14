@@ -48,7 +48,6 @@ public class AssetValidationService {
 
         validateEnums(dto, result);
         validateDates(dto, result);
-        validateBusinessRules(dto, result);
 
         return result;
     }
@@ -90,16 +89,6 @@ public class AssetValidationService {
 
         if (dto.getPurchaseDate() != null && dto.getPurchaseDate().isAfter(today)) {
             result.addError("purchaseDate", "Purchase date cannot be in the future");
-        }
-    }
-
-    private void validateBusinessRules(AssetImportDTO dto, ValidationResult result) {
-        if (dto.getPurchasePrice() != null && !dto.getPurchasePrice().isEmpty()) {
-            try {
-                Double.parseDouble(dto.getPurchasePrice());
-            } catch (NumberFormatException e) {
-                result.addError("purchasePrice", "Invalid purchase price format");
-            }
         }
     }
 }

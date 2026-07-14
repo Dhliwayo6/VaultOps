@@ -78,6 +78,14 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(e.getMessage());
     }
 
+    @ExceptionHandler(LocationCapacityExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleLocationCapacityExceededException(LocationCapacityExceededException e, HttpServletRequest request) {
+        logErrorContext(request, HttpStatus.BAD_REQUEST, e);
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ExceptionHandler(NoDataException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody

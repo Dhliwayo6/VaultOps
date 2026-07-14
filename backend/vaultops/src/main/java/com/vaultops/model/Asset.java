@@ -36,10 +36,10 @@ public class Asset {
     @jakarta.validation.constraints.Size(max = 255, message = "Type must not exceed 255 characters")
     private String type;
 
-    @Column(name = "location", nullable = false)
-    @NotBlank(message = "Asset location is required")
-    @jakarta.validation.constraints.Size(max = 255, message = "Location must not exceed 255 characters")
-    private String location;
+    @NotNull(message = "Asset location is required")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "location_id", nullable = false)
+    private Location location;
 
     @NotNull(message = "Assignment status is required")
     @Enumerated(EnumType.STRING)
@@ -82,4 +82,20 @@ public class Asset {
     @UpdateTimestamp
     @Column(name = "latest_updated_date")
     private LocalDateTime latestUpdatedDate;
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public void setLocationByName(String locationName) {
+        if (locationName == null) {
+            this.location = null;
+            return;
+        }
+        Location loc = new Location();
+        loc.setId(1L);
+        loc.setName(locationName);
+        loc.setMaxCapacity(1000);
+        this.location = loc;
+    }
 }

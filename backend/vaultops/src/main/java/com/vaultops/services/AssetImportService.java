@@ -175,7 +175,7 @@ public class AssetImportService {
                 case "usageStatus" -> dto.getUsageStatus();
                 case "assignedTo" -> dto.getAssignedTo();
                 case "purchaseDate" -> dto.getPurchaseDate() != null ? dto.getPurchaseDate().toString() : null;
-                case "purchasePrice" -> dto.getPurchasePrice();
+                case "purchasePrice" -> dto.getPurchasePrice() != null ? dto.getPurchasePrice().toPlainString() : null;
                 default -> null;
             };
         } catch (Exception e) {

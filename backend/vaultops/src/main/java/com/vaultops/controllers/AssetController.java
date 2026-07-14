@@ -54,15 +54,16 @@ public class AssetController {
             @RequestParam(required = false) @Min(value = 0, message = "Page number cannot be negative") Integer page,
             @RequestParam(required = false) @Min(value = 1, message = "Page size must be at least 1") @Max(value = 100, message = "Page size cannot exceed 100") Integer size,
             @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "ASC") String direction) {
+            @RequestParam(defaultValue = "ASC") String direction,
+            @RequestParam(required = false) Long locationId) {
         
         if (page == null || size == null) {
-            return ResponseEntity.ok(assetService.getAllNonPaginated());
+            return ResponseEntity.ok(assetService.getAllNonPaginated(locationId));
         }
         
         Sort sort = direction.equalsIgnoreCase("DESC") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        return ResponseEntity.ok(assetService.getAll(pageable));
+        return ResponseEntity.ok(assetService.getAll(pageable, locationId));
     }
 
     @GetMapping("/asset/search")

@@ -1,10 +1,13 @@
 package com.vaultops.dtos;
 
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -39,5 +42,8 @@ public class AssetImportDTO {
 
     private String assignedTo;
     private LocalDate purchaseDate;
-    private String purchasePrice;
+
+    @DecimalMin(value = "0.00", message = "Purchase price must be greater than or equal to 0")
+    @Digits(integer = 10, fraction = 2, message = "Purchase price must be a valid dollar amount")
+    private BigDecimal purchasePrice;
 }

@@ -12,6 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.CacheEvict;
+import com.vaultops.model.Location;
+import com.vaultops.repository.LocationRepository;
+import com.vaultops.exceptions.LocationCapacityExceededException;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,9 +25,23 @@ public class AssetService {
 
     private final AssetRepository assetRepository;
     private final AssetMapperService assetMapperService;
+    private final LocationRepository locationRepository;
 
     @CacheEvict(value = "assetStatsCache", allEntries = true)
     public AssetDTO create(Asset asset) {
+        if (asset.getLocation() != null && asset.getLocation().getId() != null) {
+            Location location = locationRepository.findById(asset.getLocation().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Location not found"));
+            long currentCount = assetRepository.countByLocationId(location.getId());
+            if (currentCount >= location.getMaxCapacity()) {
+                throw new LocationCapacityExceededException("Location " + location.getName() + " is already at maximum capacity (" + location.getMaxCapacity() + ")");
+            }
+            asset.setLocation(location);
+        } else {
+            Location defaultLoc = locationRepository.findById(1L)
+                    .orElseThrow(() -> new IllegalStateException("Default location not found"));
+            asset.setLocation(defaultLoc);
+        }
         Asset savedAsset = assetRepository.save(asset);
         return assetMapperService.mapToDTO(savedAsset);
     }
@@ -36,7 +53,16 @@ public class AssetService {
     }
 
     public Page<AssetDTO> getAll(Pageable pageable) {
-        Page<Asset> assets = assetRepository.findAll(pageable);
+        return getAll(pageable, null);
+    }
+
+    public Page<AssetDTO> getAll(Pageable pageable, Long locationId) {
+        Page<Asset> assets;
+        if (locationId != null) {
+            assets = assetRepository.findByLocationId(locationId, pageable);
+        } else {
+            assets = assetRepository.findAll(pageable);
+        }
         if (assets.isEmpty()) {
             throw new NoResultsException();
         }
@@ -44,7 +70,16 @@ public class AssetService {
     }
 
     public List<AssetDTO> getAllNonPaginated() {
-        List<Asset> assets = assetRepository.findAll();
+        return getAllNonPaginated(null);
+    }
+
+    public List<AssetDTO> getAllNonPaginated(Long locationId) {
+        List<Asset> assets;
+        if (locationId != null) {
+            assets = assetRepository.findByLocationId(locationId);
+        } else {
+            assets = assetRepository.findAll();
+        }
         if (assets.isEmpty()) {
             throw new NoResultsException();
         }
@@ -58,6 +93,22 @@ public class AssetService {
         Optional<Asset> assetOptional = assetRepository.findById(id);
 
         if (assetOptional.isPresent()) {
+            Asset existingAsset = assetOptional.get();
+            if (assetDetails.getLocation() != null && assetDetails.getLocation().getId() != null) {
+                Location newLocation = locationRepository.findById(assetDetails.getLocation().getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Location not found"));
+                
+                if (existingAsset.getLocation() == null || !existingAsset.getLocation().getId().equals(newLocation.getId())) {
+                    long currentCount = assetRepository.countByLocationId(newLocation.getId());
+                    if (currentCount >= newLocation.getMaxCapacity()) {
+                        throw new LocationCapacityExceededException("Location " + newLocation.getName() + " is already at maximum capacity (" + newLocation.getMaxCapacity() + ")");
+                    }
+                }
+                assetDetails.setLocation(newLocation);
+            } else {
+                assetDetails.setLocation(existingAsset.getLocation());
+            }
+
             assetDetails.setId(id);
             Asset savedAsset = assetRepository.save(assetDetails);
             return assetMapperService.mapToDTO(savedAsset);

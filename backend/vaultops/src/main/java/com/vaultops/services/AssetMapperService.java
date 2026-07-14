@@ -7,6 +7,9 @@ import com.vaultops.enums.Assignment;
 import com.vaultops.enums.ConditionStatus;
 import com.vaultops.enums.Usage;
 import com.vaultops.model.Asset;
+import com.vaultops.model.Location;
+import com.vaultops.repository.LocationRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +19,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AssetMapperService {
+
+    private final LocationRepository locationRepository;
 
     public Asset mapToEntity(AssetImportDTO dto) {
         Asset asset = new Asset();
@@ -27,7 +33,22 @@ public class AssetMapperService {
     public void updateEntity(Asset asset, AssetImportDTO dto) {
         asset.setName(dto.getName());
         asset.setType(dto.getType());
-        asset.setLocation(dto.getLocation());
+
+        String locName = dto.getLocation();
+        if (locName == null || locName.trim().isEmpty()) {
+            locName = "Unassigned";
+        }
+        String finalLocName = locName.trim();
+        Location location = locationRepository.findByNameIgnoreCase(finalLocName)
+                .orElseGet(() -> {
+                    Location newLoc = new Location();
+                    newLoc.setName(finalLocName);
+                    newLoc.setMaxCapacity(100);
+                    newLoc.setDescription("Automatically created during import");
+                    return locationRepository.save(newLoc);
+                });
+        asset.setLocation(location);
+
         asset.setSerialNumber(dto.getSerialNumber());
         asset.setAssignment(
                 Assignment.valueOf(dto.getAssignment().toUpperCase())
@@ -41,13 +62,7 @@ public class AssetMapperService {
         asset.setAssignedTo(dto.getAssignedTo());
         asset.setPurchaseDate(dto.getPurchaseDate());
 
-        if (dto.getPurchasePrice() != null && !dto.getPurchasePrice().isEmpty()) {
-            try {
-                asset.setPurchasePrice(new BigDecimal(dto.getPurchasePrice()));
-            } catch (NumberFormatException e) {
-                log.warn(e.getMessage());
-            }
-        }
+        asset.setPurchasePrice(dto.getPurchasePrice());
     }
 
     public List<Asset> mapToEntities(List<AssetImportDTO> dtos) {

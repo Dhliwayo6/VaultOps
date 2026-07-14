@@ -13,11 +13,11 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Long> 
 
     @Query("SELECT YEAR(m.date), MONTH(m.date), COUNT(m) " +
            "FROM Maintenance m " +
-           "WHERE m.date >= :startDate " +
+           "WHERE m.date >= :startDate AND (:locationId IS NULL OR m.asset.location.id = :locationId) " +
            "GROUP BY YEAR(m.date), MONTH(m.date)")
-    List<Object[]> getMaintenanceTrends(@Param("startDate") LocalDate startDate);
+    List<Object[]> getMaintenanceTrends(@Param("startDate") LocalDate startDate, @Param("locationId") Long locationId);
 
-    @Query("SELECT COALESCE(SUM(m.cost), 0) FROM Maintenance m")
-    BigDecimal getTotalMaintenanceExpenditure();
+    @Query("SELECT COALESCE(SUM(m.cost), 0) FROM Maintenance m WHERE (:locationId IS NULL OR m.asset.location.id = :locationId)")
+    BigDecimal getTotalMaintenanceExpenditure(@Param("locationId") Long locationId);
 
 }

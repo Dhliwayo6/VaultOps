@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -153,9 +154,7 @@ public class FileParserService {
         dto.setPurchaseDate(getDateCellValue(row, columnMap, "purchasedate"));
 
         String purchasePrice = getCellValue(row, columnMap, "purchaseprice");
-        if (purchasePrice != null && !purchasePrice.isEmpty()) {
-            dto.setPurchasePrice(purchasePrice);
-        }
+        dto.setPurchasePrice(parseBigDecimal(purchasePrice));
 
         return dto;
     }
@@ -212,6 +211,17 @@ public class FileParserService {
         }
 
         return null;
+    }
+
+    private BigDecimal parseBigDecimal(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            return new BigDecimal(value.trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid number format for purchase price: " + value);
+        }
     }
 
     private LocalDate parseDate(String dateStr) {
@@ -316,7 +326,7 @@ public class FileParserService {
             dto.setPurchaseDate(parseDate(purchaseDate));
         }
 
-        dto.setPurchasePrice(getValue(line, columnMap, "purchaseprice"));
+        dto.setPurchasePrice(parseBigDecimal(getValue(line, columnMap, "purchaseprice")));
 
         return dto;
     }
