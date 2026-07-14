@@ -1,6 +1,6 @@
 import React from 'react'
 import { featureData } from '@constants/features'
-import { FaChartBar, FaShieldAlt, FaHistory, FaFileExport, FaSearch, FaClipboardList, FaKey, FaLock } from 'react-icons/fa'
+import { FaChartBar, FaShieldAlt, FaHistory, FaFileExport, FaSearch, FaClipboardList, FaKey, FaLock, FaMapMarkerAlt, FaColumns } from 'react-icons/fa'
 
 const iconMap = {
   chart: <FaChartBar className="text-accent" />,
@@ -10,7 +10,9 @@ const iconMap = {
   search: <FaSearch className="text-accent" />,
   logs: <FaClipboardList className="text-accent" />,
   key: <FaKey className="text-accent" />,
-  lock: <FaLock className="text-accent" />
+  lock: <FaLock className="text-accent" />,
+  location: <FaMapMarkerAlt className="text-accent" />,
+  sidebar: <FaColumns className="text-accent" />
 };
 
 export default function Features() {

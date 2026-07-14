@@ -118,7 +118,7 @@ export default function ImportAssets() {
               />
               <div className="text-sm">
                 <label htmlFor="dry-run" className="font-bold text-text-primary cursor-pointer select-none">Dry Run Validation Only</label>
-                <p className="text-text-secondary font-medium text-xs mt-0.5">Parse, check validation rules and enums without writing records to database.</p>
+                <p className="text-text-secondary font-medium text-xs mt-0.5">Validate file structure and format requirements without saving any changes.</p>
               </div>
             </div>
 

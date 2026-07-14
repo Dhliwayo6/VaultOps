@@ -1,32 +1,42 @@
 export const featureData = [
   {
+    icon: "chart",
+    title: "Real-Time Inventory Insights",
+    desc: "See your entire inventory at a glance, with live stats, instant category breakdowns, and alerts the moment something needs attention."
+  },
+  {
+    icon: "location",
+    title: "Multi-Site Inventory Control",
+    desc: "Track assets across every office, warehouse, or storage site, with built-in capacity limits so no location is ever overbooked."
+  },
+  {
+    icon: "sidebar",
+    title: "Built to Work the Way You Do",
+    desc: "A clean workspace that adapts to any screen size and remembers how you like to work, fully usable from the keyboard alone."
+  },
+  {
     icon: "export",
-    title: "Smart Bulk Operations",
-    desc: "Import hundreds of inventory assets from Excel or CSV files with real-time transactional batching, or export audit-ready reports instantly."
+    title: "Import Thousands of Assets in Minutes",
+    desc: "Upload your existing spreadsheet and import it in bulk, with a safe preview before anything changes. Even your biggest files import smoothly."
   },
   {
     icon: "shield",
-    title: "Validation & Sanitization",
-    desc: "Catch invalid serial numbers, duplicate records, and sanitize inputs to defend against XSS and injection attacks before they reach the database."
+    title: "Accurate to the Cent, Every Time",
+    desc: "Every asset value is stored with full financial precision, no rounding errors, no invalid entries, so your reports are always something you can trust."
   },
   {
     icon: "lock",
-    title: "Role-Based Access Control",
-    desc: "Enforce granular permissions. Restrict administrative functions, user role modification, and sensitive inventory configurations to authorized users."
-  },
-  {
-    icon: "key",
-    title: "Two-Factor OTP Verification",
-    desc: "Harden user authentication flows with mandatory, time-sensitive single-use activation codes delivered securely via Brevo SMTP integration."
-  },
-  {
-    icon: "chart",
-    title: "Abuse Protection & Throttling",
-    desc: "Protect backend API endpoints against brute force attacks and credential stuffing with automated IP-based rate limiting and request throttling."
+    title: "Built-In Session Protection",
+    desc: "Your login stays protected behind credentials that automatically expire and rotate, so a stolen session becomes useless almost immediately."
   },
   {
     icon: "logs",
-    title: "Audit & Compliance Logs",
-    desc: "Maintain an unalterable history trail of database mutations, asset ownership edits, and state transitions for regulatory compliance reviews."
+    title: "A Complete, Tamper-Proof History",
+    desc: "Every change to your inventory and every login is automatically recorded, so you always know who did what, and when."
+  },
+  {
+    icon: "key",
+    title: "Locked Down Against Attackers",
+    desc: "Automated protection against repeated login attempts keeps unauthorized users out, without ever slowing down your real team."
   }
 ];

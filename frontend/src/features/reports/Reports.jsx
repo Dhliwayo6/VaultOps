@@ -139,7 +139,7 @@ export default function Reports() {
           <div className="mt-8 p-4 bg-bg-base rounded-2xl border border-border-token flex items-start gap-3">
             <FaInfoCircle className="text-accent mt-0.5 flex-shrink-0" />
             <p className="text-xs text-text-secondary font-medium leading-relaxed">
-              Leaving all filters blank will compile the entire inventory database into the exported spreadsheet or CSV file.
+              Leaving all filters blank will compile the entire asset catalog into the exported spreadsheet or CSV file.
             </p>
           </div>
         </section>
